@@ -23,7 +23,7 @@ Hands-on experience developing full-stack web apps and desktop software using Ja
 
 ## 🚀 Featured Projects
 
-[![Rogue Market](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=High-Sharps1.1&theme=dark)](https://github.com/Terminator320/High-Sharps1.1)
+[![Rogue Market](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=High-Sharps1.1&theme=dark)]
 
 [![Point of Sale System](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=Point-of-Sales_AppDev&theme=dark)](https://github.com/Terminator320/Point-of-Sales_AppDev)
 
@@ -55,5 +55,5 @@ Hands-on experience developing full-stack web apps and desktop software using Ja
 
 ## 📫 Contact
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Terminator320)
