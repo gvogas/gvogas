@@ -23,7 +23,7 @@ Hands-on experience developing full-stack web apps and desktop software using Ja
 
 ## 🚀 Featured Projects
 
-[![Rogue Market](https://github-readme-stats.vercel.app/api/pin/?username=Cy-EF0510&repo=InternetProgrammingProject&theme=dark)
+![Rogue Market](https://github-readme-stats.vercel.app/api/pin/?username=Cy-EF0510&repo=InternetProgrammingProject&theme=dark)
 
 [![Point of Sale System](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=Point-of-Sales_AppDev&theme=dark)](https://github.com/Terminator320/Point-of-Sales_AppDev)
 
