@@ -21,18 +21,6 @@ Hands-on experience developing full-stack web apps and desktop software using Ja
 
 ---
 
-## 🚀 Featured Projects
-
-![Rogue Market](https://github-readme-stats.vercel.app/api/pin/?username=Cy-EF0510&repo=InternetProgrammingProject&theme=dark)
-
-[![Point of Sale System](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=Point-of-Sales_AppDev&theme=dark)](https://github.com/Terminator320/Point-of-Sales_AppDev)
-
-[![Banking Project](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=Banking-Project&theme=dark)](https://github.com/Terminator320/Banking-Project)
-
-[![Personal Finance Tracker](https://github-readme-stats.vercel.app/api/pin/?username=Terminator320&repo=Personal-Finance-Tracker&theme=dark)](https://github.com/Terminator320/Personal-Finance-Tracker)
-
----
-
 ## 💻 Programming Languages & Technologies
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
@@ -45,11 +33,6 @@ Hands-on experience developing full-stack web apps and desktop software using Ja
 ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white)
 ![Apache](https://img.shields.io/badge/Apache-D22128?style=for-the-badge&logo=apache&logoColor=white)
 ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
-
----
-
-## 🎓 Recognition
-- **Lieutenant Governor of Quebec Youth Medal**
 
 ---
 
