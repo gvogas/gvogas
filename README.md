@@ -42,24 +42,7 @@ A real business application built for a service company to replace paper-based s
 **Architecture:** Feature-first folder structure; all DB access mediated through per-feature service classes — screens never query Firestore directly. Single centralized route handler.
  
 **Up next:** Wave billing integration — completed appointments auto-generate invoices, sync client records, and surface payment status in-app.
- 
----
- 
-### 🖥️ Point-of-Sales Patterns &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Point-of-Sales_Patterns)
- 
-> **Java · JavaFX · MySQL · Maven · JDK 24**  
-> *Final Project — Programming Patterns Course*
- 
-A full desktop POS system that's also a showcase of applied software design patterns — built to prove the concepts, not just describe them.
- 
-**What it does:**
-- Multi-screen JavaFX GUI: main menu, order flow, inventory management, sales analytics, and payment
-- **Factory Method** pattern for payment processing — Cash, Debit, and Credit each implemented as concrete factories
-- **Multithreaded profit calculator** — splits the sales list across two threads with semaphore synchronization for safe aggregation
-- MySQL-backed inventory, menu items, ingredients, and sales orders with a full SQL schema included
-- MVC-inspired structure with centralized logging to file
-**Stack note:** MySQL JDBC connector bundled; database schema + seed data included as `pos.sql` for instant setup.
- 
+
 ---
  
 ### 🎟️ TicketMaestrix &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Ticketmaestrix)
@@ -75,25 +58,8 @@ A full-stack event ticketing platform — users browse and purchase tickets for 
 - Built on a custom Slim MVC framework with Twig templating — no off-the-shelf CMS
 - Internationalization support via `/translations` directory
 - CI/CD pipeline via GitHub Actions deploying to cPanel on push
+  
 **Team:** George Vogas · Fadwa Shalby · Lucas Coveyduck
- 
----
- 
-### 🌌 The Rogue Market &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Star-wars-Interactive-Web-Application)
- 
-> **JavaScript · HTML · CSS · JSON · XML**  
-> *Final Project — Internet Programming Course*
- 
-A fully client-side e-commerce simulation with a Star Wars–inspired UI — 12 pages, modular JS architecture, zero backend.
- 
-**What it does:**
-- Live product search with suggestion dropdown and highlighted infinite-scroll results
-- Shopping cart with per-item quantity control, subtotal, and localStorage persistence
-- Full checkout flow — tax calculation, payment method validation, order confirmation
-- Cookie-based user profile system with editable avatar
-- Dynamic product rendering from category JSONs; XML-powered navigation via AJAX
-- Modular JS: `AuthModel`, `CartManagement`, `ProductModel`, `SearchModel`, `FormValidation`, injected `Header`/`Footer`
-- Starfield backgrounds, neon hover effects, `Orbitron` / `Pathway Gothic One` fonts
 
 ---
 
@@ -115,6 +81,42 @@ A gamified, AI-powered study companion built at MariHacks. Drop in any topic plu
  
 **Team:** George Vogas · 3 collaborators
  
+ 
+---
+ 
+### 🖥️ Point-of-Sales Patterns &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Point-of-Sales_Patterns)
+ 
+> **Java · JavaFX · MySQL · Maven · JDK 24**  
+> *Final Project — Programming Patterns Course*
+ 
+A full desktop POS system that's also a showcase of applied software design patterns — built to prove the concepts, not just describe them.
+ 
+**What it does:**
+- Multi-screen JavaFX GUI: main menu, order flow, inventory management, sales analytics, and payment
+- **Factory Method** pattern for payment processing — Cash, Debit, and Credit each implemented as concrete factories
+- **Multithreaded profit calculator** — splits the sales list across two threads with semaphore synchronization for safe aggregation
+- MySQL-backed inventory, menu items, ingredients, and sales orders with a full SQL schema included
+- MVC-inspired structure with centralized logging to file
+**Stack note:** MySQL JDBC connector bundled; database schema + seed data included as `pos.sql` for instant setup.
+ 
+---
+ 
+### 🌌 The Rogue Market &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Star-wars-Interactive-Web-Application)
+ 
+> **JavaScript · HTML · CSS · JSON · XML**  
+> *Final Project — Internet Programming Course*
+ 
+A fully client-side e-commerce simulation with a Star Wars–inspired UI — 12 pages, modular JS architecture, zero backend.
+ 
+**What it does:**
+- Live product search with suggestion dropdown and highlighted infinite-scroll results
+- Shopping cart with per-item quantity control, subtotal, and localStorage persistence
+- Full checkout flow — tax calculation, payment method validation, order confirmation
+- Cookie-based user profile system with editable avatar
+- Dynamic product rendering from category JSONs; XML-powered navigation via AJAX
+- Modular JS: `AuthModel`, `CartManagement`, `ProductModel`, `SearchModel`, `FormValidation`, injected `Header`/`Footer`
+- Starfield backgrounds, neon hover effects, `Orbitron` / `Pathway Gothic One` fonts
+
 ---
  
 ### 🎮 Last Signal &nbsp;·&nbsp; [View Repo →](https://github.com/alexder204/LastSignal) *(Contributor)*
