@@ -7,7 +7,7 @@ From commissioned mobile apps to game engines, my work spans the full stack and 
  
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Terminator320)
- 
+[![Devpost](https://img.shields.io/badge/Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/Terminator320)
 
 ---
  
@@ -94,6 +94,27 @@ A fully client-side e-commerce simulation with a Star Wars–inspired UI — 12 
 - Dynamic product rendering from category JSONs; XML-powered navigation via AJAX
 - Modular JS: `AuthModel`, `CartManagement`, `ProductModel`, `SearchModel`, `FormValidation`, injected `Header`/`Footer`
 - Starfield backgrounds, neon hover effects, `Orbitron` / `Pathway Gothic One` fonts
+
+---
+
+### 🤖 AI Study Assistant &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/AI-Study-Assistant) &nbsp;·&nbsp; [Devpost →](https://devpost.com/software/ai-study-assistant-giursf)
+ 
+> **Python · FastAPI · Groq (LLaMA 3.3) · Tavily · SQLite · Vanilla JS**  
+> *Hackathon Project · MariHacks · Team*
+ 
+A gamified, AI-powered study companion built at MariHacks. Drop in any topic plus optional notes, PDFs, or slides — the app generates study materials and wraps it all in a coin economy, a plant pet, and optional Spotify playback.
+ 
+**What it does:**
+- AI research agent (Tavily) + content agent (Groq/LLaMA 3.3) generate structured notes, 1–30 flashcards, and 1–20 multiple-choice quiz questions at beginner / intermediate / advanced difficulty
+- Personalized 1–30 day study plan with priority tagging and extra time automatically allocated to weak areas from your latest quiz
+- Supports uploaded `.pdf`, `.pptx`, `.txt`, and `.md` files as study sources alongside web research
+- Coin economy with four upgrade tracks, a growable plant pet that heals on correct answers and takes damage on wrong ones, and seven unlockable tier skins
+- Optional Spotify Connect integration — OAuth, device selection, playlist/track search, and full playback controls
+- JWT auth, configurable SlowAPI rate limiting, Fernet-encrypted Spotify tokens, and pytest async coverage across auth, quiz, shop, and Spotify flows
+**Architecture:** Feature-first FastAPI routers (`auth`, `study`, `quiz`, `plan`, `shop`, `profile`, `plant`, `spotify`), dedicated agent layer for AI/search, service layer for all business logic — no framework on the frontend, zero build step.
+ 
+**Team:** George Vogas · 3 collaborators
+ 
 ---
  
 ### 🎮 Last Signal &nbsp;·&nbsp; [View Repo →](https://github.com/alexder204/LastSignal) *(Contributor)*
@@ -107,6 +128,7 @@ A collaborative Unity game project. Contributed to gameplay systems and renderin
 ## 🛠️ Tech Stack
  
 ### Languages
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)
@@ -116,6 +138,7 @@ A collaborative Unity game project. Contributed to gameplay systems and renderin
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
  
 ### Frameworks & Platforms
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![JavaFX](https://img.shields.io/badge/JavaFX-ED8B00?style=for-the-badge&logo=java&logoColor=white)
@@ -146,6 +169,7 @@ A collaborative Unity game project. Contributed to gameplay systems and renderin
 
 *Always building something. Open to collaboration and internship opportunities.*
  
-[![LinkedIn](https://img.shields.io/badge/Let's%20Connect-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
+[![LinkedIn](https://img.shields.io/badge/Let's%20Connect-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/georgevogas/)
+[![Devpost](https://img.shields.io/badge/My%20Projects-Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/Terminator320)
  
 </div>
