@@ -115,12 +115,12 @@ async function initCity() {
   const tooltip = document.getElementById('city-tooltip');
   if (!canvas) return;
 
-  const SKY_COLOR = 0x0a0f1c;  // slightly bluer than pure dark — cold night air
+  const SKY_COLOR = 0x1a2746;  // deep indigo — clear night, well after dusk
 
   // Hover/idle material constants (same for every building).
-  const IDLE_EMISSIVE = 0.55, HOVER_EMISSIVE = 1.1;
-  const IDLE_TOP_EMISSIVE = 0.22, HOVER_TOP_EMISSIVE = 0.6;
-  const IDLE_EDGE = 0.45, HOVER_EDGE = 0.95;
+  const IDLE_EMISSIVE = 0.7, HOVER_EMISSIVE = 1.1;
+  const IDLE_TOP_EMISSIVE = 0.35, HOVER_TOP_EMISSIVE = 0.6;
+  const IDLE_EDGE = 0.6, HOVER_EDGE = 0.95;
 
   // Each repo gets a unique color via FNV-1a hash of its name → HSL hue.
   // Same name → same color across reloads.
@@ -194,7 +194,7 @@ async function initCity() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 1.45;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(SKY_COLOR);
@@ -205,12 +205,12 @@ async function initCity() {
   camera.position.set(camDist, camDist * 0.78, camDist);
 
   // ── Lights ─────────────────────────────────────────────────────
-  scene.add(new THREE.HemisphereLight(0x6a8cb8, 0x080812, 0.45));
-  scene.add(new THREE.AmbientLight(0x1a2436, 0.55));
-  const keyLight = new THREE.DirectionalLight(0xc8d8ff, 0.85);
+  scene.add(new THREE.HemisphereLight(0x6a8cb8, 0x080812, 0.7));
+  scene.add(new THREE.AmbientLight(0x2a3850, 0.75));
+  const keyLight = new THREE.DirectionalLight(0xc8d8ff, 1.05);
   keyLight.position.set(gridW * 0.6, gridW * 1.2, gridD * 0.4);
   scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0x4f9cf9, 0.25);
+  const fillLight = new THREE.DirectionalLight(0x4f9cf9, 0.4);
   fillLight.position.set(-gridW, gridW * 0.4, -gridD);
   scene.add(fillLight);
 
@@ -218,15 +218,15 @@ async function initCity() {
   const groundSize = gridMax * 6;
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(groundSize, groundSize),
-    new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 1, metalness: 0 })
+    new THREE.MeshStandardMaterial({ color: 0x1c2438, roughness: 1, metalness: 0 })
   );
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x101820, 0x080c14);
+  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x2a3850, 0x1a2436);
   gridHelper.position.y = 0.01;
   gridHelper.material.transparent = true;
-  gridHelper.material.opacity = 0.12;
+  gridHelper.material.opacity = 0.28;
   scene.add(gridHelper);
 
   // ── Road network ───────────────────────────────────────────────
@@ -235,7 +235,7 @@ async function initCity() {
     const extent = SPACING; // streets continue one cell past city edge
     const lenX = gridW + 2 * extent;
     const lenZ = gridD + 2 * extent;
-    const roadMat = new THREE.MeshStandardMaterial({ color: 0x14171f, roughness: 1, metalness: 0 });
+    const roadMat = new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 1, metalness: 0 });
     const roads = new THREE.Group();
 
     // East-West streets (between building rows)
@@ -441,7 +441,7 @@ async function initCity() {
     for (let r = 0; r < rows; r++) {
       for (let col = 0; col < cols; col++) {
         const lit = ((seed * 17 + r * 13 + col * 7) % 7) > 2;
-        cx.fillStyle = lit ? '#ffe88a' : '#1a2434';
+        cx.fillStyle = lit ? '#ffe88a' : '#2a3850';
         cx.fillRect(col * cell + 4, r * cell + 3, cell - 8, cell - 6);
       }
     }
@@ -467,7 +467,7 @@ async function initCity() {
     const winTex = makeWindowTexture(3, floors, b.seed);
 
     const sideMat = new THREE.MeshStandardMaterial({
-      color: b.color.clone().multiplyScalar(0.32),
+      color: b.color.clone().multiplyScalar(0.5),
       map: winTex,
       emissive: 0xffd980,
       emissiveMap: winTex,
@@ -476,7 +476,7 @@ async function initCity() {
       metalness: 0.08,
     });
     const topMat = new THREE.MeshStandardMaterial({
-      color: b.color.clone().multiplyScalar(0.85),
+      color: b.color.clone(),
       emissive: b.color.clone(),
       emissiveIntensity: IDLE_TOP_EMISSIVE,
       roughness: 0.5,
