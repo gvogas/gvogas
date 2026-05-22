@@ -209,8 +209,22 @@ async function initCity() {
   });
 
   // ── Canvas & projection ───────────────────────────────────────
-  const TILE_W = 76, TILE_H = 38, FLOOR_H = 6;
+  let TILE_W = 76, TILE_H = 38, FLOOR_H = 6;
   let stars = [];
+
+  function updateTileScale() {
+    const w = canvas.parentElement.clientWidth;
+    if (w < 480) {
+      TILE_W = 46; TILE_H = 23; FLOOR_H = 4;
+    } else if (w < 720) {
+      TILE_W = 60; TILE_H = 30; FLOOR_H = 5;
+    } else {
+      TILE_W = 76; TILE_H = 38; FLOOR_H = 6;
+    }
+    buildings.forEach(b => {
+      b.targetFloors = Math.round(MIN_FLOORS + (b.commits / maxC) * (MAX_FLOORS - MIN_FLOORS));
+    });
+  }
 
   function genStars(W, H) {
     stars = Array.from({length: 90}, (_, i) => ({
@@ -222,6 +236,7 @@ async function initCity() {
   }
 
   function resize() {
+    updateTileScale();
     const dpr = window.devicePixelRatio || 1;
     const w   = canvas.parentElement.clientWidth;
     const rows = Math.ceil(N / COLS);
@@ -479,6 +494,54 @@ async function initCity() {
     const hit = hitBoxes.find(h => e.clientX-rect.left>=h.x1 && e.clientX-rect.left<=h.x2 && e.clientY-rect.top>=h.y1 && e.clientY-rect.top<=h.y2);
     if (hit) window.open(hit.b.url,'_blank','noopener,noreferrer');
   });
+
+  // ── Touch events (mobile tap) ─────────────────────────────────
+  let lastTouchedBuilding = null;
+  canvas.addEventListener('touchend', (e) => {
+    e.preventDefault();
+    const t = e.changedTouches[0];
+    const rect = canvas.getBoundingClientRect();
+    const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+    const hit = hitBoxes.find(h => mx >= h.x1 && mx <= h.x2 && my >= h.y1 && my <= h.y2);
+
+    if (hit) {
+      if (lastTouchedBuilding === hit.b) {
+        window.open(hit.b.url, '_blank', 'noopener,noreferrer');
+        lastTouchedBuilding = null;
+        hoveredBuilding = null;
+        draw(1);
+        tooltip.classList.remove('visible');
+        tooltip.setAttribute('aria-hidden', 'true');
+      } else {
+        lastTouchedBuilding = hit.b;
+        hoveredBuilding = hit.b;
+        draw(1);
+        const color = LANG_COLORS[hit.b.language] || DEFAULT_COLOR;
+        tooltip.innerHTML = `
+          <div class="city__tooltip-name">${hit.b.name.replace(/-/g,'‑')}</div>
+          <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${color}"></span>${hit.b.language}</div>
+          <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <strong style="color:var(--text)">${hit.b.commits.toLocaleString()}</strong> commits
+          </div>
+          <div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>`;
+        tooltip.classList.add('visible');
+        tooltip.setAttribute('aria-hidden', 'false');
+        const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+        let tx = t.clientX - tw / 2, ty = t.clientY - th - 20;
+        tx = Math.max(8, Math.min(tx, window.innerWidth - tw - 8));
+        if (ty < 8) ty = t.clientY + 20;
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top  = ty + 'px';
+      }
+    } else {
+      lastTouchedBuilding = null;
+      hoveredBuilding = null;
+      draw(1);
+      tooltip.classList.remove('visible');
+      tooltip.setAttribute('aria-hidden', 'true');
+    }
+  }, { passive: false });
 
   // ── Resize ────────────────────────────────────────────────────
   let resizeTimer;
