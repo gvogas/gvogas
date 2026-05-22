@@ -9,6 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -314,7 +322,7 @@
     <section class="section city-section" id="city">
       <div class="container">
         <h2 class="section__title reveal">Commit Skyline</h2>
-        <p class="city__subtitle reveal">Every public repo on my GitHub — taller buildings have more commits. Hover to explore, click to open.</p>
+        <p class="city__subtitle reveal">Every public repo on my GitHub — taller buildings have more commits. Drag to rotate, scroll to zoom, click a building to open.</p>
         <div class="city__wrap reveal">
           <div class="city__loading" id="city-loading" aria-live="polite">
             <span class="city__spinner" aria-hidden="true"></span>
@@ -322,7 +330,7 @@
           </div>
           <canvas id="city-canvas" role="img" aria-label="Isometric skyline of GitHub repositories"></canvas>
           <div class="city__tooltip" id="city-tooltip" aria-hidden="true"></div>
-          <p class="city__touch-hint" aria-hidden="true">Tap a building to explore · tap again to open repo</p>
+          <p class="city__touch-hint" aria-hidden="true">Drag to rotate · pinch to zoom · tap a building</p>
         </div>
         <div class="city__legend" id="city-legend" aria-label="Language color key"></div>
       </div>
@@ -472,6 +480,6 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
