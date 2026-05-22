@@ -115,7 +115,7 @@ async function initCity() {
   const tooltip = document.getElementById('city-tooltip');
   if (!canvas) return;
 
-  const SKY_COLOR = 0x1a2746;  // deep indigo — clear night, well after dusk
+  const SKY_COLOR = 0x0d1a30;  // arena-night blue — late-game lighting outside the rink
 
   // Hover/idle material constants (same for every building).
   const IDLE_EMISSIVE = 0.7, HOVER_EMISSIVE = 1.1;
@@ -205,25 +205,30 @@ async function initCity() {
   camera.position.set(camDist, camDist * 0.78, camDist);
 
   // ── Lights ─────────────────────────────────────────────────────
-  scene.add(new THREE.HemisphereLight(0x6a8cb8, 0x080812, 0.7));
-  scene.add(new THREE.AmbientLight(0x2a3850, 0.75));
-  const keyLight = new THREE.DirectionalLight(0xc8d8ff, 1.05);
+  // Cool overhead like rink lighting, with a warm cyan fill from the cyber side.
+  scene.add(new THREE.HemisphereLight(0x9bd6ff, 0x080812, 0.75));
+  scene.add(new THREE.AmbientLight(0x1f3550, 0.7));
+  const keyLight = new THREE.DirectionalLight(0xe6f1ff, 1.1);
   keyLight.position.set(gridW * 0.6, gridW * 1.2, gridD * 0.4);
   scene.add(keyLight);
-  const fillLight = new THREE.DirectionalLight(0x4f9cf9, 0.4);
+  const fillLight = new THREE.DirectionalLight(0x22d3ee, 0.45);
   fillLight.position.set(-gridW, gridW * 0.4, -gridD);
   scene.add(fillLight);
+  // A faint red wash from the south — the Bell Centre side.
+  const rinkGlow = new THREE.DirectionalLight(0xe63946, 0.22);
+  rinkGlow.position.set(0, gridW * 0.3, gridD);
+  scene.add(rinkGlow);
 
   // ── Ground & grid ──────────────────────────────────────────────
   const groundSize = gridMax * 6;
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(groundSize, groundSize),
-    new THREE.MeshStandardMaterial({ color: 0x1c2438, roughness: 1, metalness: 0 })
+    new THREE.MeshStandardMaterial({ color: 0x162236, roughness: 1, metalness: 0 })
   );
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x2a3850, 0x1a2436);
+  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x22d3ee, 0x1a2436);
   gridHelper.position.y = 0.01;
   gridHelper.material.transparent = true;
   gridHelper.material.opacity = 0.28;
@@ -412,7 +417,7 @@ async function initCity() {
 
     const stripe = new THREE.Mesh(
       new THREE.CylinderGeometry(bellR * 1.005, bellR * 1.005, stripeH, segments),
-      new THREE.MeshStandardMaterial({ color: 0xc8102e, emissive: 0xc8102e, emissiveIntensity: 0.4 })
+      new THREE.MeshStandardMaterial({ color: 0xe63946, emissive: 0xe63946, emissiveIntensity: 0.75 })
     );
     stripe.position.y = bodyH - stripeH / 2 - 0.12;
 
