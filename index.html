@@ -7,19 +7,22 @@
   <meta name="description" content="Portfolio of George Vogas — CS student building production-quality software across mobile, web, desktop, and game development." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="progress-bar" aria-hidden="true"></div>
+
   <!-- Navigation -->
   <nav class="nav" id="nav">
     <div class="nav__inner">
-      <a href="#hero" class="nav__logo">GV</a>
-      <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <a href="#hero" class="nav__logo" aria-label="George Vogas — back to top">GV</a>
+      <button class="nav__hamburger" id="hamburger" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
         <span></span><span></span><span></span>
       </button>
-      <ul class="nav__links" id="nav-links">
+      <ul class="nav__links" id="nav-links" role="list">
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#stack">Stack</a></li>
@@ -29,35 +32,45 @@
     </div>
   </nav>
 
-  <main>
+  <main id="main-content">
 
     <!-- Hero -->
     <section class="hero" id="hero">
-      <div class="container">
-        <p class="hero__eyebrow reveal">Computer Science Student · Vanier College · Montréal, QC</p>
-        <h1 class="hero__name reveal">Hey, I'm George.</h1>
-        <p class="hero__tagline reveal">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <div class="container hero__content">
+        <p class="hero__eyebrow">Computer Science Student · Vanier College · Montréal, QC</p>
+        <h1 class="hero__name">Hey, I'm <span class="hero__name-accent">George.</span></h1>
+        <p class="hero__tagline">
           I build real, production-quality software — not just assignments.<br />
           From commissioned mobile apps to game engines, my work spans the full stack and beyond.
         </p>
-        <div class="hero__links reveal">
-          <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener" class="btn btn--primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        <div class="hero__stats" aria-label="Quick stats">
+          <span><strong>6</strong> Projects</span>
+          <span class="hero__stats-sep" aria-hidden="true">·</span>
+          <span><strong>1</strong> Production App</span>
+          <span class="hero__stats-sep" aria-hidden="true">·</span>
+          <span><strong>8+</strong> Languages</span>
+          <span class="hero__stats-sep" aria-hidden="true">·</span>
+          <span><strong>1</strong> Hackathon</span>
+        </div>
+        <div class="hero__links">
+          <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
             LinkedIn
           </a>
-          <a href="https://github.com/Terminator320" target="_blank" rel="noopener" class="btn btn--secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          <a href="https://github.com/Terminator320" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
             GitHub
           </a>
-          <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener" class="btn btn--secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             Devpost
           </a>
         </div>
       </div>
-      <div class="hero__scroll-hint" aria-hidden="true">
-        <span></span>
-      </div>
+      <a href="#about" class="hero__scroll-hint" aria-label="Scroll to about section">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </a>
     </section>
 
     <!-- About -->
@@ -95,17 +108,17 @@
         <h2 class="section__title reveal">Projects</h2>
         <div class="projects__grid">
 
-          <!-- Scheduling App -->
-          <article class="card reveal">
+          <!-- Scheduling App — featured -->
+          <article class="card card--featured reveal">
             <div class="card__header">
-              <span class="card__icon">📅</span>
+              <span class="card__icon" aria-hidden="true">📅</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--production">Production</span>
                   <span class="tag tag--commissioned">Commissioned</span>
                 </div>
-                <a href="https://github.com/Terminator320/Scheduling-App" target="_blank" rel="noopener" class="card__link">
-                  View Repo →
+                <a href="https://github.com/Terminator320/Scheduling-App" target="_blank" rel="noopener noreferrer" class="card__link">
+                  View Repo <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -133,14 +146,14 @@
           <!-- TicketMaestrix -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon">🎟️</span>
+              <span class="card__icon" aria-hidden="true">🎟️</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--team">Team</span>
                   <span class="tag tag--deployed">Deployed</span>
                 </div>
-                <a href="https://github.com/Terminator320/Ticketmaestrix" target="_blank" rel="noopener" class="card__link">
-                  View Repo →
+                <a href="https://github.com/Terminator320/Ticketmaestrix" target="_blank" rel="noopener noreferrer" class="card__link">
+                  View Repo <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -168,15 +181,15 @@
           <!-- AI Study Assistant -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon">🤖</span>
+              <span class="card__icon" aria-hidden="true">🤖</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--hackathon">Hackathon</span>
                   <span class="tag tag--team">Team</span>
                 </div>
                 <div class="card__links-multi">
-                  <a href="https://github.com/Terminator320/AI-Study-Assistant" target="_blank" rel="noopener" class="card__link">Repo →</a>
-                  <a href="https://devpost.com/software/ai-study-assistant-giursf" target="_blank" rel="noopener" class="card__link">Devpost →</a>
+                  <a href="https://github.com/Terminator320/AI-Study-Assistant" target="_blank" rel="noopener noreferrer" class="card__link">Repo <span aria-hidden="true">→</span></a>
+                  <a href="https://devpost.com/software/ai-study-assistant-giursf" target="_blank" rel="noopener noreferrer" class="card__link">Devpost <span aria-hidden="true">→</span></a>
                 </div>
               </div>
             </div>
@@ -190,14 +203,14 @@
               <span class="pill">Vanilla JS</span>
             </div>
             <p class="card__desc">
-              A gamified, AI-powered study companion built at MariHacks. Drop in any topic plus optional notes, PDFs, or slides — the app generates study materials and wraps it in a coin economy, plant pet, and optional Spotify playback.
+              A gamified, AI-powered study companion built at MariHacks. Drop in any topic plus optional notes, PDFs, or slides — the app generates study materials and wraps it in a coin economy, a plant pet, and optional Spotify playback.
             </p>
             <ul class="card__bullets">
-              <li>AI research agent (Tavily) + content agent (Groq/LLaMA 3.3) generate structured notes, flashcards, and quiz questions at multiple difficulty levels</li>
-              <li>Personalized study plan with priority tagging, extra time auto-allocated to weak areas</li>
-              <li>Supports uploaded PDF, PPTX, TXT, and MD files alongside web research</li>
-              <li>Coin economy, growable plant pet with tier skins, and Spotify Connect integration</li>
-              <li>JWT auth, rate limiting, Fernet-encrypted Spotify tokens, full pytest async coverage</li>
+              <li>AI research + content agents generate structured notes, flashcards, and quiz questions at multiple difficulty levels</li>
+              <li>Personalized study plan with priority tagging, extra time auto-allocated to weak areas from quiz results</li>
+              <li>Supports uploaded PDF, PPTX, TXT, and MD files alongside live web research</li>
+              <li>Coin economy, growable plant pet with unlockable tier skins, and Spotify Connect integration</li>
+              <li>JWT auth, rate limiting, Fernet-encrypted tokens, full pytest async coverage</li>
             </ul>
             <p class="card__arch"><strong>Team:</strong> George Vogas + 3 collaborators</p>
           </article>
@@ -205,13 +218,13 @@
           <!-- Point-of-Sales -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon">🖥️</span>
+              <span class="card__icon" aria-hidden="true">🖥️</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--academic">Academic</span>
                 </div>
-                <a href="https://github.com/Terminator320/Point-of-Sales_Patterns" target="_blank" rel="noopener" class="card__link">
-                  View Repo →
+                <a href="https://github.com/Terminator320/Point-of-Sales_Patterns" target="_blank" rel="noopener noreferrer" class="card__link">
+                  View Repo <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -237,13 +250,13 @@
           <!-- The Rogue Market -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon">🌌</span>
+              <span class="card__icon" aria-hidden="true">🌌</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--academic">Academic</span>
                 </div>
-                <a href="https://github.com/Terminator320/Star-wars-Interactive-Web-Application" target="_blank" rel="noopener" class="card__link">
-                  View Repo →
+                <a href="https://github.com/Terminator320/Star-wars-Interactive-Web-Application" target="_blank" rel="noopener noreferrer" class="card__link">
+                  View Repo <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -270,13 +283,13 @@
           <!-- Last Signal -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon">🎮</span>
+              <span class="card__icon" aria-hidden="true">🎮</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--contributor">Contributor</span>
                 </div>
-                <a href="https://github.com/alexder204/LastSignal" target="_blank" rel="noopener" class="card__link">
-                  View Repo →
+                <a href="https://github.com/alexder204/LastSignal" target="_blank" rel="noopener noreferrer" class="card__link">
+                  View Repo <span aria-hidden="true">→</span>
                 </a>
               </div>
             </div>
@@ -303,7 +316,10 @@
         <div class="stack__groups">
 
           <div class="stack__group reveal">
-            <h3 class="stack__group-title">Languages</h3>
+            <h3 class="stack__group-title">
+              <span class="stack__group-dot stack__group-dot--lang" aria-hidden="true"></span>
+              Languages
+            </h3>
             <div class="stack__pills">
               <span class="pill pill--lang">Python</span>
               <span class="pill pill--lang">Java</span>
@@ -317,7 +333,10 @@
           </div>
 
           <div class="stack__group reveal">
-            <h3 class="stack__group-title">Frameworks &amp; Platforms</h3>
+            <h3 class="stack__group-title">
+              <span class="stack__group-dot stack__group-dot--framework" aria-hidden="true"></span>
+              Frameworks &amp; Platforms
+            </h3>
             <div class="stack__pills">
               <span class="pill pill--framework">FastAPI</span>
               <span class="pill pill--framework">Flutter</span>
@@ -330,7 +349,10 @@
           </div>
 
           <div class="stack__group reveal">
-            <h3 class="stack__group-title">Data &amp; Infrastructure</h3>
+            <h3 class="stack__group-title">
+              <span class="stack__group-dot stack__group-dot--infra" aria-hidden="true"></span>
+              Data &amp; Infrastructure
+            </h3>
             <div class="stack__pills">
               <span class="pill pill--infra">Firebase</span>
               <span class="pill pill--infra">MySQL</span>
@@ -351,37 +373,37 @@
         <div class="study__grid">
 
           <div class="study__card reveal">
-            <span class="study__icon">⚙️</span>
+            <span class="study__icon" aria-hidden="true">⚙️</span>
             <h3 class="study__title">Software Development</h3>
             <p class="study__skills">OOP, Design Patterns (Factory, MVC, Observer), multithreading &amp; synchronization</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon">📱</span>
+            <span class="study__icon" aria-hidden="true">📱</span>
             <h3 class="study__title">Mobile Development</h3>
             <p class="study__skills">Flutter / Dart, Firebase (Auth, Firestore, Storage, App Check), offline-first architecture</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon">🌐</span>
+            <span class="study__icon" aria-hidden="true">🌐</span>
             <h3 class="study__title">Web Development</h3>
             <p class="study__skills">Full-stack PHP/MySQL, REST APIs, modular JavaScript, Twig templating, responsive CSS</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon">🗄️</span>
+            <span class="study__icon" aria-hidden="true">🗄️</span>
             <h3 class="study__title">Database Design</h3>
             <p class="study__skills">Schema design, normalization, stored procedures, MySQL / MariaDB / Firestore</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon">🐧</span>
+            <span class="study__icon" aria-hidden="true">🐧</span>
             <h3 class="study__title">Systems</h3>
             <p class="study__skills">Linux/Unix scripting, Apache, cPanel deployment, CI/CD with GitHub Actions</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon">🎮</span>
+            <span class="study__icon" aria-hidden="true">🎮</span>
             <h3 class="study__title">Game Development</h3>
             <p class="study__skills">Unity, C# game logic, ShaderLab / HLSL custom shaders</p>
           </div>
@@ -400,12 +422,12 @@
             If you have an interesting project, an internship opening, or just want to talk tech — reach out.
           </p>
           <div class="contact__links">
-            <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener" class="btn btn--primary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
               Let's Connect
             </a>
-            <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener" class="btn btn--secondary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener noreferrer" class="btn btn--secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               My Projects on Devpost
             </a>
           </div>
@@ -418,12 +440,16 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p class="footer__copy">George Vogas &copy; 2025</p>
-      <div class="footer__links">
-        <a href="https://github.com/Terminator320" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener">Devpost</a>
-      </div>
+      <p class="footer__copy">
+        <span>George Vogas</span>
+        <span class="footer__sep" aria-hidden="true">·</span>
+        <span>&copy; 2025</span>
+      </p>
+      <nav class="footer__links" aria-label="Footer navigation">
+        <a href="https://github.com/Terminator320" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener noreferrer">Devpost</a>
+      </nav>
     </div>
   </footer>
 
