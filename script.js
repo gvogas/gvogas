@@ -29,6 +29,13 @@
   const hamburger = document.getElementById('hamburger');
   const navLinks = document.getElementById('nav-links');
 
+  function closeMenu() {
+    navLinks.classList.remove('open');
+    hamburger.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
   hamburger.addEventListener('click', () => {
     const isOpen = navLinks.classList.toggle('open');
     hamburger.classList.toggle('open', isOpen);
@@ -37,22 +44,11 @@
   });
 
   navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    });
+    link.addEventListener('click', closeMenu);
   });
 
-  // Close on outside click
   document.addEventListener('click', (e) => {
-    if (navLinks.classList.contains('open') && !nav.contains(e.target)) {
-      navLinks.classList.remove('open');
-      hamburger.classList.remove('open');
-      hamburger.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    }
+    if (navLinks.classList.contains('open') && !nav.contains(e.target)) closeMenu();
   });
 
   // ── Active nav link on scroll ─────────────────────────────────
@@ -63,9 +59,7 @@
   function updateActiveLink() {
     let current = '';
     sections.forEach(section => {
-      if (window.scrollY >= section.offsetTop - NAV_OFFSET) {
-        current = section.id;
-      }
+      if (window.scrollY >= section.offsetTop - NAV_OFFSET) current = section.id;
     });
     navAnchors.forEach(a => {
       a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
@@ -78,10 +72,8 @@
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty('--mx', `${x}%`);
-        card.style.setProperty('--my', `${y}%`);
+        card.style.setProperty('--mx', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+        card.style.setProperty('--my', `${((e.clientY - rect.top) / rect.height) * 100}%`);
       });
     });
   }
@@ -90,25 +82,20 @@
   if (prefersReducedMotion) {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
   } else {
-    const reveals = document.querySelectorAll('.reveal');
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-
         const el = entry.target;
-        const parent = el.parentElement;
-        const siblings = Array.from(parent.querySelectorAll('.reveal:not(.visible)'));
-        const idx = siblings.indexOf(el);
-        const delay = Math.min(idx * 70, 280);
-
+        const siblings = Array.from(el.parentElement.querySelectorAll('.reveal:not(.visible)'));
+        const delay = Math.min(siblings.indexOf(el) * 70, 280);
         setTimeout(() => el.classList.add('visible'), delay);
         observer.unobserve(el);
       });
     }, { threshold: 0.07, rootMargin: '0px 0px -48px 0px' });
 
-    reveals.forEach(el => observer.observe(el));
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   }
+
   // ── Commit Skyline ────────────────────────────────────────────
   initCity();
 })();
@@ -146,7 +133,6 @@ async function initCity() {
   const DEFAULT_COLOR = '#4f9cf9';
   const SKY_COLOR = '#070b12';
 
-  // Shade/tint a hex colour (factor < 1 = darker, > 1 = brighter, clamped)
   function shade(hex, factor) {
     const n = parseInt(hex.replace('#',''), 16);
     const r = Math.min(255, Math.round(((n >> 16) & 0xff) * factor));
@@ -198,7 +184,6 @@ async function initCity() {
     b.gx = (i % COLS) * 2;
     b.gy = Math.floor(i / COLS) * 2;
     b.animDelay = (i / N) * 0.38;
-    // Deterministic window pattern (seeded per building)
     b.winPattern = Array.from({length: 60}, (_, k) => ((i * 17 + k * 13) % 7) > 1);
   });
 
@@ -221,9 +206,6 @@ async function initCity() {
     } else {
       TILE_W = 76; TILE_H = 38; FLOOR_H = 6;
     }
-    buildings.forEach(b => {
-      b.targetFloors = Math.round(MIN_FLOORS + (b.commits / maxC) * (MAX_FLOORS - MIN_FLOORS));
-    });
   }
 
   function genStars(W, H) {
@@ -263,20 +245,14 @@ async function initCity() {
   let hitBoxes = [];
   let hoveredBuilding = null;
 
-  // ── Draw ──────────────────────────────────────────────────────
-  function draw(globalT) {
-    const dpr = window.devicePixelRatio || 1;
-    const W = canvas.width / dpr, H = canvas.height / dpr;
-    ctx.clearRect(0, 0, W, H);
-
-    // Night sky gradient
+  // ── Draw helpers ──────────────────────────────────────────────
+  function drawBackground(W, H) {
     const sky = ctx.createLinearGradient(0, 0, 0, H * 0.8);
     sky.addColorStop(0, '#050810');
     sky.addColorStop(1, SKY_COLOR);
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, W, H);
 
-    // Stars
     stars.forEach(s => {
       ctx.globalAlpha = s.o;
       ctx.fillStyle = '#dde8f5';
@@ -285,12 +261,10 @@ async function initCity() {
       ctx.fill();
     });
     ctx.globalAlpha = 1;
+  }
 
-    hitBoxes = [];
+  function drawGround(sorted, globalT) {
     const rows = Math.ceil(N / COLS);
-    const sorted = [...buildings].sort((a, b) => (a.gx + a.gy) - (b.gx + b.gy));
-
-    // Ground tiles
     for (let gx = 0; gx <= (COLS - 1) * 2 + 1; gx++) {
       for (let gy = 0; gy <= (rows - 1) * 2 + 1; gy++) {
         const p0 = isoProject(gx, gy, 0), p1 = isoProject(gx+1, gy, 0);
@@ -307,7 +281,6 @@ async function initCity() {
       }
     }
 
-    // Ground glow under each building
     sorted.forEach(b => {
       const localT = calcLocalT(b, globalT);
       if (localT < 0.05) return;
@@ -321,8 +294,22 @@ async function initCity() {
       ctx.ellipse(center.x, center.y + TILE_H * 0.1, TILE_W * 0.9, TILE_H * 0.65, 0, 0, Math.PI * 2);
       ctx.fill();
     });
+  }
 
-    // Buildings (back-to-front)
+  function face(pts, fill) {
+    ctx.beginPath();
+    ctx.moveTo(pts[0].x, pts[0].y);
+    pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+    ctx.closePath();
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  function drawBuildings(sorted, globalT) {
+    hitBoxes = [];
     sorted.forEach(b => {
       const localT   = calcLocalT(b, globalT);
       const floors   = Math.round(b.targetFloors * localT);
@@ -340,18 +327,6 @@ async function initCity() {
       const p11 = isoProject(gx+1, gy+1, 0), p01 = isoProject(gx,   gy+1, 0);
       const p0h = isoProject(gx,   gy,   floors), p1h = isoProject(gx+1, gy,   floors);
       const p2h = isoProject(gx+1, gy+1, floors), p3h = isoProject(gx,   gy+1, floors);
-
-      function face(pts, fill) {
-        ctx.beginPath();
-        ctx.moveTo(pts[0].x, pts[0].y);
-        pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
-        ctx.closePath();
-        ctx.fillStyle = fill;
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
 
       face([p00, p01, p3h, p0h], colLeft);
       face([p10, p11, p2h, p1h], colRight);
@@ -390,14 +365,12 @@ async function initCity() {
             if (wz + 2.5 > floors) continue;
             const wx = 0.14 + wc * 0.28;
             ctx.fillStyle = wColor;
-            // right-face window
             const ra = isoProject(gx+1, gy+wx,      wz+2.5);
             const rb = isoProject(gx+1, gy+wx+0.17, wz+2.5);
             const rc = isoProject(gx+1, gy+wx+0.17, wz);
             const rd = isoProject(gx+1, gy+wx,      wz);
             ctx.beginPath(); ctx.moveTo(ra.x,ra.y); ctx.lineTo(rb.x,rb.y);
             ctx.lineTo(rc.x,rc.y); ctx.lineTo(rd.x,rd.y); ctx.closePath(); ctx.fill();
-            // left-face window
             const la = isoProject(gx+wx,      gy+1, wz+2.5);
             const lb = isoProject(gx+wx+0.17, gy+1, wz+2.5);
             const lc = isoProject(gx+wx+0.17, gy+1, wz);
@@ -425,8 +398,19 @@ async function initCity() {
       const ys = [p00,p10,p11,p01,p0h,p1h,p2h,p3h].map(p=>p.y);
       hitBoxes.push({ b, x1:Math.min(...xs), y1:Math.min(...ys), x2:Math.max(...xs), y2:Math.max(...ys) });
     });
+  }
 
-    // Bottom fog (blends into section bg)
+  // ── Draw ──────────────────────────────────────────────────────
+  function draw(globalT) {
+    const dpr = window.devicePixelRatio || 1;
+    const W = canvas.width / dpr, H = canvas.height / dpr;
+    ctx.clearRect(0, 0, W, H);
+
+    const sorted = [...buildings].sort((a, b) => (a.gx + a.gy) - (b.gx + b.gy));
+    drawBackground(W, H);
+    drawGround(sorted, globalT);
+    drawBuildings(sorted, globalT);
+
     const fog = ctx.createLinearGradient(0, H * 0.72, 0, H);
     fog.addColorStop(0, 'transparent');
     fog.addColorStop(1, '#161b22');
@@ -452,43 +436,70 @@ async function initCity() {
     })(performance.now());
   }
 
-  // ── Tooltip & interaction ─────────────────────────────────────
+  // ── Tooltip helpers ───────────────────────────────────────────
+  function buildTooltipHTML(b, color, extraHTML = '') {
+    return `
+      <div class="city__tooltip-name">${b.name.replace(/-/g,'‑')}</div>
+      <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${color}"></span>${b.language}</div>
+      <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits
+      </div>${extraHTML}`;
+  }
+
+  function showTooltip(html, clientX, clientY, above = false) {
+    tooltip.innerHTML = html;
+    tooltip.classList.add('visible');
+    tooltip.setAttribute('aria-hidden', 'false');
+    const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    let tx, ty;
+    if (above) {
+      tx = clientX - tw / 2;
+      ty = clientY - th - 20;
+      tx = Math.max(8, Math.min(tx, window.innerWidth - tw - 8));
+      if (ty < 8) ty = clientY + 20;
+    } else {
+      tx = clientX + 16;
+      ty = clientY - th / 2;
+      if (tx + tw > window.innerWidth - 8) tx = clientX - tw - 16;
+      if (ty < 8) ty = 8;
+      if (ty + th > window.innerHeight - 8) ty = window.innerHeight - th - 8;
+    }
+    tooltip.style.left = tx + 'px';
+    tooltip.style.top  = ty + 'px';
+  }
+
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+    tooltip.setAttribute('aria-hidden', 'true');
+  }
+
+  // ── Hit test ──────────────────────────────────────────────────
+  function hitTest(mx, my) {
+    return hitBoxes.find(h => mx >= h.x1 && mx <= h.x2 && my >= h.y1 && my <= h.y2);
+  }
+
+  // ── Interaction ───────────────────────────────────────────────
   canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-    const hit = hitBoxes.find(h => mx>=h.x1 && mx<=h.x2 && my>=h.y1 && my<=h.y2);
+    const hit = hitTest(e.clientX - rect.left, e.clientY - rect.top);
     const newHov = hit ? hit.b : null;
     if (newHov !== hoveredBuilding) { hoveredBuilding = newHov; draw(1); }
     if (hit) {
       canvas.style.cursor = 'pointer';
       const color = LANG_COLORS[hit.b.language] || DEFAULT_COLOR;
-      tooltip.innerHTML = `
-        <div class="city__tooltip-name">${hit.b.name.replace(/-/g,'‑')}</div>
-        <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${color}"></span>${hit.b.language}</div>
-        <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
-          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <strong style="color:var(--text)">${hit.b.commits.toLocaleString()}</strong> commits
-        </div>`;
-      tooltip.classList.add('visible');
-      tooltip.setAttribute('aria-hidden','false');
-      const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
-      let tx = e.clientX + 16, ty = e.clientY - th / 2;
-      if (tx + tw > window.innerWidth - 8) tx = e.clientX - tw - 16;
-      if (ty < 8) ty = 8;
-      if (ty + th > window.innerHeight - 8) ty = window.innerHeight - th - 8;
-      tooltip.style.left = tx + 'px';
-      tooltip.style.top  = ty + 'px';
+      showTooltip(buildTooltipHTML(hit.b, color), e.clientX, e.clientY);
     } else {
       canvas.style.cursor = 'default';
-      tooltip.classList.remove('visible');
-      tooltip.setAttribute('aria-hidden','true');
+      hideTooltip();
     }
   });
+
   canvas.addEventListener('mouseleave', () => {
     hoveredBuilding = null; draw(1);
-    tooltip.classList.remove('visible');
-    tooltip.setAttribute('aria-hidden','true');
+    hideTooltip();
   });
+
   // Opens a repo URL reliably in a new tab (anchor click avoids popup blockers)
   function openRepo(url) {
     const a = document.createElement('a');
@@ -504,8 +515,7 @@ async function initCity() {
   canvas.addEventListener('click', (e) => {
     if (recentTouch) return;
     const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-    const hit = hitBoxes.find(h => mx >= h.x1 && mx <= h.x2 && my >= h.y1 && my <= h.y2);
+    const hit = hitTest(e.clientX - rect.left, e.clientY - rect.top);
     if (hit) openRepo(hit.b.url);
   });
 
@@ -517,8 +527,7 @@ async function initCity() {
     setTimeout(() => { recentTouch = false; }, 500);
     const t = e.changedTouches[0];
     const rect = canvas.getBoundingClientRect();
-    const mx = t.clientX - rect.left, my = t.clientY - rect.top;
-    const hit = hitBoxes.find(h => mx >= h.x1 && mx <= h.x2 && my >= h.y1 && my <= h.y2);
+    const hit = hitTest(t.clientX - rect.left, t.clientY - rect.top);
 
     if (hit) {
       if (lastTouchedBuilding === hit.b) {
@@ -526,36 +535,20 @@ async function initCity() {
         lastTouchedBuilding = null;
         hoveredBuilding = null;
         draw(1);
-        tooltip.classList.remove('visible');
-        tooltip.setAttribute('aria-hidden', 'true');
+        hideTooltip();
       } else {
         lastTouchedBuilding = hit.b;
         hoveredBuilding = hit.b;
         draw(1);
         const color = LANG_COLORS[hit.b.language] || DEFAULT_COLOR;
-        tooltip.innerHTML = `
-          <div class="city__tooltip-name">${hit.b.name.replace(/-/g,'‑')}</div>
-          <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${color}"></span>${hit.b.language}</div>
-          <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <strong style="color:var(--text)">${hit.b.commits.toLocaleString()}</strong> commits
-          </div>
-          <div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>`;
-        tooltip.classList.add('visible');
-        tooltip.setAttribute('aria-hidden', 'false');
-        const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
-        let tx = t.clientX - tw / 2, ty = t.clientY - th - 20;
-        tx = Math.max(8, Math.min(tx, window.innerWidth - tw - 8));
-        if (ty < 8) ty = t.clientY + 20;
-        tooltip.style.left = tx + 'px';
-        tooltip.style.top  = ty + 'px';
+        const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
+        showTooltip(buildTooltipHTML(hit.b, color, extra), t.clientX, t.clientY, true);
       }
     } else {
       lastTouchedBuilding = null;
       hoveredBuilding = null;
       draw(1);
-      tooltip.classList.remove('visible');
-      tooltip.setAttribute('aria-hidden', 'true');
+      hideTooltip();
     }
   }, { passive: false });
 
