@@ -337,17 +337,56 @@ async function initCity() {
   {
     // Sit the silhouette well north of the city — its footprint must clear the building grid.
     const MOUNT_R = gridMax * 1.4;
-    const mountGeo = new THREE.SphereGeometry(MOUNT_R, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
-    mountGeo.scale(1, 0.35, 1);
-    const mount = new THREE.Mesh(mountGeo, new THREE.MeshBasicMaterial({ color: 0x0a0d14, fog: true }));
+    const Y_SCALE = 0.35;
+
+    // Deterministic radial-noise lump — gives an organic silhouette instead of a perfect dome.
+    // Displacement falls off to zero at the equator so the mound stays grounded.
+    function lumpDome(geo, R, amp, freq) {
+      const k = freq / R; // base spatial frequency (a few wavelengths per diameter)
+      const pos = geo.attributes.position;
+      const v = new THREE.Vector3();
+      for (let i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i);
+        const heightFactor = Math.max(0, v.y / R);
+        const n =
+            Math.sin(v.x * k)       * Math.cos(v.z * k * 1.3)
+          + Math.sin(v.x * k * 2.1 + v.z * k * 0.7) * 0.6
+          + Math.cos(v.x * k * 3.4 - v.z * k * 1.7) * 0.35;
+        v.multiplyScalar(1 + n * amp * heightFactor);
+        pos.setXYZ(i, v.x, v.y, v.z);
+      }
+      pos.needsUpdate = true;
+      geo.computeVertexNormals();
+    }
+
+    // Shared mountain material — picks up cool moonlight from the hemisphere/ambient lights
+    // instead of rendering as a flat blob. Fog still pulls it toward the sky color at distance.
+    const mountMat = new THREE.MeshStandardMaterial({
+      color: 0x182438, roughness: 0.95, metalness: 0, fog: true,
+    });
+
+    // Main Mount Royal mass
+    const mountGeo = new THREE.SphereGeometry(MOUNT_R, 56, 28, 0, Math.PI * 2, 0, Math.PI / 2);
+    lumpDome(mountGeo, MOUNT_R, 0.09, 4);
+    mountGeo.scale(1, Y_SCALE, 1);
+    const mount = new THREE.Mesh(mountGeo, mountMat);
     mount.position.set(-gridMax * 0.5, 0, -gridMax * 2.2);
     scene.add(mount);
 
-    // Cross at the summit
+    // Outremont — secondary lower peak slightly east-northeast of the main summit
+    const outR = MOUNT_R * 0.55;
+    const outGeo = new THREE.SphereGeometry(outR, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2);
+    lumpDome(outGeo, outR, 0.10, 3.2);
+    outGeo.scale(1, Y_SCALE * 0.8, 1);
+    const outremont = new THREE.Mesh(outGeo, mountMat);
+    outremont.position.set(gridMax * 0.15, 0, -gridMax * 2.45);
+    scene.add(outremont);
+
+    // Cross at the main summit (centered on the original dome apex)
     const crossMat = new THREE.MeshStandardMaterial({
       color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.4,
     });
-    const summitY = MOUNT_R * 0.35;
+    const summitY = MOUNT_R * Y_SCALE;
     const pillarH = 3.2;
     const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.32, pillarH, 0.32), crossMat);
     pillar.position.set(mount.position.x, summitY + pillarH / 2, mount.position.z);
