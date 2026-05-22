@@ -775,8 +775,10 @@ h1, h2, h3, h4 {
 #city-canvas {
   display: block;
   width: 100%;
-  cursor: default;
+  cursor: grab;
+  touch-action: none;
 }
+#city-canvas:active { cursor: grabbing; }
 
 .city__loading {
   position: absolute;
