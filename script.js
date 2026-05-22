@@ -133,7 +133,39 @@ async function initCity() {
   }
   const colorToCSS = (c) => '#' + c.getHexString();
 
-  // ── Fetch repos & commit counts ────────────────────────────────
+  // Human-readable repo size: KB → "412 KB" / "1.3 MB" / "2 GB".
+  function formatSize(kb) {
+    if (!kb || kb < 1)     return '< 1 KB';
+    if (kb < 1024)         return `${Math.round(kb)} KB`;
+    if (kb < 1024 * 1024)  return `${(kb / 1024).toFixed(kb < 10240 ? 1 : 0)} MB`;
+    return `${(kb / (1024 * 1024)).toFixed(1)} GB`;
+  }
+
+  // "3 days ago" / "2 months ago" — coarse, good enough for a tooltip.
+  function formatRelative(iso) {
+    if (!iso) return 'recently';
+    const then = new Date(iso).getTime();
+    if (!Number.isFinite(then)) return 'recently';
+    const secs = Math.max(1, Math.round((Date.now() - then) / 1000));
+    const units = [
+      [60,            'second'],
+      [60 * 60,       'minute'],
+      [60 * 60 * 24,  'hour'  ],
+      [60 * 60 * 24 * 30,  'day'  ],
+      [60 * 60 * 24 * 365, 'month'],
+    ];
+    for (let i = 0; i < units.length; i++) {
+      if (secs < units[i][0]) {
+        const div = i === 0 ? 1 : units[i - 1][0];
+        const n = Math.max(1, Math.floor(secs / div));
+        return `${n} ${units[i][1]}${n === 1 ? '' : 's'} ago`;
+      }
+    }
+    const years = Math.floor(secs / (60 * 60 * 24 * 365));
+    return `${years} year${years === 1 ? '' : 's'} ago`;
+  }
+
+  // ── Fetch repos (single request — no per-repo fan-out) ─────────
   let repos = [];
   try {
     const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=pushed`);
@@ -146,23 +178,31 @@ async function initCity() {
     return;
   }
 
-  async function fetchCommits(name) {
-    try {
-      const res = await fetch(`https://api.github.com/repos/${GH_USER}/${name}/commits?per_page=1`);
-      const link = res.headers.get('Link') || '';
-      const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
-      return m ? parseInt(m[1], 10) : 1;
-    } catch { return 1; }
-  }
-
-  const commitResults = await Promise.allSettled(repos.map(r => fetchCommits(r.name)));
-  const buildings = repos.map((r, i) => ({
-    name:     r.name,
-    url:      r.html_url,
-    language: r.language || 'Other',
-    commits:  commitResults[i].status === 'fulfilled' ? commitResults[i].value : 1,
-  }));
-  buildings.sort((a, b) => b.commits - a.commits);
+  // Tower weight comes entirely from data /repos already returned:
+  //   sizeScore   — log-damped KB of code, so one asset-heavy repo
+  //                 doesn't flatten the rest of the skyline.
+  //   recencyBoost — small additive bump for repos pushed in the last
+  //                 year, scaled linearly toward zero across that window.
+  const RECENCY_W = 1.5;
+  const now = Date.now();
+  const buildings = repos.map(r => {
+    const sizeKB     = r.size || 0;
+    const pushedAt   = r.pushed_at || null;
+    const sizeScore  = Math.log1p(sizeKB);
+    const days       = pushedAt
+      ? (now - new Date(pushedAt).getTime()) / (1000 * 60 * 60 * 24)
+      : Infinity;
+    const recencyBoost = Math.max(0, 1 - days / 365) * RECENCY_W;
+    return {
+      name:     r.name,
+      url:      r.html_url,
+      language: r.language || 'Other',
+      sizeKB,
+      pushedAt,
+      weight:   sizeScore + recencyBoost,
+    };
+  });
+  buildings.sort((a, b) => b.weight - a.weight);
 
   // ── Layout (centered grid in world space, Y is up) ─────────────
   const N    = buildings.length;
@@ -174,7 +214,7 @@ async function initCity() {
   const gridD = ROWS * SPACING;
   const gridMax = Math.max(gridW, gridD);
 
-  const maxC = Math.max(...buildings.map(b => b.commits));
+  const maxW = Math.max(...buildings.map(b => b.weight)) || 1;
   const MIN_H = 1.5, MAX_H = 9.5;
 
   buildings.forEach((b, i) => {
@@ -182,7 +222,7 @@ async function initCity() {
     const cz = Math.floor(i / COLS);
     b.x = cx * SPACING - gridW / 2 + SPACING / 2;
     b.z = cz * SPACING - gridD / 2 + SPACING / 2;
-    b.height = MIN_H + (b.commits / maxC) * (MAX_H - MIN_H);
+    b.height = MIN_H + (b.weight / maxW) * (MAX_H - MIN_H);
     b.seed = i;
     b.animDelay = (i / N) * 0.38;
     b.color = uniqueColor(b.name);
@@ -681,8 +721,12 @@ async function initCity() {
       <div class="city__tooltip-name">${b.name.replace(/-/g,'‑')}</div>
       <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${colorToCSS(b.color)}"></span>${b.language}</div>
       <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        <strong style="color:var(--text)">${formatSize(b.sizeKB)}</strong>
+      </div>
+      <div class="city__tooltip-row" style="margin-top:3px;gap:5px">
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Pushed ${formatRelative(b.pushedAt)}
       </div>${extraHTML}`;
   }
 
