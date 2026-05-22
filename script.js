@@ -133,36 +133,31 @@ async function initCity() {
   }
   const colorToCSS = (c) => '#' + c.getHexString();
 
-  // Human-readable repo size: KB → "412 KB" / "1.3 MB" / "2 GB".
-  function formatSize(kb) {
-    if (!kb || kb < 1)     return '< 1 KB';
-    if (kb < 1024)         return `${Math.round(kb)} KB`;
-    if (kb < 1024 * 1024)  return `${(kb / 1024).toFixed(kb < 10240 ? 1 : 0)} MB`;
-    return `${(kb / (1024 * 1024)).toFixed(1)} GB`;
+  // Lazy commit-count fetch — one request per repo, only when hovered.
+  // Cached per page load so repeated hovers don't refetch. Stores the
+  // Promise while in-flight so concurrent hovers coalesce.
+  const commitCache = new Map();
+  async function fetchCommitCount(name) {
+    const res = await fetch(`https://api.github.com/repos/${GH_USER}/${name}/commits?per_page=1`);
+    if (!res.ok) return null;
+    const link = res.headers.get('Link') || '';
+    const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
+    return m ? parseInt(m[1], 10) : 1;
   }
-
-  // "3 days ago" / "2 months ago" — coarse, good enough for a tooltip.
-  function formatRelative(iso) {
-    if (!iso) return 'recently';
-    const then = new Date(iso).getTime();
-    if (!Number.isFinite(then)) return 'recently';
-    const secs = Math.max(1, Math.round((Date.now() - then) / 1000));
-    const units = [
-      [60,            'second'],
-      [60 * 60,       'minute'],
-      [60 * 60 * 24,  'hour'  ],
-      [60 * 60 * 24 * 30,  'day'  ],
-      [60 * 60 * 24 * 365, 'month'],
-    ];
-    for (let i = 0; i < units.length; i++) {
-      if (secs < units[i][0]) {
-        const div = i === 0 ? 1 : units[i - 1][0];
-        const n = Math.max(1, Math.floor(secs / div));
-        return `${n} ${units[i][1]}${n === 1 ? '' : 's'} ago`;
-      }
+  function ensureCommits(b) {
+    if (commitCache.has(b.name)) {
+      const v = commitCache.get(b.name);
+      return v && typeof v.then === 'function' ? v : null;
     }
-    const years = Math.floor(secs / (60 * 60 * 24 * 365));
-    return `${years} year${years === 1 ? '' : 's'} ago`;
+    const p = fetchCommitCount(b.name)
+      .catch(() => null)
+      .then(n => {
+        commitCache.set(b.name, n);
+        b.commits = n;
+        return n;
+      });
+    commitCache.set(b.name, p);
+    return p;
   }
 
   // ── Fetch repos (single request — no per-repo fan-out) ─────────
@@ -197,8 +192,6 @@ async function initCity() {
       name:     r.name,
       url:      r.html_url,
       language: r.language || 'Other',
-      sizeKB,
-      pushedAt,
       weight:   sizeScore + recencyBoost,
     };
   });
@@ -737,16 +730,20 @@ async function initCity() {
 
   // ── Tooltip helpers (ported from previous code) ────────────────
   function buildTooltipHTML(b, extraHTML = '') {
+    let commitsCell;
+    if (typeof b.commits === 'number') {
+      commitsCell = `<strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits`;
+    } else {
+      // undefined → not fetched yet (…); null → fetch failed / rate-limited (—)
+      const glyph = b.commits === null ? '—' : '…';
+      commitsCell = `<span style="opacity:.6">${glyph} commits</span>`;
+    }
     return `
       <div class="city__tooltip-name">${b.name.replace(/-/g,'‑')}</div>
       <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${colorToCSS(b.color)}"></span>${b.language}</div>
       <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-        <strong style="color:var(--text)">${formatSize(b.sizeKB)}</strong>
-      </div>
-      <div class="city__tooltip-row" style="margin-top:3px;gap:5px">
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Pushed ${formatRelative(b.pushedAt)}
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        ${commitsCell}
       </div>${extraHTML}`;
   }
 
@@ -775,6 +772,25 @@ async function initCity() {
   function hideTooltip() {
     tooltip.classList.remove('visible');
     tooltip.setAttribute('aria-hidden', 'true');
+  }
+
+  // Render a building tooltip and, if the commit count hasn't been
+  // fetched yet, refresh just the innerHTML when it arrives — but only
+  // if the same building is still the active target. Layout doesn't
+  // shift because the placeholder row occupies the same line as the
+  // resolved row.
+  function showBuildingTooltip(mesh, x, y, opts = {}) {
+    const { above = false, extra = '', isCurrent = () => true } = opts;
+    const b = mesh.userData.b;
+    showTooltip(buildTooltipHTML(b, extra), x, y, above);
+    const p = ensureCommits(b);
+    if (p) {
+      p.then(() => {
+        if (!tooltip.classList.contains('visible')) return;
+        if (!isCurrent()) return;
+        tooltip.innerHTML = buildTooltipHTML(b, extra);
+      });
+    }
   }
 
   // ── Hover & raycasting ─────────────────────────────────────────
@@ -814,7 +830,9 @@ async function initCity() {
     setHover(mesh);
     if (mesh) {
       canvas.style.cursor = 'pointer';
-      showTooltip(buildTooltipHTML(mesh.userData.b), e.clientX, e.clientY);
+      showBuildingTooltip(mesh, e.clientX, e.clientY, {
+        isCurrent: () => hovered === mesh,
+      });
     } else {
       canvas.style.cursor = 'grab';
       hideTooltip();
@@ -877,7 +895,11 @@ async function initCity() {
       lastTouchedMesh = mesh;
       setHover(mesh);
       const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
-      showTooltip(buildTooltipHTML(mesh.userData.b, extra), t.clientX, t.clientY, true);
+      showBuildingTooltip(mesh, t.clientX, t.clientY, {
+        above: true,
+        extra,
+        isCurrent: () => lastTouchedMesh === mesh,
+      });
     }
   }, { passive: true });
 
