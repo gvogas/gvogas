@@ -489,16 +489,32 @@ async function initCity() {
     tooltip.classList.remove('visible');
     tooltip.setAttribute('aria-hidden','true');
   });
+  // Opens a repo URL reliably in a new tab (anchor click avoids popup blockers)
+  function openRepo(url) {
+    const a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  let recentTouch = false; // guard: skip click handler when touch already handled it
+
   canvas.addEventListener('click', (e) => {
+    if (recentTouch) return;
     const rect = canvas.getBoundingClientRect();
-    const hit = hitBoxes.find(h => e.clientX-rect.left>=h.x1 && e.clientX-rect.left<=h.x2 && e.clientY-rect.top>=h.y1 && e.clientY-rect.top<=h.y2);
-    if (hit) window.open(hit.b.url,'_blank','noopener,noreferrer');
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const hit = hitBoxes.find(h => mx >= h.x1 && mx <= h.x2 && my >= h.y1 && my <= h.y2);
+    if (hit) openRepo(hit.b.url);
   });
 
   // ── Touch events (mobile tap) ─────────────────────────────────
   let lastTouchedBuilding = null;
   canvas.addEventListener('touchend', (e) => {
     e.preventDefault();
+    recentTouch = true;
+    setTimeout(() => { recentTouch = false; }, 500);
     const t = e.changedTouches[0];
     const rect = canvas.getBoundingClientRect();
     const mx = t.clientX - rect.left, my = t.clientY - rect.top;
@@ -506,7 +522,7 @@ async function initCity() {
 
     if (hit) {
       if (lastTouchedBuilding === hit.b) {
-        window.open(hit.b.url, '_blank', 'noopener,noreferrer');
+        openRepo(hit.b.url);
         lastTouchedBuilding = null;
         hoveredBuilding = null;
         draw(1);
