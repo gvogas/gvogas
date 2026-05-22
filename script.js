@@ -235,19 +235,77 @@ async function initCity() {
     const extent = SPACING; // streets continue one cell past city edge
     const lenX = gridW + 2 * extent;
     const lenZ = gridD + 2 * extent;
-    const roadMat = new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 1, metalness: 0 });
+    const TILE_LEN = ROAD_W * 1.6; // world-space length covered by one texture tile
+
+    // Painted asphalt: white edge stripes + dashed yellow centerline.
+    // `longAxisHorizontal` controls which canvas axis runs down the road's length.
+    function makeRoadTexture(longAxisHorizontal) {
+      const longDim = 256, shortDim = 64;
+      const w = longAxisHorizontal ? longDim : shortDim;
+      const h = longAxisHorizontal ? shortDim : longDim;
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const cx = c.getContext('2d');
+      cx.fillStyle = '#2a3040';
+      cx.fillRect(0, 0, w, h);
+
+      const cross = longAxisHorizontal ? h : w;
+      const edgePx = Math.max(2, Math.round(cross * 0.07));
+      const dashPx = Math.max(3, Math.round(cross * 0.07));
+      const centerPos = Math.round((cross - dashPx) / 2);
+      const dashOn = 70, dashOff = 186; // one dash per 256-px tile
+
+      cx.fillStyle = 'rgba(220, 226, 235, 0.55)';
+      if (longAxisHorizontal) {
+        cx.fillRect(0, 0, w, edgePx);
+        cx.fillRect(0, h - edgePx, w, edgePx);
+      } else {
+        cx.fillRect(0, 0, edgePx, h);
+        cx.fillRect(w - edgePx, 0, edgePx, h);
+      }
+
+      cx.fillStyle = '#e6c34a';
+      if (longAxisHorizontal) {
+        for (let x = 0; x < w; x += dashOn + dashOff) {
+          cx.fillRect(x, centerPos, dashOn, dashPx);
+        }
+      } else {
+        for (let y = 0; y < h; y += dashOn + dashOff) {
+          cx.fillRect(centerPos, y, dashPx, dashOn);
+        }
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      if (longAxisHorizontal) {
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.ClampToEdgeWrapping;
+      } else {
+        tex.wrapS = THREE.ClampToEdgeWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+      }
+      tex.anisotropy = 4;
+      return tex;
+    }
+
     const roads = new THREE.Group();
 
-    // East-West streets (between building rows)
+    // East-West streets (length along world X → U axis on plane)
     for (let i = 0; i <= ROWS; i++) {
-      const r = new THREE.Mesh(new THREE.PlaneGeometry(lenX, ROAD_W), roadMat);
+      const tex = makeRoadTexture(true);
+      tex.repeat.set(lenX / TILE_LEN, 1);
+      const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0 });
+      const r = new THREE.Mesh(new THREE.PlaneGeometry(lenX, ROAD_W), mat);
       r.rotation.x = -Math.PI / 2;
       r.position.set(0, 0.02, i * SPACING - gridD / 2);
       roads.add(r);
     }
-    // North-South streets (between building columns)
+    // North-South streets (length along world Z → V axis on plane)
     for (let j = 0; j <= COLS; j++) {
-      const r = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_W, lenZ), roadMat);
+      const tex = makeRoadTexture(false);
+      tex.repeat.set(1, lenZ / TILE_LEN);
+      const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0 });
+      const r = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_W, lenZ), mat);
       r.rotation.x = -Math.PI / 2;
       r.position.set(j * SPACING - gridW / 2, 0.02, 0);
       roads.add(r);
@@ -330,25 +388,52 @@ async function initCity() {
     scene.add(bell);
   }
 
-  // ── Street lights at grid intersections ───────────────────────
+  // ── Lamp posts at sidewalk corners of each intersection ──────
   {
-    const positions = [];
+    const POLE_H = 1.6;
+    const HEAD_H = 0.14;
+    const ROAD_HALF = 1.8 / 2;                 // mirrors ROAD_W in the road block
+    const CORNER_OFFSET = ROAD_HALF + 0.18;    // sit just off the asphalt
+    const bellX = 0, bellZ = gridD / 2 + TILE * 1.6;
+    const bellExclusion = TILE * 1.6 * 1.7;    // skip lamps inside Bell Centre footprint
+
+    const lampXZ = [];
     for (let gx = 0; gx <= COLS; gx++) {
       for (let gz = 0; gz <= ROWS; gz++) {
-        positions.push(
-          gx * SPACING - gridW / 2,
-          0.22,
-          gz * SPACING - gridD / 2
-        );
+        const lx = gx * SPACING - gridW / 2 + CORNER_OFFSET;
+        const lz = gz * SPACING - gridD / 2 + CORNER_OFFSET;
+        if (Math.hypot(lx - bellX, lz - bellZ) < bellExclusion) continue;
+        lampXZ.push(lx, lz);
       }
     }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    const mat = new THREE.PointsMaterial({
-      color: 0xffe4a0, size: 0.6, sizeAttenuation: true,
-      transparent: true, opacity: 0.9, depthWrite: false,
+    const count = lampXZ.length / 2;
+
+    const poleGeo = new THREE.CylinderGeometry(0.035, 0.05, POLE_H, 8);
+    const poleMat = new THREE.MeshStandardMaterial({
+      color: 0x3a4250, roughness: 0.6, metalness: 0.4,
     });
-    scene.add(new THREE.Points(geo, mat));
+    const poles = new THREE.InstancedMesh(poleGeo, poleMat, count);
+
+    const headGeo = new THREE.BoxGeometry(0.22, HEAD_H, 0.22);
+    const headMat = new THREE.MeshStandardMaterial({
+      color: 0x2a2418, emissive: 0xffd180, emissiveIntensity: 1.6,
+      roughness: 0.5, metalness: 0.2,
+    });
+    const heads = new THREE.InstancedMesh(headGeo, headMat, count);
+
+    const m = new THREE.Matrix4();
+    for (let i = 0; i < count; i++) {
+      const lx = lampXZ[i * 2];
+      const lz = lampXZ[i * 2 + 1];
+      m.makeTranslation(lx, POLE_H / 2, lz);
+      poles.setMatrixAt(i, m);
+      m.makeTranslation(lx, POLE_H + HEAD_H / 2, lz);
+      heads.setMatrixAt(i, m);
+    }
+    poles.instanceMatrix.needsUpdate = true;
+    heads.instanceMatrix.needsUpdate = true;
+    scene.add(poles);
+    scene.add(heads);
   }
 
   // ── Deterministic per-repo hash → [0, 1) (used for roof picks) ─
