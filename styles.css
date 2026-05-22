@@ -727,13 +727,25 @@ h1, h2, h3, h4 {
 
 .stack__pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .stack__pills .pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font-size: 0.825rem;
-  padding: 5px 13px;
-  transition: transform var(--transition), box-shadow var(--transition);
+  padding: 6px 13px;
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+}
+/* Reserve the icon box so logos don't cause layout shift while Iconify loads. */
+.stack__pills .pill iconify-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  font-size: 1.05em;
+  flex-shrink: 0;
 }
 .stack__pills .pill:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  filter: brightness(1.12);
 }
 
 /* ===== Areas of Study ===== */
