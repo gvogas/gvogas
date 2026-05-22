@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
 (function () {
   'use strict';
 
@@ -97,10 +100,14 @@
   }
 
   // ── Commit Skyline ────────────────────────────────────────────
-  initCity();
+  initCity().catch(err => {
+    console.error('initCity failed:', err);
+    const loading = document.getElementById('city-loading');
+    if (loading) loading.innerHTML = '<span style="color:var(--text-dim);font-size:.85rem">Could not load the 3D skyline.</span>';
+  });
 })();
 
-// ── City module ───────────────────────────────────────────────────
+// ── City module (Three.js) ────────────────────────────────────────
 async function initCity() {
   const GH_USER = 'gvogas';
   const canvas  = document.getElementById('city-canvas');
@@ -109,43 +116,32 @@ async function initCity() {
   const legend  = document.getElementById('city-legend');
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
-
   const LANG_COLORS = {
-    'Python':      '#4584b6',
-    'Java':        '#e76f00',
-    'JavaScript':  '#f7df1e',
-    'TypeScript':  '#3178c6',
-    'PHP':         '#8892bf',
-    'C#':          '#239120',
-    'Dart':        '#00d2b8',
-    'HTML':        '#e44b23',
-    'CSS':         '#7b5ea7',
-    'C++':         '#f34b7d',
-    'C':           '#6e7681',
-    'ShaderLab':   '#4a90d9',
-    'Swift':       '#f05138',
-    'Kotlin':      '#a97bff',
-    'Ruby':        '#cc342d',
-    'Go':          '#00acd7',
-    'Rust':        '#dea584',
+    'Python':      0x4584b6,
+    'Java':        0xe76f00,
+    'JavaScript':  0xf7df1e,
+    'TypeScript':  0x3178c6,
+    'PHP':         0x8892bf,
+    'C#':          0x239120,
+    'Dart':        0x00d2b8,
+    'HTML':        0xe44b23,
+    'CSS':         0x7b5ea7,
+    'C++':         0xf34b7d,
+    'C':           0x6e7681,
+    'ShaderLab':   0x4a90d9,
+    'Swift':       0xf05138,
+    'Kotlin':      0xa97bff,
+    'Ruby':        0xcc342d,
+    'Go':          0x00acd7,
+    'Rust':        0xdea584,
   };
-  const DEFAULT_COLOR = '#4f9cf9';
-  const SKY_COLOR = '#070b12';
+  const DEFAULT_COLOR = 0x4f9cf9;
+  const SKY_COLOR     = 0x070b12;
 
-  function shade(hex, factor) {
-    const n = parseInt(hex.replace('#',''), 16);
-    const r = Math.min(255, Math.round(((n >> 16) & 0xff) * factor));
-    const g = Math.min(255, Math.round(((n >> 8)  & 0xff) * factor));
-    const b = Math.min(255, Math.round((n & 0xff) * factor));
-    return `rgb(${r},${g},${b})`;
-  }
-  function hexAlpha(hex, a) {
-    const n = parseInt(hex.replace('#',''), 16);
-    return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
-  }
+  const hexCSS = (n) => '#' + n.toString(16).padStart(6, '0');
+  const colorOf = (lang) => LANG_COLORS[lang] || DEFAULT_COLOR;
 
-  // ── Fetch repos ───────────────────────────────────────────────
+  // ── Fetch repos & commit counts ────────────────────────────────
   let repos = [];
   try {
     const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=pushed`);
@@ -158,10 +154,9 @@ async function initCity() {
     return;
   }
 
-  // ── Fetch commit counts ───────────────────────────────────────
-  async function fetchCommits(repoName) {
+  async function fetchCommits(name) {
     try {
-      const res = await fetch(`https://api.github.com/repos/${GH_USER}/${repoName}/commits?per_page=1`);
+      const res = await fetch(`https://api.github.com/repos/${GH_USER}/${name}/commits?per_page=1`);
       const link = res.headers.get('Link') || '';
       const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
       return m ? parseInt(m[1], 10) : 1;
@@ -175,272 +170,209 @@ async function initCity() {
     language: r.language || 'Other',
     commits:  commitResults[i].status === 'fulfilled' ? commitResults[i].value : 1,
   }));
-
   buildings.sort((a, b) => b.commits - a.commits);
 
+  // ── Layout (centered grid in world space, Y is up) ─────────────
   const N    = buildings.length;
   const COLS = Math.ceil(Math.sqrt(N * 1.6));
-  buildings.forEach((b, i) => {
-    b.gx = (i % COLS) * 2;
-    b.gy = Math.floor(i / COLS) * 2;
-    b.animDelay = (i / N) * 0.38;
-    b.winPattern = Array.from({length: 60}, (_, k) => ((i * 17 + k * 13) % 7) > 1);
-  });
+  const ROWS = Math.ceil(N / COLS);
+  const TILE     = 1.6;   // building footprint
+  const SPACING  = 2.4;   // grid step
+  const gridW = COLS * SPACING;
+  const gridD = ROWS * SPACING;
 
   const maxC = Math.max(...buildings.map(b => b.commits));
-  const MIN_FLOORS = 10, MAX_FLOORS = 62;
-  buildings.forEach(b => {
-    b.targetFloors = Math.round(MIN_FLOORS + (b.commits / maxC) * (MAX_FLOORS - MIN_FLOORS));
+  const MIN_H = 1.5, MAX_H = 9.5;
+
+  buildings.forEach((b, i) => {
+    const cx = i % COLS;
+    const cz = Math.floor(i / COLS);
+    b.x = cx * SPACING - gridW / 2 + SPACING / 2;
+    b.z = cz * SPACING - gridD / 2 + SPACING / 2;
+    b.height = MIN_H + (b.commits / maxC) * (MAX_H - MIN_H);
+    b.seed = i;
+    b.animDelay = (i / N) * 0.38;
   });
 
-  // ── Canvas & projection ───────────────────────────────────────
-  let TILE_W = 76, TILE_H = 38, FLOOR_H = 6;
-  let stars = [];
+  // ── Three.js renderer, scene, camera ───────────────────────────
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
 
-  function updateTileScale() {
-    const w = canvas.parentElement.clientWidth;
-    if (w < 480) {
-      TILE_W = 46; TILE_H = 23; FLOOR_H = 4;
-    } else if (w < 720) {
-      TILE_W = 60; TILE_H = 30; FLOOR_H = 5;
-    } else {
-      TILE_W = 76; TILE_H = 38; FLOOR_H = 6;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(SKY_COLOR);
+  scene.fog = new THREE.Fog(SKY_COLOR, Math.max(gridW, gridD) * 0.6, Math.max(gridW, gridD) * 2.4);
+
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+  const camDist = Math.max(gridW, gridD) * 1.15;
+  camera.position.set(camDist, camDist * 0.78, camDist);
+
+  // ── Lights ─────────────────────────────────────────────────────
+  scene.add(new THREE.HemisphereLight(0x6a8cb8, 0x080812, 0.45));
+  scene.add(new THREE.AmbientLight(0x1a2436, 0.55));
+  const keyLight = new THREE.DirectionalLight(0xc8d8ff, 0.85);
+  keyLight.position.set(gridW * 0.6, gridW * 1.2, gridD * 0.4);
+  scene.add(keyLight);
+  const fillLight = new THREE.DirectionalLight(0x4f9cf9, 0.25);
+  fillLight.position.set(-gridW, gridW * 0.4, -gridD);
+  scene.add(fillLight);
+
+  // ── Ground & grid ──────────────────────────────────────────────
+  const groundSize = Math.max(gridW, gridD) * 6;
+  const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(groundSize, groundSize),
+    new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 1, metalness: 0 })
+  );
+  ground.rotation.x = -Math.PI / 2;
+  scene.add(ground);
+
+  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x1a2434, 0x111722);
+  gridHelper.position.y = 0.01;
+  gridHelper.material.transparent = true;
+  gridHelper.material.opacity = 0.35;
+  scene.add(gridHelper);
+
+  // ── Stars (dome) ───────────────────────────────────────────────
+  {
+    const count = 420;
+    const pos = new Float32Array(count * 3);
+    const r = Math.max(gridW, gridD) * 4;
+    for (let i = 0; i < count; i++) {
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI * 0.45 + 0.02;
+      pos[i*3]     = r * Math.sin(phi) * Math.cos(theta);
+      pos[i*3 + 1] = r * Math.cos(phi);
+      pos[i*3 + 2] = r * Math.sin(phi) * Math.sin(theta);
     }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const mat = new THREE.PointsMaterial({
+      color: 0xdde8f5, size: 0.45, sizeAttenuation: true, transparent: true, opacity: 0.7, depthWrite: false,
+    });
+    scene.add(new THREE.Points(geo, mat));
   }
 
-  function genStars(W, H) {
-    stars = Array.from({length: 90}, (_, i) => ({
-      x: ((i * 137.508) % 1) * W,
-      y: ((i * 97.31)   % 1) * H * 0.52,
-      r: i % 7 === 0 ? 1.2 : 0.7,
-      o: 0.18 + ((i * 63.7) % 1) * 0.45,
-    }));
+  // ── Window texture (procedural CanvasTexture per building) ─────
+  function makeWindowTexture(cols, rows, seed) {
+    const cell = 14;
+    const c = document.createElement('canvas');
+    c.width  = cols * cell;
+    c.height = rows * cell;
+    const cx = c.getContext('2d');
+    cx.fillStyle = '#0a0e16';
+    cx.fillRect(0, 0, c.width, c.height);
+    for (let r = 0; r < rows; r++) {
+      for (let col = 0; col < cols; col++) {
+        const lit = ((seed * 17 + r * 13 + col * 7) % 7) > 2;
+        cx.fillStyle = lit ? '#ffe88a' : '#1a2434';
+        cx.fillRect(col * cell + 4, r * cell + 3, cell - 8, cell - 6);
+      }
+    }
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = tex.wrapT = THREE.ClampToEdgeWrapping;
+    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    return tex;
+  }
+
+  // ── Buildings ──────────────────────────────────────────────────
+  const buildingsGroup = new THREE.Group();
+  scene.add(buildingsGroup);
+  const buildingMeshes = [];
+
+  buildings.forEach(b => {
+    const base = new THREE.Color(colorOf(b.language));
+    const floors = Math.max(3, Math.round(b.height / 0.32));
+    const winTex = makeWindowTexture(3, floors, b.seed);
+
+    const sideMat = new THREE.MeshStandardMaterial({
+      color: base.clone().multiplyScalar(0.32),
+      map: winTex,
+      emissive: 0xffd980,
+      emissiveMap: winTex,
+      emissiveIntensity: 0.55,
+      roughness: 0.78,
+      metalness: 0.08,
+    });
+    const topMat = new THREE.MeshStandardMaterial({
+      color: base.clone().multiplyScalar(0.85),
+      emissive: base.clone(),
+      emissiveIntensity: 0.22,
+      roughness: 0.5,
+      metalness: 0.2,
+    });
+    const bottomMat = new THREE.MeshStandardMaterial({ color: 0x05080d, roughness: 1, metalness: 0 });
+
+    const geo = new THREE.BoxGeometry(TILE, b.height, TILE);
+    geo.translate(0, b.height / 2, 0); // origin at bottom for grow-from-floor scaling
+    // BoxGeometry material order: +x, -x, +y (top), -y (bottom), +z, -z
+    const mats = [sideMat, sideMat, topMat, bottomMat, sideMat, sideMat];
+    const mesh = new THREE.Mesh(geo, mats);
+    mesh.position.set(b.x, 0, b.z);
+    mesh.scale.y = 0.001;
+
+    const edges = new THREE.EdgesGeometry(geo, 1);
+    const edgeMat = new THREE.LineBasicMaterial({
+      color: base.clone().lerp(new THREE.Color(0xffffff), 0.35),
+      transparent: true,
+      opacity: 0.45,
+    });
+    const edgeLines = new THREE.LineSegments(edges, edgeMat);
+    mesh.add(edgeLines);
+
+    mesh.userData = { b, sideMat, topMat, edgeMat, baseEmissive: 0.55, baseTopEmissive: 0.22, baseEdge: 0.45 };
+    buildingsGroup.add(mesh);
+    buildingMeshes.push(mesh);
+  });
+
+  // ── OrbitControls ──────────────────────────────────────────────
+  const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.target.set(0, 1.5, 0);
+  controls.minDistance = 6;
+  controls.maxDistance = Math.max(gridW, gridD) * 2.6;
+  controls.maxPolarAngle = Math.PI * 0.49;
+  controls.minPolarAngle = Math.PI * 0.08;
+  controls.zoomSpeed = 0.8;
+  controls.rotateSpeed = 0.9;
+  controls.update();
+
+  let isDragging = false;
+  controls.addEventListener('start', () => { isDragging = true; hideTooltip(); });
+  controls.addEventListener('end',   () => { isDragging = false; });
+
+  // ── Sizing ─────────────────────────────────────────────────────
+  function getSize() {
+    const w = canvas.parentElement.clientWidth;
+    const h = Math.min(580, Math.max(360, Math.round(w * 0.62)));
+    return { w, h };
   }
 
   function resize() {
-    updateTileScale();
-    const dpr = window.devicePixelRatio || 1;
-    const w   = canvas.parentElement.clientWidth;
-    const rows = Math.ceil(N / COLS);
-    const maxGx = (COLS - 1) * 2, maxGy = (rows - 1) * 2;
-    const sceneH = (maxGx + maxGy + 2) * TILE_H / 2 + MAX_FLOORS * FLOOR_H + 100;
-    const h = Math.min(sceneH, 580);
-    canvas.width  = Math.round(w * dpr);
-    canvas.height = Math.round(h * dpr);
+    const { w, h } = getSize();
+    renderer.setSize(w, h, false);
+    canvas.style.width  = w + 'px';
     canvas.style.height = h + 'px';
-    ctx.scale(dpr, dpr);
-    genStars(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
   }
   resize();
 
-  function isoProject(gx, gy, gz) {
-    const dpr = window.devicePixelRatio || 1;
-    const W = canvas.width / dpr, H = canvas.height / dpr;
-    return {
-      x: W / 2 + (gx - gy) * TILE_W / 2,
-      y: H * 0.84 + (gx + gy) * TILE_H / 2 - gz * FLOOR_H,
-    };
-  }
+  let resizeTimer;
+  new ResizeObserver(() => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 120);
+  }).observe(canvas.parentElement);
 
-  let hitBoxes = [];
-  let hoveredBuilding = null;
-
-  // ── Draw helpers ──────────────────────────────────────────────
-  function drawBackground(W, H) {
-    const sky = ctx.createLinearGradient(0, 0, 0, H * 0.8);
-    sky.addColorStop(0, '#050810');
-    sky.addColorStop(1, SKY_COLOR);
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, W, H);
-
-    stars.forEach(s => {
-      ctx.globalAlpha = s.o;
-      ctx.fillStyle = '#dde8f5';
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-  }
-
-  function drawGround(sorted, globalT) {
-    const rows = Math.ceil(N / COLS);
-    for (let gx = 0; gx <= (COLS - 1) * 2 + 1; gx++) {
-      for (let gy = 0; gy <= (rows - 1) * 2 + 1; gy++) {
-        const p0 = isoProject(gx, gy, 0), p1 = isoProject(gx+1, gy, 0);
-        const p2 = isoProject(gx+1, gy+1, 0), p3 = isoProject(gx, gy+1, 0);
-        ctx.beginPath();
-        ctx.moveTo(p0.x,p0.y); ctx.lineTo(p1.x,p1.y);
-        ctx.lineTo(p2.x,p2.y); ctx.lineTo(p3.x,p3.y);
-        ctx.closePath();
-        ctx.fillStyle = '#0e1520';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255,255,255,0.035)';
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-      }
-    }
-
-    sorted.forEach(b => {
-      const localT = calcLocalT(b, globalT);
-      if (localT < 0.05) return;
-      const base = LANG_COLORS[b.language] || DEFAULT_COLOR;
-      const center = isoProject(b.gx + 0.5, b.gy + 0.5, 0);
-      const g = ctx.createRadialGradient(center.x, center.y, 0, center.x, center.y, TILE_W * 0.9);
-      g.addColorStop(0, hexAlpha(base, 0.18 * localT));
-      g.addColorStop(1, 'transparent');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.ellipse(center.x, center.y + TILE_H * 0.1, TILE_W * 0.9, TILE_H * 0.65, 0, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  }
-
-  function face(pts, fill) {
-    ctx.beginPath();
-    ctx.moveTo(pts[0].x, pts[0].y);
-    pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
-    ctx.closePath();
-    ctx.fillStyle = fill;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(0,0,0,0.35)';
-    ctx.lineWidth = 0.5;
-    ctx.stroke();
-  }
-
-  function drawBuildings(sorted, globalT) {
-    hitBoxes = [];
-    sorted.forEach(b => {
-      const localT   = calcLocalT(b, globalT);
-      const floors   = Math.round(b.targetFloors * localT);
-      if (floors < 1) return;
-
-      const isHov    = b === hoveredBuilding;
-      const brt      = isHov ? 1.35 : 1;
-      const base     = LANG_COLORS[b.language] || DEFAULT_COLOR;
-      const colTop   = shade(base, 1.0  * brt);
-      const colRight = shade(base, 0.62 * brt);
-      const colLeft  = shade(base, 0.36 * brt);
-
-      const gx = b.gx, gy = b.gy;
-      const p00 = isoProject(gx,   gy,   0), p10 = isoProject(gx+1, gy,   0);
-      const p11 = isoProject(gx+1, gy+1, 0), p01 = isoProject(gx,   gy+1, 0);
-      const p0h = isoProject(gx,   gy,   floors), p1h = isoProject(gx+1, gy,   floors);
-      const p2h = isoProject(gx+1, gy+1, floors), p3h = isoProject(gx,   gy+1, floors);
-
-      face([p00, p01, p3h, p0h], colLeft);
-      face([p10, p11, p2h, p1h], colRight);
-      face([p0h, p1h, p2h, p3h], colTop);
-
-      // Roof edge highlight
-      ctx.beginPath();
-      ctx.moveTo(p0h.x, p0h.y); ctx.lineTo(p1h.x, p1h.y);
-      ctx.lineTo(p2h.x, p2h.y); ctx.lineTo(p3h.x, p3h.y); ctx.closePath();
-      ctx.strokeStyle = hexAlpha(base, isHov ? 0.9 : 0.55);
-      ctx.lineWidth = isHov ? 1.5 : 0.8;
-      ctx.stroke();
-
-      // Hover outline
-      if (isHov) {
-        ctx.beginPath();
-        ctx.moveTo(p0h.x,p0h.y); ctx.lineTo(p00.x,p00.y); ctx.lineTo(p01.x,p01.y);
-        ctx.lineTo(p3h.x,p3h.y); ctx.moveTo(p1h.x,p1h.y); ctx.lineTo(p10.x,p10.y);
-        ctx.lineTo(p11.x,p11.y); ctx.lineTo(p2h.x,p2h.y);
-        ctx.strokeStyle = hexAlpha(base, 0.7);
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
-      }
-
-      // Windows
-      if (floors > 5) {
-        const wCols = 3, wStep = 5;
-        const maxWR = Math.min(Math.floor(floors / wStep), 12);
-        let pi = 0;
-        for (let wr = 0; wr < maxWR; wr++) {
-          for (let wc = 0; wc < wCols; wc++, pi++) {
-            const lit = b.winPattern[pi] ?? true;
-            const wOpacity = lit ? (isHov ? 0.9 : 0.6) : 0.07;
-            const wColor   = lit ? `rgba(255,240,150,${wOpacity})` : `rgba(30,45,70,${wOpacity})`;
-            const wz = 2 + wr * wStep;
-            if (wz + 2.5 > floors) continue;
-            const wx = 0.14 + wc * 0.28;
-            ctx.fillStyle = wColor;
-            const ra = isoProject(gx+1, gy+wx,      wz+2.5);
-            const rb = isoProject(gx+1, gy+wx+0.17, wz+2.5);
-            const rc = isoProject(gx+1, gy+wx+0.17, wz);
-            const rd = isoProject(gx+1, gy+wx,      wz);
-            ctx.beginPath(); ctx.moveTo(ra.x,ra.y); ctx.lineTo(rb.x,rb.y);
-            ctx.lineTo(rc.x,rc.y); ctx.lineTo(rd.x,rd.y); ctx.closePath(); ctx.fill();
-            const la = isoProject(gx+wx,      gy+1, wz+2.5);
-            const lb = isoProject(gx+wx+0.17, gy+1, wz+2.5);
-            const lc = isoProject(gx+wx+0.17, gy+1, wz);
-            const ld = isoProject(gx+wx,      gy+1, wz);
-            ctx.beginPath(); ctx.moveTo(la.x,la.y); ctx.lineTo(lb.x,lb.y);
-            ctx.lineTo(lc.x,lc.y); ctx.lineTo(ld.x,ld.y); ctx.closePath(); ctx.fill();
-          }
-        }
-      }
-
-      // Label
-      const lp = isoProject(gx + 0.5, gy + 1.18, 0);
-      ctx.save();
-      ctx.font = `${isHov ? 600 : 500} ${isHov ? 10 : 9}px Inter,sans-serif`;
-      ctx.fillStyle = isHov ? 'rgba(220,232,245,0.95)' : 'rgba(110,118,129,0.75)';
-      ctx.textAlign = 'center';
-      const maxLW = TILE_W * 1.4;
-      let lbl = b.name.replace(/[-_]/g, ' ');
-      while (ctx.measureText(lbl).width > maxLW && lbl.length > 3) lbl = lbl.slice(0,-1);
-      if (lbl.length < b.name.length) lbl += '…';
-      ctx.fillText(lbl, lp.x, lp.y + 10);
-      ctx.restore();
-
-      const xs = [p00,p10,p11,p01,p0h,p1h,p2h,p3h].map(p=>p.x);
-      const ys = [p00,p10,p11,p01,p0h,p1h,p2h,p3h].map(p=>p.y);
-      hitBoxes.push({ b, x1:Math.min(...xs), y1:Math.min(...ys), x2:Math.max(...xs), y2:Math.max(...ys) });
-    });
-  }
-
-  // ── Draw ──────────────────────────────────────────────────────
-  function draw(globalT) {
-    const dpr = window.devicePixelRatio || 1;
-    const W = canvas.width / dpr, H = canvas.height / dpr;
-    ctx.clearRect(0, 0, W, H);
-
-    const sorted = [...buildings].sort((a, b) => (a.gx + a.gy) - (b.gx + b.gy));
-    drawBackground(W, H);
-    drawGround(sorted, globalT);
-    drawBuildings(sorted, globalT);
-
-    const fog = ctx.createLinearGradient(0, H * 0.72, 0, H);
-    fog.addColorStop(0, 'transparent');
-    fog.addColorStop(1, '#161b22');
-    ctx.fillStyle = fog;
-    ctx.fillRect(0, H * 0.6, W, H * 0.4);
-  }
-
-  function calcLocalT(b, globalT) {
-    if (globalT >= 1) return easeOutExpo(1);
-    const t = Math.max(0, Math.min(1, (globalT - b.animDelay) / 0.68));
-    return easeOutExpo(t);
-  }
-  function easeOutExpo(t) { return t >= 1 ? 1 : 1 - Math.pow(2, -10 * t); }
-
-  // ── Animation ─────────────────────────────────────────────────
-  function animate() {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(1); return; }
-    const DURATION = 1800, start = performance.now();
-    (function frame(now) {
-      const t = Math.min((now - start) / DURATION, 1);
-      draw(t);
-      if (t < 1) requestAnimationFrame(frame);
-    })(performance.now());
-  }
-
-  // ── Tooltip helpers ───────────────────────────────────────────
-  function buildTooltipHTML(b, color, extraHTML = '') {
+  // ── Tooltip helpers (ported from previous code) ────────────────
+  function buildTooltipHTML(b, colorHex, extraHTML = '') {
     return `
       <div class="city__tooltip-name">${b.name.replace(/-/g,'‑')}</div>
-      <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${color}"></span>${b.language}</div>
+      <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${hexCSS(colorHex)}"></span>${b.language}</div>
       <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits
@@ -474,33 +406,56 @@ async function initCity() {
     tooltip.setAttribute('aria-hidden', 'true');
   }
 
-  // ── Hit test ──────────────────────────────────────────────────
-  function hitTest(mx, my) {
-    return hitBoxes.find(h => mx >= h.x1 && mx <= h.x2 && my >= h.y1 && my <= h.y2);
+  // ── Hover & raycasting ─────────────────────────────────────────
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  let hovered = null;
+
+  function setHover(mesh) {
+    if (hovered === mesh) return;
+    if (hovered) {
+      hovered.userData.sideMat.emissiveIntensity = hovered.userData.baseEmissive;
+      hovered.userData.topMat.emissiveIntensity  = hovered.userData.baseTopEmissive;
+      hovered.userData.edgeMat.opacity           = hovered.userData.baseEdge;
+    }
+    hovered = mesh;
+    if (hovered) {
+      hovered.userData.sideMat.emissiveIntensity = 1.1;
+      hovered.userData.topMat.emissiveIntensity  = 0.6;
+      hovered.userData.edgeMat.opacity           = 0.95;
+    }
   }
 
-  // ── Interaction ───────────────────────────────────────────────
-  canvas.addEventListener('mousemove', (e) => {
+  function hitTest(clientX, clientY) {
     const rect = canvas.getBoundingClientRect();
-    const hit = hitTest(e.clientX - rect.left, e.clientY - rect.top);
-    const newHov = hit ? hit.b : null;
-    if (newHov !== hoveredBuilding) { hoveredBuilding = newHov; draw(1); }
-    if (hit) {
+    pointer.x =  ((clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((clientY - rect.top)  / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hits = raycaster.intersectObjects(buildingMeshes, false);
+    return hits[0]?.object || null;
+  }
+
+  // ── Mouse interaction ──────────────────────────────────────────
+  canvas.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    if (isDragging) { setHover(null); hideTooltip(); return; }
+    const mesh = hitTest(e.clientX, e.clientY);
+    setHover(mesh);
+    if (mesh) {
       canvas.style.cursor = 'pointer';
-      const color = LANG_COLORS[hit.b.language] || DEFAULT_COLOR;
-      showTooltip(buildTooltipHTML(hit.b, color), e.clientX, e.clientY);
+      const b = mesh.userData.b;
+      showTooltip(buildTooltipHTML(b, colorOf(b.language)), e.clientX, e.clientY);
     } else {
-      canvas.style.cursor = 'default';
+      canvas.style.cursor = 'grab';
       hideTooltip();
     }
   });
 
   canvas.addEventListener('mouseleave', () => {
-    hoveredBuilding = null; draw(1);
+    setHover(null);
     hideTooltip();
   });
 
-  // Opens a repo URL reliably in a new tab (anchor click avoids popup blockers)
   function openRepo(url) {
     const a = document.createElement('a');
     a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
@@ -510,72 +465,107 @@ async function initCity() {
     document.body.removeChild(a);
   }
 
-  let recentTouch = false; // guard: skip click handler when touch already handled it
-
+  let recentTouch = false;
   canvas.addEventListener('click', (e) => {
     if (recentTouch) return;
-    const rect = canvas.getBoundingClientRect();
-    const hit = hitTest(e.clientX - rect.left, e.clientY - rect.top);
-    if (hit) openRepo(hit.b.url);
+    const mesh = hitTest(e.clientX, e.clientY);
+    if (mesh) openRepo(mesh.userData.b.url);
   });
 
-  // ── Touch events (mobile tap) ─────────────────────────────────
-  let lastTouchedBuilding = null;
+  // ── Touch (two-tap pattern, ignore drags) ──────────────────────
+  let touchStartX = 0, touchStartY = 0;
+  let lastTouchedMesh = null;
+
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+  }, { passive: true });
+
   canvas.addEventListener('touchend', (e) => {
-    e.preventDefault();
+    if (e.changedTouches.length === 0) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    const moved = Math.sqrt(dx * dx + dy * dy) > 10;
+
     recentTouch = true;
     setTimeout(() => { recentTouch = false; }, 500);
-    const t = e.changedTouches[0];
-    const rect = canvas.getBoundingClientRect();
-    const hit = hitTest(t.clientX - rect.left, t.clientY - rect.top);
 
-    if (hit) {
-      if (lastTouchedBuilding === hit.b) {
-        openRepo(hit.b.url);
-        lastTouchedBuilding = null;
-        hoveredBuilding = null;
-        draw(1);
+    if (moved) {
+      // Drag — let OrbitControls handle it, just clear hover/tooltip
+      lastTouchedMesh = null;
+      setHover(null);
+      hideTooltip();
+      return;
+    }
+
+    const mesh = hitTest(t.clientX, t.clientY);
+    if (mesh) {
+      if (lastTouchedMesh === mesh) {
+        openRepo(mesh.userData.b.url);
+        lastTouchedMesh = null;
+        setHover(null);
         hideTooltip();
       } else {
-        lastTouchedBuilding = hit.b;
-        hoveredBuilding = hit.b;
-        draw(1);
-        const color = LANG_COLORS[hit.b.language] || DEFAULT_COLOR;
+        lastTouchedMesh = mesh;
+        setHover(mesh);
+        const b = mesh.userData.b;
         const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
-        showTooltip(buildTooltipHTML(hit.b, color, extra), t.clientX, t.clientY, true);
+        showTooltip(buildTooltipHTML(b, colorOf(b.language), extra), t.clientX, t.clientY, true);
       }
     } else {
-      lastTouchedBuilding = null;
-      hoveredBuilding = null;
-      draw(1);
+      lastTouchedMesh = null;
+      setHover(null);
       hideTooltip();
     }
-  }, { passive: false });
+  }, { passive: true });
 
-  // ── Resize ────────────────────────────────────────────────────
-  let resizeTimer;
-  new ResizeObserver(() => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => { resize(); draw(1); }, 120);
-  }).observe(canvas.parentElement);
+  // ── Animation loop ─────────────────────────────────────────────
+  const easeOutExpo = (t) => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+  const BUILDUP_MS = 1800;
+  let buildupStart = null;
+  let cityVisible  = false;
 
-  // ── Legend ────────────────────────────────────────────────────
+  function tick(now) {
+    requestAnimationFrame(tick);
+    if (!cityVisible && buildupStart === null) return;
+
+    controls.update();
+
+    if (buildupStart !== null) {
+      const t = Math.min((now - buildupStart) / BUILDUP_MS, 1);
+      buildingMeshes.forEach(mesh => {
+        const localT = Math.max(0, Math.min(1, (t - mesh.userData.b.animDelay) / 0.68));
+        mesh.scale.y = Math.max(0.001, easeOutExpo(localT));
+      });
+      if (t >= 1) buildupStart = -1; // mark "done" so we don't re-evaluate, but keep rendering
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  // ── Reveal trigger & visibility observer ───────────────────────
+  let triggered = false;
+  new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      cityVisible = entry.isIntersecting;
+      if (entry.isIntersecting && !triggered) {
+        triggered = true;
+        loading.classList.add('hidden');
+        buildupStart = performance.now();
+      }
+    });
+  }, { threshold: 0.12 }).observe(document.getElementById('city'));
+
+  // ── Legend ─────────────────────────────────────────────────────
   const seen = new Map();
-  buildings.forEach(b => { if (!seen.has(b.language)) seen.set(b.language, LANG_COLORS[b.language] || DEFAULT_COLOR); });
+  buildings.forEach(b => { if (!seen.has(b.language)) seen.set(b.language, hexCSS(colorOf(b.language))); });
   legend.innerHTML = [...seen.entries()].map(([lang, color]) =>
     `<span class="city__legend-item"><span class="city__legend-dot" style="background:${color}"></span>${lang}</span>`
   ).join('');
 
-  // ── Reveal trigger ────────────────────────────────────────────
-  let triggered = false;
-  new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !triggered) {
-      triggered = true;
-      loading.classList.add('hidden');
-      resize();
-      animate();
-    }
-  }, { threshold: 0.12 }).observe(document.getElementById('city'));
-
-  draw(0);
+  // Kick off the render loop (renders only when section is visible)
+  requestAnimationFrame(tick);
 }
