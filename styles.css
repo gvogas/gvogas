@@ -849,26 +849,6 @@ h1, h2, h3, h4 {
   flex-shrink: 0;
 }
 
-.city__legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  margin-top: 16px;
-}
-.city__legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.775rem;
-  color: var(--text-muted);
-}
-.city__legend-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
 /* ===== Contact ===== */
 .contact {
   text-align: center;
