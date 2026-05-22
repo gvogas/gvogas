@@ -117,17 +117,19 @@ async function initCity() {
 
   const SKY_COLOR = 0x070b12;
 
-  // Each building gets a unique vibrant color via golden-ratio HSL distribution.
-  // Stable per name — same repo → same color across reloads.
-  const GOLDEN = 0.6180339887498949;
-  function uniqueColor(name, i) {
+  // Hover/idle material constants (same for every building).
+  const IDLE_EMISSIVE = 0.55, HOVER_EMISSIVE = 1.1;
+  const IDLE_TOP_EMISSIVE = 0.22, HOVER_TOP_EMISSIVE = 0.6;
+  const IDLE_EDGE = 0.45, HOVER_EDGE = 0.95;
+
+  // Each repo gets a unique color via FNV-1a hash of its name → HSL hue.
+  // Same name → same color across reloads.
+  function uniqueColor(name) {
     let h = 2166136261 >>> 0;
     for (let k = 0; k < name.length; k++) {
-      h ^= name.charCodeAt(k);
-      h = Math.imul(h, 16777619) >>> 0;
+      h = Math.imul(h ^ name.charCodeAt(k), 16777619) >>> 0;
     }
-    const seed = (h / 0xffffffff + i * GOLDEN) % 1;
-    return new THREE.Color().setHSL(seed, 0.7, 0.58);
+    return new THREE.Color().setHSL(h / 0xffffffff, 0.7, 0.58);
   }
   const colorToCSS = (c) => '#' + c.getHexString();
 
@@ -137,7 +139,7 @@ async function initCity() {
     const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=pushed`);
     repos = await res.json();
     if (!Array.isArray(repos)) repos = [];
-  } catch (_) { repos = []; }
+  } catch { repos = []; }
 
   if (repos.length === 0) {
     loading.innerHTML = '<span style="color:var(--text-dim);font-size:.85rem">Could not load repositories.</span>';
@@ -150,7 +152,7 @@ async function initCity() {
       const link = res.headers.get('Link') || '';
       const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
       return m ? parseInt(m[1], 10) : 1;
-    } catch (_) { return 1; }
+    } catch { return 1; }
   }
 
   const commitResults = await Promise.allSettled(repos.map(r => fetchCommits(r.name)));
@@ -170,6 +172,7 @@ async function initCity() {
   const SPACING  = 2.4;   // grid step
   const gridW = COLS * SPACING;
   const gridD = ROWS * SPACING;
+  const gridMax = Math.max(gridW, gridD);
 
   const maxC = Math.max(...buildings.map(b => b.commits));
   const MIN_H = 1.5, MAX_H = 9.5;
@@ -182,7 +185,7 @@ async function initCity() {
     b.height = MIN_H + (b.commits / maxC) * (MAX_H - MIN_H);
     b.seed = i;
     b.animDelay = (i / N) * 0.38;
-    b.color = uniqueColor(b.name, i);
+    b.color = uniqueColor(b.name);
   });
 
   // ── Three.js renderer, scene, camera ───────────────────────────
@@ -194,10 +197,10 @@ async function initCity() {
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(SKY_COLOR);
-  scene.fog = new THREE.Fog(SKY_COLOR, Math.max(gridW, gridD) * 0.6, Math.max(gridW, gridD) * 2.4);
+  scene.fog = new THREE.Fog(SKY_COLOR, gridMax * 0.6, gridMax * 2.4);
 
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
-  const camDist = Math.max(gridW, gridD) * 1.15;
+  const camDist = gridMax * 1.15;
   camera.position.set(camDist, camDist * 0.78, camDist);
 
   // ── Lights ─────────────────────────────────────────────────────
@@ -211,7 +214,7 @@ async function initCity() {
   scene.add(fillLight);
 
   // ── Ground & grid ──────────────────────────────────────────────
-  const groundSize = Math.max(gridW, gridD) * 6;
+  const groundSize = gridMax * 6;
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(groundSize, groundSize),
     new THREE.MeshStandardMaterial({ color: 0x0a0f18, roughness: 1, metalness: 0 })
@@ -229,7 +232,7 @@ async function initCity() {
   {
     const count = 420;
     const pos = new Float32Array(count * 3);
-    const r = Math.max(gridW, gridD) * 4;
+    const r = gridMax * 4;
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI * 0.45 + 0.02;
@@ -274,47 +277,46 @@ async function initCity() {
   scene.add(buildingsGroup);
   const buildingMeshes = [];
 
+  // Shared across all buildings — the bottom never shows once anchored to the ground.
+  const bottomMat = new THREE.MeshStandardMaterial({ color: 0x05080d, roughness: 1, metalness: 0 });
+  const WHITE = new THREE.Color(0xffffff);
+
   buildings.forEach(b => {
-    const base = b.color;
     const floors = Math.max(3, Math.round(b.height / 0.32));
     const winTex = makeWindowTexture(3, floors, b.seed);
 
     const sideMat = new THREE.MeshStandardMaterial({
-      color: base.clone().multiplyScalar(0.32),
+      color: b.color.clone().multiplyScalar(0.32),
       map: winTex,
       emissive: 0xffd980,
       emissiveMap: winTex,
-      emissiveIntensity: 0.55,
+      emissiveIntensity: IDLE_EMISSIVE,
       roughness: 0.78,
       metalness: 0.08,
     });
     const topMat = new THREE.MeshStandardMaterial({
-      color: base.clone().multiplyScalar(0.85),
-      emissive: base.clone(),
-      emissiveIntensity: 0.22,
+      color: b.color.clone().multiplyScalar(0.85),
+      emissive: b.color.clone(),
+      emissiveIntensity: IDLE_TOP_EMISSIVE,
       roughness: 0.5,
       metalness: 0.2,
     });
-    const bottomMat = new THREE.MeshStandardMaterial({ color: 0x05080d, roughness: 1, metalness: 0 });
 
     const geo = new THREE.BoxGeometry(TILE, b.height, TILE);
     geo.translate(0, b.height / 2, 0); // origin at bottom for grow-from-floor scaling
     // BoxGeometry material order: +x, -x, +y (top), -y (bottom), +z, -z
-    const mats = [sideMat, sideMat, topMat, bottomMat, sideMat, sideMat];
-    const mesh = new THREE.Mesh(geo, mats);
+    const mesh = new THREE.Mesh(geo, [sideMat, sideMat, topMat, bottomMat, sideMat, sideMat]);
     mesh.position.set(b.x, 0, b.z);
     mesh.scale.y = 0.001;
 
-    const edges = new THREE.EdgesGeometry(geo, 1);
     const edgeMat = new THREE.LineBasicMaterial({
-      color: base.clone().lerp(new THREE.Color(0xffffff), 0.35),
+      color: b.color.clone().lerp(WHITE, 0.35),
       transparent: true,
-      opacity: 0.45,
+      opacity: IDLE_EDGE,
     });
-    const edgeLines = new THREE.LineSegments(edges, edgeMat);
-    mesh.add(edgeLines);
+    mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), edgeMat));
 
-    mesh.userData = { b, sideMat, topMat, edgeMat, baseEmissive: 0.55, baseTopEmissive: 0.22, baseEdge: 0.45 };
+    mesh.userData = { b, sideMat, topMat, edgeMat };
     buildingsGroup.add(mesh);
     buildingMeshes.push(mesh);
   });
@@ -325,7 +327,7 @@ async function initCity() {
   controls.dampingFactor = 0.08;
   controls.target.set(0, 1.5, 0);
   controls.minDistance = 6;
-  controls.maxDistance = Math.max(gridW, gridD) * 2.6;
+  controls.maxDistance = gridMax * 2.6;
   controls.maxPolarAngle = Math.PI * 0.49;
   controls.minPolarAngle = Math.PI * 0.08;
   controls.zoomSpeed = 0.8;
@@ -405,15 +407,15 @@ async function initCity() {
   function setHover(mesh) {
     if (hovered === mesh) return;
     if (hovered) {
-      hovered.userData.sideMat.emissiveIntensity = hovered.userData.baseEmissive;
-      hovered.userData.topMat.emissiveIntensity  = hovered.userData.baseTopEmissive;
-      hovered.userData.edgeMat.opacity           = hovered.userData.baseEdge;
+      hovered.userData.sideMat.emissiveIntensity = IDLE_EMISSIVE;
+      hovered.userData.topMat.emissiveIntensity  = IDLE_TOP_EMISSIVE;
+      hovered.userData.edgeMat.opacity           = IDLE_EDGE;
     }
     hovered = mesh;
     if (hovered) {
-      hovered.userData.sideMat.emissiveIntensity = 1.1;
-      hovered.userData.topMat.emissiveIntensity  = 0.6;
-      hovered.userData.edgeMat.opacity           = 0.95;
+      hovered.userData.sideMat.emissiveIntensity = HOVER_EMISSIVE;
+      hovered.userData.topMat.emissiveIntensity  = HOVER_TOP_EMISSIVE;
+      hovered.userData.edgeMat.opacity           = HOVER_EDGE;
     }
   }
 
@@ -466,48 +468,38 @@ async function initCity() {
   let touchStartX = 0, touchStartY = 0;
   let lastTouchedMesh = null;
 
+  function clearSelection() {
+    lastTouchedMesh = null;
+    setHover(null);
+    hideTooltip();
+  }
+
   canvas.addEventListener('touchstart', (e) => {
     if (e.touches.length !== 1) return;
-    const t = e.touches[0];
-    touchStartX = t.clientX;
-    touchStartY = t.clientY;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
   }, { passive: true });
 
   canvas.addEventListener('touchend', (e) => {
-    if (e.changedTouches.length === 0) return;
     const t = e.changedTouches[0];
     const dx = t.clientX - touchStartX;
     const dy = t.clientY - touchStartY;
-    const moved = Math.sqrt(dx * dx + dy * dy) > 10;
-
     recentTouch = true;
     setTimeout(() => { recentTouch = false; }, 500);
 
-    if (moved) {
-      // Drag — let OrbitControls handle it, just clear hover/tooltip
-      lastTouchedMesh = null;
-      setHover(null);
-      hideTooltip();
-      return;
-    }
+    if (Math.hypot(dx, dy) > 10) { clearSelection(); return; }
 
     const mesh = hitTest(t.clientX, t.clientY);
-    if (mesh) {
-      if (lastTouchedMesh === mesh) {
-        openRepo(mesh.userData.b.url);
-        lastTouchedMesh = null;
-        setHover(null);
-        hideTooltip();
-      } else {
-        lastTouchedMesh = mesh;
-        setHover(mesh);
-        const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
-        showTooltip(buildTooltipHTML(mesh.userData.b, extra), t.clientX, t.clientY, true);
-      }
+    if (!mesh) { clearSelection(); return; }
+
+    if (lastTouchedMesh === mesh) {
+      openRepo(mesh.userData.b.url);
+      clearSelection();
     } else {
-      lastTouchedMesh = null;
-      setHover(null);
-      hideTooltip();
+      lastTouchedMesh = mesh;
+      setHover(mesh);
+      const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
+      showTooltip(buildTooltipHTML(mesh.userData.b, extra), t.clientX, t.clientY, true);
     }
   }, { passive: true });
 
@@ -515,21 +507,22 @@ async function initCity() {
   const easeOutExpo = (t) => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
   const BUILDUP_MS = 1800;
   let buildupStart = null;
+  let buildupActive = false;
   let cityVisible  = false;
 
   function tick(now) {
     requestAnimationFrame(tick);
-    if (!cityVisible && buildupStart === null) return;
+    if (!cityVisible) return;
 
     controls.update();
 
-    if (buildupStart !== null) {
+    if (buildupActive) {
       const t = Math.min((now - buildupStart) / BUILDUP_MS, 1);
       buildingMeshes.forEach(mesh => {
         const localT = Math.max(0, Math.min(1, (t - mesh.userData.b.animDelay) / 0.68));
         mesh.scale.y = Math.max(0.001, easeOutExpo(localT));
       });
-      if (t >= 1) buildupStart = -1; // mark "done" so we don't re-evaluate, but keep rendering
+      if (t >= 1) buildupActive = false;
     }
 
     renderer.render(scene, camera);
@@ -544,6 +537,7 @@ async function initCity() {
         triggered = true;
         loading.classList.add('hidden');
         buildupStart = performance.now();
+        buildupActive = true;
       }
     });
   }, { threshold: 0.12 }).observe(document.getElementById('city'));
