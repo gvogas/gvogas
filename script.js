@@ -198,7 +198,7 @@ async function initCity() {
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(SKY_COLOR);
-  scene.fog = new THREE.Fog(SKY_COLOR, gridMax * 0.6, gridMax * 2.4);
+  scene.fog = new THREE.Fog(SKY_COLOR, gridMax * 0.6, gridMax * 3.2);
 
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
   const camDist = gridMax * 1.15;
@@ -335,17 +335,19 @@ async function initCity() {
 
   // ── Mount Royal silhouette + illuminated cross ────────────────
   {
-    const mountGeo = new THREE.SphereGeometry(gridMax * 1.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+    // Sit the silhouette well north of the city — its footprint must clear the building grid.
+    const MOUNT_R = gridMax * 1.4;
+    const mountGeo = new THREE.SphereGeometry(MOUNT_R, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
     mountGeo.scale(1, 0.35, 1);
     const mount = new THREE.Mesh(mountGeo, new THREE.MeshBasicMaterial({ color: 0x0a0d14, fog: true }));
-    mount.position.set(-gridMax * 0.4, 0, -gridMax * 1.6);
+    mount.position.set(-gridMax * 0.5, 0, -gridMax * 2.2);
     scene.add(mount);
 
     // Cross at the summit
     const crossMat = new THREE.MeshStandardMaterial({
       color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.4,
     });
-    const summitY = gridMax * 1.6 * 0.35;
+    const summitY = MOUNT_R * 0.35;
     const pillarH = 3.2;
     const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.32, pillarH, 0.32), crossMat);
     pillar.position.set(mount.position.x, summitY + pillarH / 2, mount.position.z);
