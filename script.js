@@ -115,7 +115,7 @@
 
 // ── City module ───────────────────────────────────────────────────
 async function initCity() {
-  const GH_USER = 'Terminator320';
+  const GH_USER = 'gvogas';
   const canvas  = document.getElementById('city-canvas');
   const loading = document.getElementById('city-loading');
   const tooltip = document.getElementById('city-tooltip');
