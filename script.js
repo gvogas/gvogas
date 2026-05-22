@@ -113,33 +113,23 @@ async function initCity() {
   const canvas  = document.getElementById('city-canvas');
   const loading = document.getElementById('city-loading');
   const tooltip = document.getElementById('city-tooltip');
-  const legend  = document.getElementById('city-legend');
   if (!canvas) return;
 
-  const LANG_COLORS = {
-    'Python':      0x4584b6,
-    'Java':        0xe76f00,
-    'JavaScript':  0xf7df1e,
-    'TypeScript':  0x3178c6,
-    'PHP':         0x8892bf,
-    'C#':          0x239120,
-    'Dart':        0x00d2b8,
-    'HTML':        0xe44b23,
-    'CSS':         0x7b5ea7,
-    'C++':         0xf34b7d,
-    'C':           0x6e7681,
-    'ShaderLab':   0x4a90d9,
-    'Swift':       0xf05138,
-    'Kotlin':      0xa97bff,
-    'Ruby':        0xcc342d,
-    'Go':          0x00acd7,
-    'Rust':        0xdea584,
-  };
-  const DEFAULT_COLOR = 0x4f9cf9;
-  const SKY_COLOR     = 0x070b12;
+  const SKY_COLOR = 0x070b12;
 
-  const hexCSS = (n) => '#' + n.toString(16).padStart(6, '0');
-  const colorOf = (lang) => LANG_COLORS[lang] || DEFAULT_COLOR;
+  // Each building gets a unique vibrant color via golden-ratio HSL distribution.
+  // Stable per name — same repo → same color across reloads.
+  const GOLDEN = 0.6180339887498949;
+  function uniqueColor(name, i) {
+    let h = 2166136261 >>> 0;
+    for (let k = 0; k < name.length; k++) {
+      h ^= name.charCodeAt(k);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    const seed = (h / 0xffffffff + i * GOLDEN) % 1;
+    return new THREE.Color().setHSL(seed, 0.7, 0.58);
+  }
+  const colorToCSS = (c) => '#' + c.getHexString();
 
   // ── Fetch repos & commit counts ────────────────────────────────
   let repos = [];
@@ -192,6 +182,7 @@ async function initCity() {
     b.height = MIN_H + (b.commits / maxC) * (MAX_H - MIN_H);
     b.seed = i;
     b.animDelay = (i / N) * 0.38;
+    b.color = uniqueColor(b.name, i);
   });
 
   // ── Three.js renderer, scene, camera ───────────────────────────
@@ -284,7 +275,7 @@ async function initCity() {
   const buildingMeshes = [];
 
   buildings.forEach(b => {
-    const base = new THREE.Color(colorOf(b.language));
+    const base = b.color;
     const floors = Math.max(3, Math.round(b.height / 0.32));
     const winTex = makeWindowTexture(3, floors, b.seed);
 
@@ -369,10 +360,10 @@ async function initCity() {
   }).observe(canvas.parentElement);
 
   // ── Tooltip helpers (ported from previous code) ────────────────
-  function buildTooltipHTML(b, colorHex, extraHTML = '') {
+  function buildTooltipHTML(b, extraHTML = '') {
     return `
       <div class="city__tooltip-name">${b.name.replace(/-/g,'‑')}</div>
-      <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${hexCSS(colorHex)}"></span>${b.language}</div>
+      <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${colorToCSS(b.color)}"></span>${b.language}</div>
       <div class="city__tooltip-row" style="margin-top:5px;gap:5px">
         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits
@@ -443,8 +434,7 @@ async function initCity() {
     setHover(mesh);
     if (mesh) {
       canvas.style.cursor = 'pointer';
-      const b = mesh.userData.b;
-      showTooltip(buildTooltipHTML(b, colorOf(b.language)), e.clientX, e.clientY);
+      showTooltip(buildTooltipHTML(mesh.userData.b), e.clientX, e.clientY);
     } else {
       canvas.style.cursor = 'grab';
       hideTooltip();
@@ -511,9 +501,8 @@ async function initCity() {
       } else {
         lastTouchedMesh = mesh;
         setHover(mesh);
-        const b = mesh.userData.b;
         const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
-        showTooltip(buildTooltipHTML(b, colorOf(b.language), extra), t.clientX, t.clientY, true);
+        showTooltip(buildTooltipHTML(mesh.userData.b, extra), t.clientX, t.clientY, true);
       }
     } else {
       lastTouchedMesh = null;
@@ -558,13 +547,6 @@ async function initCity() {
       }
     });
   }, { threshold: 0.12 }).observe(document.getElementById('city'));
-
-  // ── Legend ─────────────────────────────────────────────────────
-  const seen = new Map();
-  buildings.forEach(b => { if (!seen.has(b.language)) seen.set(b.language, hexCSS(colorOf(b.language))); });
-  legend.innerHTML = [...seen.entries()].map(([lang, color]) =>
-    `<span class="city__legend-item"><span class="city__legend-dot" style="background:${color}"></span>${lang}</span>`
-  ).join('');
 
   // Kick off the render loop (renders only when section is visible)
   requestAnimationFrame(tick);
