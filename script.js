@@ -169,7 +169,7 @@ async function initCity() {
   const COLS = Math.ceil(Math.sqrt(N * 1.6));
   const ROWS = Math.ceil(N / COLS);
   const TILE     = 1.6;   // building footprint
-  const SPACING  = 2.4;   // grid step
+  const SPACING  = 4.0;   // grid step — wider gap leaves room for streets
   const gridW = COLS * SPACING;
   const gridD = ROWS * SPACING;
   const gridMax = Math.max(gridW, gridD);
@@ -226,8 +226,34 @@ async function initCity() {
   const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x101820, 0x080c14);
   gridHelper.position.y = 0.01;
   gridHelper.material.transparent = true;
-  gridHelper.material.opacity = 0.35;
+  gridHelper.material.opacity = 0.12;
   scene.add(gridHelper);
+
+  // ── Road network ───────────────────────────────────────────────
+  {
+    const ROAD_W = 1.8;
+    const extent = SPACING; // streets continue one cell past city edge
+    const lenX = gridW + 2 * extent;
+    const lenZ = gridD + 2 * extent;
+    const roadMat = new THREE.MeshStandardMaterial({ color: 0x14171f, roughness: 1, metalness: 0 });
+    const roads = new THREE.Group();
+
+    // East-West streets (between building rows)
+    for (let i = 0; i <= ROWS; i++) {
+      const r = new THREE.Mesh(new THREE.PlaneGeometry(lenX, ROAD_W), roadMat);
+      r.rotation.x = -Math.PI / 2;
+      r.position.set(0, 0.02, i * SPACING - gridD / 2);
+      roads.add(r);
+    }
+    // North-South streets (between building columns)
+    for (let j = 0; j <= COLS; j++) {
+      const r = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_W, lenZ), roadMat);
+      r.rotation.x = -Math.PI / 2;
+      r.position.set(j * SPACING - gridW / 2, 0.02, 0);
+      roads.add(r);
+    }
+    scene.add(roads);
+  }
 
   // ── Stars (dome) ───────────────────────────────────────────────
   {
@@ -309,10 +335,9 @@ async function initCity() {
     const positions = [];
     for (let gx = 0; gx <= COLS; gx++) {
       for (let gz = 0; gz <= ROWS; gz++) {
-        if ((gx + gz) % 2 !== 0) continue;
         positions.push(
           gx * SPACING - gridW / 2,
-          0.18,
+          0.22,
           gz * SPACING - gridD / 2
         );
       }
@@ -320,7 +345,7 @@ async function initCity() {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
     const mat = new THREE.PointsMaterial({
-      color: 0xffe4a0, size: 0.5, sizeAttenuation: true,
+      color: 0xffe4a0, size: 0.6, sizeAttenuation: true,
       transparent: true, opacity: 0.9, depthWrite: false,
     });
     scene.add(new THREE.Points(geo, mat));
