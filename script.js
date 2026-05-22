@@ -335,6 +335,12 @@ async function initCity() {
 
     const roads = new THREE.Group();
 
+    // EW and NS planes are stacked with tiny Y offsets so they don't
+    // z-fight in their overlap squares. A plain-asphalt patch then sits
+    // on top of each junction, hiding both roads' painted markings —
+    // real intersections show bare asphalt, not crossed centerlines.
+    const Y_EW = 0.020, Y_NS = 0.021, Y_JCT = 0.022;
+
     // East-West streets (length along world X → U axis on plane)
     for (let i = 0; i <= ROWS; i++) {
       const tex = makeRoadTexture(true);
@@ -342,7 +348,7 @@ async function initCity() {
       const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0 });
       const r = new THREE.Mesh(new THREE.PlaneGeometry(lenX, ROAD_W), mat);
       r.rotation.x = -Math.PI / 2;
-      r.position.set(0, 0.02, i * SPACING - gridD / 2);
+      r.position.set(0, Y_EW, i * SPACING - gridD / 2);
       roads.add(r);
     }
     // North-South streets (length along world Z → V axis on plane)
@@ -352,9 +358,23 @@ async function initCity() {
       const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 1, metalness: 0 });
       const r = new THREE.Mesh(new THREE.PlaneGeometry(ROAD_W, lenZ), mat);
       r.rotation.x = -Math.PI / 2;
-      r.position.set(j * SPACING - gridW / 2, 0.02, 0);
+      r.position.set(j * SPACING - gridW / 2, Y_NS, 0);
       roads.add(r);
     }
+
+    // Plain-asphalt intersection patches — color matches the road's
+    // base asphalt (#2a3040) so the patches blend into the surface.
+    const jctGeo = new THREE.PlaneGeometry(ROAD_W, ROAD_W);
+    const jctMat = new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 1, metalness: 0 });
+    for (let i = 0; i <= ROWS; i++) {
+      for (let j = 0; j <= COLS; j++) {
+        const patch = new THREE.Mesh(jctGeo, jctMat);
+        patch.rotation.x = -Math.PI / 2;
+        patch.position.set(j * SPACING - gridW / 2, Y_JCT, i * SPACING - gridD / 2);
+        roads.add(patch);
+      }
+    }
+
     scene.add(roads);
   }
 
