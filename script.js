@@ -115,7 +115,7 @@ async function initCity() {
   const tooltip = document.getElementById('city-tooltip');
   if (!canvas) return;
 
-  const SKY_COLOR = 0x070b12;
+  const SKY_COLOR = 0x0a0f1c;  // slightly bluer than pure dark — cold night air
 
   // Hover/idle material constants (same for every building).
   const IDLE_EMISSIVE = 0.55, HOVER_EMISSIVE = 1.1;
@@ -186,6 +186,7 @@ async function initCity() {
     b.seed = i;
     b.animDelay = (i / N) * 0.38;
     b.color = uniqueColor(b.name);
+    b.isSignature = (i === 0); // tallest = 1000-de-la-Gauchetière-style spire
   });
 
   // ── Three.js renderer, scene, camera ───────────────────────────
@@ -222,7 +223,7 @@ async function initCity() {
   ground.rotation.x = -Math.PI / 2;
   scene.add(ground);
 
-  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x1a2434, 0x111722);
+  const gridHelper = new THREE.GridHelper(groundSize, Math.floor(groundSize / SPACING), 0x101820, 0x080c14);
   gridHelper.position.y = 0.01;
   gridHelper.material.transparent = true;
   gridHelper.material.opacity = 0.35;
@@ -246,6 +247,161 @@ async function initCity() {
       color: 0xdde8f5, size: 0.45, sizeAttenuation: true, transparent: true, opacity: 0.7, depthWrite: false,
     });
     scene.add(new THREE.Points(geo, mat));
+  }
+
+  // ── Mount Royal silhouette + illuminated cross ────────────────
+  {
+    const mountGeo = new THREE.SphereGeometry(gridMax * 1.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2);
+    mountGeo.scale(1, 0.35, 1);
+    const mount = new THREE.Mesh(mountGeo, new THREE.MeshBasicMaterial({ color: 0x0a0d14, fog: true }));
+    mount.position.set(-gridMax * 0.4, 0, -gridMax * 1.6);
+    scene.add(mount);
+
+    // Cross at the summit
+    const crossMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.4,
+    });
+    const summitY = gridMax * 1.6 * 0.35;
+    const pillarH = 3.2;
+    const pillar = new THREE.Mesh(new THREE.BoxGeometry(0.32, pillarH, 0.32), crossMat);
+    pillar.position.set(mount.position.x, summitY + pillarH / 2, mount.position.z);
+    scene.add(pillar);
+    const arm = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.32, 0.32), crossMat);
+    arm.position.set(mount.position.x, summitY + pillarH * 0.7, mount.position.z);
+    scene.add(arm);
+  }
+
+  // ── Bell Centre arena (south of the tower cluster) ────────────
+  {
+    const bellR = TILE * 1.6;
+    const segments = 24;
+    const bodyH = 1.7;
+    const stripeH = 0.18;
+    const capH = 0.42;
+
+    const body = new THREE.Mesh(
+      new THREE.CylinderGeometry(bellR, bellR, bodyH, segments),
+      new THREE.MeshStandardMaterial({ color: 0x4a5660, roughness: 0.55, metalness: 0.35 })
+    );
+    body.position.y = bodyH / 2;
+
+    const stripe = new THREE.Mesh(
+      new THREE.CylinderGeometry(bellR * 1.005, bellR * 1.005, stripeH, segments),
+      new THREE.MeshStandardMaterial({ color: 0xc8102e, emissive: 0xc8102e, emissiveIntensity: 0.4 })
+    );
+    stripe.position.y = bodyH - stripeH / 2 - 0.12;
+
+    const cap = new THREE.Mesh(
+      new THREE.CylinderGeometry(bellR * 0.95, bellR * 0.92, capH, segments),
+      new THREE.MeshStandardMaterial({ color: 0x2a3038, roughness: 0.6, metalness: 0.3 })
+    );
+    cap.position.y = bodyH + capH / 2;
+
+    const bell = new THREE.Group();
+    bell.add(body); bell.add(stripe); bell.add(cap);
+    bell.scale.set(1.7, 1, 1); // elliptical footprint
+    bell.position.set(0, 0, gridD / 2 + TILE * 1.6);
+    scene.add(bell);
+  }
+
+  // ── Street lights at grid intersections ───────────────────────
+  {
+    const positions = [];
+    for (let gx = 0; gx <= COLS; gx++) {
+      for (let gz = 0; gz <= ROWS; gz++) {
+        if ((gx + gz) % 2 !== 0) continue;
+        positions.push(
+          gx * SPACING - gridW / 2,
+          0.18,
+          gz * SPACING - gridD / 2
+        );
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    const mat = new THREE.PointsMaterial({
+      color: 0xffe4a0, size: 0.5, sizeAttenuation: true,
+      transparent: true, opacity: 0.9, depthWrite: false,
+    });
+    scene.add(new THREE.Points(geo, mat));
+  }
+
+  // ── Deterministic per-repo hash → [0, 1) (used for roof picks) ─
+  function rand(seed, n = 0) {
+    let h = (Math.imul(seed + 1, 2654435761) ^ Math.imul(n + 1, 40503)) >>> 0;
+    h ^= h >>> 16;
+    h = Math.imul(h, 0x85ebca6b) >>> 0;
+    h ^= h >>> 13;
+    return (h >>> 0) / 0xffffffff;
+  }
+
+  // ── Roof variants (children of the building mesh, animate together) ─
+  function addRoof(mesh, b, sideMat, topMat, edgeMat) {
+    if (b.isSignature) {
+      // 1000 de la Gauchetière — copper-green pyramid
+      const h = Math.min(1.8, b.height * 0.24);
+      const geo = new THREE.ConeGeometry(TILE * 0.62, h, 4);
+      geo.rotateY(Math.PI / 4);
+      geo.translate(0, b.height + h / 2, 0);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x4a7d6a, emissive: 0x274a3e, emissiveIntensity: 0.25,
+        roughness: 0.45, metalness: 0.55,
+      });
+      mesh.add(new THREE.Mesh(geo, mat));
+      return;
+    }
+
+    const roll = rand(b.seed, 1);
+
+    if (roll < 0.30) return; // flat — most common
+
+    if (b.height > 6 && roll < 0.35) {
+      // setback — smaller box stacked on top (Sun Life Building style)
+      const sH = b.height * 0.2, sW = TILE * 0.7;
+      const sGeo = new THREE.BoxGeometry(sW, sH, sW);
+      sGeo.translate(0, b.height + sH / 2, 0);
+      mesh.add(new THREE.Mesh(sGeo, [sideMat, sideMat, topMat, topMat, sideMat, sideMat]));
+      mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(sGeo, 1), edgeMat));
+      return;
+    }
+
+    if (roll < 0.50) {
+      // small pyramid — modernist gray-blue
+      const h = Math.min(0.9, b.height * 0.11);
+      const geo = new THREE.ConeGeometry(TILE * 0.5, h, 4);
+      geo.rotateY(Math.PI / 4);
+      geo.translate(0, b.height + h / 2, 0);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x4a5a6a, emissive: 0x202a36, emissiveIntensity: 0.15,
+        roughness: 0.6, metalness: 0.3,
+      });
+      mesh.add(new THREE.Mesh(geo, mat));
+      return;
+    }
+
+    if (roll < 0.75) {
+      // antenna — thin tapered cylinder with red-glow tip
+      const h = Math.min(1.6, 0.7 + b.height * 0.12);
+      const geo = new THREE.CylinderGeometry(0.018, 0.045, h, 6);
+      geo.translate(0, b.height + h / 2, 0);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x2e2e2e, emissive: 0xff3322, emissiveIntensity: 0.5,
+        roughness: 0.6, metalness: 0.4,
+      });
+      mesh.add(new THREE.Mesh(geo, mat));
+      return;
+    }
+
+    // rooftopBox — small mechanical unit
+    const rH = 0.22 + rand(b.seed, 2) * 0.18;
+    const rW = TILE * (0.32 + rand(b.seed, 3) * 0.22);
+    const rD = TILE * (0.32 + rand(b.seed, 4) * 0.22);
+    const ox = (rand(b.seed, 5) - 0.5) * (TILE - rW) * 0.7;
+    const oz = (rand(b.seed, 6) - 0.5) * (TILE - rD) * 0.7;
+    const rGeo = new THREE.BoxGeometry(rW, rH, rD);
+    rGeo.translate(ox, b.height + rH / 2, oz);
+    mesh.add(new THREE.Mesh(rGeo, topMat));
+    mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(rGeo, 1), edgeMat));
   }
 
   // ── Window texture (procedural CanvasTexture per building) ─────
@@ -315,6 +471,8 @@ async function initCity() {
       opacity: IDLE_EDGE,
     });
     mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 1), edgeMat));
+
+    addRoof(mesh, b, sideMat, topMat, edgeMat);
 
     mesh.userData = { b, sideMat, topMat, edgeMat };
     buildingsGroup.add(mesh);
