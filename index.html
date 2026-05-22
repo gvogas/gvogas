@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>George Vogas — CS Student & Developer</title>
+  <meta name="description" content="Portfolio of George Vogas — CS student building production-quality software across mobile, web, desktop, and game development." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">GV</a>
+      <button class="nav__hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#stack">Stack</a></li>
+        <li><a href="#study">Study</a></li>
+        <li><a href="#contact" class="nav__cta">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <p class="hero__eyebrow reveal">Computer Science Student · Vanier College · Montréal, QC</p>
+        <h1 class="hero__name reveal">Hey, I'm George.</h1>
+        <p class="hero__tagline reveal">
+          I build real, production-quality software — not just assignments.<br />
+          From commissioned mobile apps to game engines, my work spans the full stack and beyond.
+        </p>
+        <div class="hero__links reveal">
+          <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener" class="btn btn--primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="https://github.com/Terminator320" target="_blank" rel="noopener" class="btn btn--secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+          <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener" class="btn btn--secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Devpost
+          </a>
+        </div>
+      </div>
+      <div class="hero__scroll-hint" aria-hidden="true">
+        <span></span>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <h2 class="section__title reveal">About Me</h2>
+        <div class="about__grid">
+          <div class="about__text reveal">
+            <p>
+              I'm a CS student who gravitates toward projects that solve real problems for real users.
+              My background covers full-stack web development, mobile apps, desktop software, and database design —
+              with a strong emphasis on clean architecture and practical patterns.
+            </p>
+            <p>
+              I've shipped a <strong>client-commissioned production app</strong> still actively in use,
+              collaborated on a <strong>Unity game</strong> with custom HLSL shaders, and built everything
+              from MVC web platforms to modular JavaScript e-commerce frontends entirely from scratch.
+            </p>
+          </div>
+          <div class="about__callout reveal">
+            <p class="about__callout-label">I care about</p>
+            <ul class="about__callout-list">
+              <li>Clean code structure</li>
+              <li>Meaningful UX</li>
+              <li>Building things that actually work outside the classroom</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section class="section section--alt" id="projects">
+      <div class="container">
+        <h2 class="section__title reveal">Projects</h2>
+        <div class="projects__grid">
+
+          <!-- Scheduling App -->
+          <article class="card reveal">
+            <div class="card__header">
+              <span class="card__icon">📅</span>
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--production">Production</span>
+                  <span class="tag tag--commissioned">Commissioned</span>
+                </div>
+                <a href="https://github.com/Terminator320/Scheduling-App" target="_blank" rel="noopener" class="card__link">
+                  View Repo →
+                </a>
+              </div>
+            </div>
+            <h3 class="card__title">Scheduling App</h3>
+            <div class="card__stack">
+              <span class="pill">Flutter</span>
+              <span class="pill">Firebase</span>
+              <span class="pill">Google Places API</span>
+              <span class="pill">Dart</span>
+              <span class="pill">Android</span>
+            </div>
+            <p class="card__desc">
+              A real business application built for a service company to replace paper-based scheduling and fragmented team communication. Not a demo — actively used.
+            </p>
+            <ul class="card__bullets">
+              <li>Real-time appointment calendar with per-employee color coding and admin/employee role separation</li>
+              <li>Full client directory with accent-insensitive search across large record sets</li>
+              <li>In-app photo capture, auto-compression, and background upload to Firebase Storage</li>
+              <li>Invite-only employee onboarding with pre-whitelisted email registration</li>
+              <li>Light/dark mode, text scaling, multi-language support — all persisted across sessions</li>
+            </ul>
+            <p class="card__arch"><strong>Architecture:</strong> Feature-first folder structure; all DB access mediated through per-feature service classes — screens never query Firestore directly.</p>
+          </article>
+
+          <!-- TicketMaestrix -->
+          <article class="card reveal">
+            <div class="card__header">
+              <span class="card__icon">🎟️</span>
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--team">Team</span>
+                  <span class="tag tag--deployed">Deployed</span>
+                </div>
+                <a href="https://github.com/Terminator320/Ticketmaestrix" target="_blank" rel="noopener" class="card__link">
+                  View Repo →
+                </a>
+              </div>
+            </div>
+            <h3 class="card__title">TicketMaestrix</h3>
+            <div class="card__stack">
+              <span class="pill">PHP</span>
+              <span class="pill">Twig</span>
+              <span class="pill">Slim MVC</span>
+              <span class="pill">MySQL</span>
+              <span class="pill">GitHub Actions</span>
+              <span class="pill">cPanel</span>
+            </div>
+            <p class="card__desc">
+              A full-stack event ticketing platform — users browse and purchase tickets for concerts, raffles, and movies; admins manage events, availability, and transactions.
+            </p>
+            <ul class="card__bullets">
+              <li>User accounts with event browsing, ticket purchase, and order history</li>
+              <li>Admin dashboard for event creation, ticket inventory control, and transaction monitoring</li>
+              <li>Custom Slim MVC framework with Twig templating — no off-the-shelf CMS</li>
+              <li>Internationalization support and CI/CD pipeline via GitHub Actions deploying to cPanel</li>
+            </ul>
+            <p class="card__arch"><strong>Team:</strong> George Vogas · Fadwa Shalby · Lucas Coveyduck</p>
+          </article>
+
+          <!-- AI Study Assistant -->
+          <article class="card reveal">
+            <div class="card__header">
+              <span class="card__icon">🤖</span>
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--hackathon">Hackathon</span>
+                  <span class="tag tag--team">Team</span>
+                </div>
+                <div class="card__links-multi">
+                  <a href="https://github.com/Terminator320/AI-Study-Assistant" target="_blank" rel="noopener" class="card__link">Repo →</a>
+                  <a href="https://devpost.com/software/ai-study-assistant-giursf" target="_blank" rel="noopener" class="card__link">Devpost →</a>
+                </div>
+              </div>
+            </div>
+            <h3 class="card__title">AI Study Assistant</h3>
+            <div class="card__stack">
+              <span class="pill">Python</span>
+              <span class="pill">FastAPI</span>
+              <span class="pill">Groq / LLaMA 3.3</span>
+              <span class="pill">Tavily</span>
+              <span class="pill">SQLite</span>
+              <span class="pill">Vanilla JS</span>
+            </div>
+            <p class="card__desc">
+              A gamified, AI-powered study companion built at MariHacks. Drop in any topic plus optional notes, PDFs, or slides — the app generates study materials and wraps it in a coin economy, plant pet, and optional Spotify playback.
+            </p>
+            <ul class="card__bullets">
+              <li>AI research agent (Tavily) + content agent (Groq/LLaMA 3.3) generate structured notes, flashcards, and quiz questions at multiple difficulty levels</li>
+              <li>Personalized study plan with priority tagging, extra time auto-allocated to weak areas</li>
+              <li>Supports uploaded PDF, PPTX, TXT, and MD files alongside web research</li>
+              <li>Coin economy, growable plant pet with tier skins, and Spotify Connect integration</li>
+              <li>JWT auth, rate limiting, Fernet-encrypted Spotify tokens, full pytest async coverage</li>
+            </ul>
+            <p class="card__arch"><strong>Team:</strong> George Vogas + 3 collaborators</p>
+          </article>
+
+          <!-- Point-of-Sales -->
+          <article class="card reveal">
+            <div class="card__header">
+              <span class="card__icon">🖥️</span>
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--academic">Academic</span>
+                </div>
+                <a href="https://github.com/Terminator320/Point-of-Sales_Patterns" target="_blank" rel="noopener" class="card__link">
+                  View Repo →
+                </a>
+              </div>
+            </div>
+            <h3 class="card__title">Point-of-Sales Patterns</h3>
+            <div class="card__stack">
+              <span class="pill">Java</span>
+              <span class="pill">JavaFX</span>
+              <span class="pill">MySQL</span>
+              <span class="pill">Maven</span>
+              <span class="pill">JDK 24</span>
+            </div>
+            <p class="card__desc">
+              A full desktop POS system that's also a showcase of applied software design patterns — built to prove the concepts, not just describe them.
+            </p>
+            <ul class="card__bullets">
+              <li>Multi-screen JavaFX GUI: main menu, order flow, inventory management, sales analytics, and payment</li>
+              <li>Factory Method pattern for payment processing — Cash, Debit, and Credit as concrete factories</li>
+              <li>Multithreaded profit calculator with semaphore synchronization for safe aggregation</li>
+              <li>MySQL-backed inventory and sales with full SQL schema and seed data included</li>
+            </ul>
+          </article>
+
+          <!-- The Rogue Market -->
+          <article class="card reveal">
+            <div class="card__header">
+              <span class="card__icon">🌌</span>
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--academic">Academic</span>
+                </div>
+                <a href="https://github.com/Terminator320/Star-wars-Interactive-Web-Application" target="_blank" rel="noopener" class="card__link">
+                  View Repo →
+                </a>
+              </div>
+            </div>
+            <h3 class="card__title">The Rogue Market</h3>
+            <div class="card__stack">
+              <span class="pill">JavaScript</span>
+              <span class="pill">HTML</span>
+              <span class="pill">CSS</span>
+              <span class="pill">JSON</span>
+              <span class="pill">XML</span>
+            </div>
+            <p class="card__desc">
+              A fully client-side e-commerce simulation with a Star Wars–inspired UI — 12 pages, modular JS architecture, zero backend.
+            </p>
+            <ul class="card__bullets">
+              <li>Live product search with suggestion dropdown and highlighted infinite-scroll results</li>
+              <li>Shopping cart with per-item quantity control, subtotal, and localStorage persistence</li>
+              <li>Full checkout flow — tax calculation, payment method validation, order confirmation</li>
+              <li>Cookie-based user profile system with editable avatar</li>
+              <li>Modular JS: AuthModel, CartManagement, ProductModel, SearchModel, FormValidation</li>
+            </ul>
+          </article>
+
+          <!-- Last Signal -->
+          <article class="card reveal">
+            <div class="card__header">
+              <span class="card__icon">🎮</span>
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--contributor">Contributor</span>
+                </div>
+                <a href="https://github.com/alexder204/LastSignal" target="_blank" rel="noopener" class="card__link">
+                  View Repo →
+                </a>
+              </div>
+            </div>
+            <h3 class="card__title">Last Signal</h3>
+            <div class="card__stack">
+              <span class="pill">Unity</span>
+              <span class="pill">C#</span>
+              <span class="pill">ShaderLab</span>
+              <span class="pill">HLSL</span>
+            </div>
+            <p class="card__desc">
+              A collaborative Unity game project. Contributed to gameplay systems and rendering — the repo is primarily ShaderLab (50%) and HLSL (10%), meaning significant custom shader and visual effects work alongside core C# game logic.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="section" id="stack">
+      <div class="container">
+        <h2 class="section__title reveal">Tech Stack</h2>
+        <div class="stack__groups">
+
+          <div class="stack__group reveal">
+            <h3 class="stack__group-title">Languages</h3>
+            <div class="stack__pills">
+              <span class="pill pill--lang">Python</span>
+              <span class="pill pill--lang">Java</span>
+              <span class="pill pill--lang">C#</span>
+              <span class="pill pill--lang">Dart</span>
+              <span class="pill pill--lang">JavaScript</span>
+              <span class="pill pill--lang">PHP</span>
+              <span class="pill pill--lang">HTML5</span>
+              <span class="pill pill--lang">CSS3</span>
+            </div>
+          </div>
+
+          <div class="stack__group reveal">
+            <h3 class="stack__group-title">Frameworks &amp; Platforms</h3>
+            <div class="stack__pills">
+              <span class="pill pill--framework">FastAPI</span>
+              <span class="pill pill--framework">Flutter</span>
+              <span class="pill pill--framework">.NET</span>
+              <span class="pill pill--framework">JavaFX</span>
+              <span class="pill pill--framework">Unity</span>
+              <span class="pill pill--framework">jQuery</span>
+              <span class="pill pill--framework">Apache</span>
+            </div>
+          </div>
+
+          <div class="stack__group reveal">
+            <h3 class="stack__group-title">Data &amp; Infrastructure</h3>
+            <div class="stack__pills">
+              <span class="pill pill--infra">Firebase</span>
+              <span class="pill pill--infra">MySQL</span>
+              <span class="pill pill--infra">Linux</span>
+              <span class="pill pill--infra">GitHub Actions</span>
+              <span class="pill pill--infra">cPanel</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Areas of Study -->
+    <section class="section section--alt" id="study">
+      <div class="container">
+        <h2 class="section__title reveal">Areas of Study</h2>
+        <div class="study__grid">
+
+          <div class="study__card reveal">
+            <span class="study__icon">⚙️</span>
+            <h3 class="study__title">Software Development</h3>
+            <p class="study__skills">OOP, Design Patterns (Factory, MVC, Observer), multithreading &amp; synchronization</p>
+          </div>
+
+          <div class="study__card reveal">
+            <span class="study__icon">📱</span>
+            <h3 class="study__title">Mobile Development</h3>
+            <p class="study__skills">Flutter / Dart, Firebase (Auth, Firestore, Storage, App Check), offline-first architecture</p>
+          </div>
+
+          <div class="study__card reveal">
+            <span class="study__icon">🌐</span>
+            <h3 class="study__title">Web Development</h3>
+            <p class="study__skills">Full-stack PHP/MySQL, REST APIs, modular JavaScript, Twig templating, responsive CSS</p>
+          </div>
+
+          <div class="study__card reveal">
+            <span class="study__icon">🗄️</span>
+            <h3 class="study__title">Database Design</h3>
+            <p class="study__skills">Schema design, normalization, stored procedures, MySQL / MariaDB / Firestore</p>
+          </div>
+
+          <div class="study__card reveal">
+            <span class="study__icon">🐧</span>
+            <h3 class="study__title">Systems</h3>
+            <p class="study__skills">Linux/Unix scripting, Apache, cPanel deployment, CI/CD with GitHub Actions</p>
+          </div>
+
+          <div class="study__card reveal">
+            <span class="study__icon">🎮</span>
+            <h3 class="study__title">Game Development</h3>
+            <p class="study__skills">Unity, C# game logic, ShaderLab / HLSL custom shaders</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section contact" id="contact">
+      <div class="container">
+        <div class="contact__inner reveal">
+          <p class="contact__sub">Open to collaboration and internship opportunities</p>
+          <h2 class="contact__heading">Always building something.</h2>
+          <p class="contact__body">
+            If you have an interesting project, an internship opening, or just want to talk tech — reach out.
+          </p>
+          <div class="contact__links">
+            <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener" class="btn btn--primary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              Let's Connect
+            </a>
+            <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener" class="btn btn--secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              My Projects on Devpost
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p class="footer__copy">George Vogas &copy; 2025</p>
+      <div class="footer__links">
+        <a href="https://github.com/Terminator320" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://devpost.com/Terminator320" target="_blank" rel="noopener">Devpost</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
