@@ -133,34 +133,19 @@ async function initCity() {
   }
   const colorToCSS = (c) => '#' + c.getHexString();
 
-  // Lazy commit-count fetch — one request per repo, only when hovered.
-  // Cached per page load so repeated hovers don't refetch. Stores the
-  // Promise while in-flight so concurrent hovers coalesce.
-  const commitCache = new Map();
+  // Per-repo commit count from the Link: rel="last" header on /commits.
+  // Returns the count, or null on any failure (404, 403/rate-limit, network).
   async function fetchCommitCount(name) {
-    const res = await fetch(`https://api.github.com/repos/${GH_USER}/${name}/commits?per_page=1`);
-    if (!res.ok) return null;
-    const link = res.headers.get('Link') || '';
-    const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
-    return m ? parseInt(m[1], 10) : 1;
-  }
-  function ensureCommits(b) {
-    if (commitCache.has(b.name)) {
-      const v = commitCache.get(b.name);
-      return v && typeof v.then === 'function' ? v : null;
-    }
-    const p = fetchCommitCount(b.name)
-      .catch(() => null)
-      .then(n => {
-        commitCache.set(b.name, n);
-        b.commits = n;
-        return n;
-      });
-    commitCache.set(b.name, p);
-    return p;
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GH_USER}/${name}/commits?per_page=1`);
+      if (!res.ok) return null;
+      const link = res.headers.get('Link') || '';
+      const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
+      return m ? parseInt(m[1], 10) : 1;
+    } catch { return null; }
   }
 
-  // ── Fetch repos (single request — no per-repo fan-out) ─────────
+  // ── Fetch repos ────────────────────────────────────────────────
   let repos = [];
   try {
     const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=pushed`);
@@ -173,26 +158,30 @@ async function initCity() {
     return;
   }
 
-  // Tower weight comes entirely from data /repos already returned:
-  //   sizeScore   — log-damped KB of code, so one asset-heavy repo
-  //                 doesn't flatten the rest of the skyline.
-  //   recencyBoost — small additive bump for repos pushed in the last
-  //                 year, scaled linearly toward zero across that window.
+  // Fetch commit counts in parallel. Any 403 (rate-limit) or other
+  // failure resolves to null; that tower falls back to a size+recency
+  // weight so the skyline still renders end-to-end.
+  const commitResults = await Promise.allSettled(
+    repos.map(r => fetchCommitCount(r.name))
+  );
+
   const RECENCY_W = 1.5;
   const now = Date.now();
-  const buildings = repos.map(r => {
-    const sizeKB     = r.size || 0;
-    const pushedAt   = r.pushed_at || null;
-    const sizeScore  = Math.log1p(sizeKB);
-    const days       = pushedAt
-      ? (now - new Date(pushedAt).getTime()) / (1000 * 60 * 60 * 24)
+  const buildings = repos.map((r, i) => {
+    const result      = commitResults[i];
+    const commits     = result.status === 'fulfilled' ? result.value : null;
+    const sizeKB      = r.size || 0;
+    const sizeScore   = Math.log1p(sizeKB);
+    const days        = r.pushed_at
+      ? (now - new Date(r.pushed_at).getTime()) / (1000 * 60 * 60 * 24)
       : Infinity;
     const recencyBoost = Math.max(0, 1 - days / 365) * RECENCY_W;
     return {
       name:     r.name,
       url:      r.html_url,
       language: r.language || 'Other',
-      weight:   sizeScore + recencyBoost,
+      commits,
+      weight:   typeof commits === 'number' ? commits : sizeScore + recencyBoost,
     };
   });
   buildings.sort((a, b) => b.weight - a.weight);
@@ -730,14 +719,9 @@ async function initCity() {
 
   // ── Tooltip helpers (ported from previous code) ────────────────
   function buildTooltipHTML(b, extraHTML = '') {
-    let commitsCell;
-    if (typeof b.commits === 'number') {
-      commitsCell = `<strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits`;
-    } else {
-      // undefined → not fetched yet (…); null → fetch failed / rate-limited (—)
-      const glyph = b.commits === null ? '—' : '…';
-      commitsCell = `<span style="opacity:.6">${glyph} commits</span>`;
-    }
+    const commitsCell = typeof b.commits === 'number'
+      ? `<strong style="color:var(--text)">${b.commits.toLocaleString()}</strong> commits`
+      : `<span style="opacity:.6">— commits</span>`;
     return `
       <div class="city__tooltip-name">${b.name.replace(/-/g,'‑')}</div>
       <div class="city__tooltip-row"><span class="city__tooltip-dot" style="background:${colorToCSS(b.color)}"></span>${b.language}</div>
@@ -772,25 +756,6 @@ async function initCity() {
   function hideTooltip() {
     tooltip.classList.remove('visible');
     tooltip.setAttribute('aria-hidden', 'true');
-  }
-
-  // Render a building tooltip and, if the commit count hasn't been
-  // fetched yet, refresh just the innerHTML when it arrives — but only
-  // if the same building is still the active target. Layout doesn't
-  // shift because the placeholder row occupies the same line as the
-  // resolved row.
-  function showBuildingTooltip(mesh, x, y, opts = {}) {
-    const { above = false, extra = '', isCurrent = () => true } = opts;
-    const b = mesh.userData.b;
-    showTooltip(buildTooltipHTML(b, extra), x, y, above);
-    const p = ensureCommits(b);
-    if (p) {
-      p.then(() => {
-        if (!tooltip.classList.contains('visible')) return;
-        if (!isCurrent()) return;
-        tooltip.innerHTML = buildTooltipHTML(b, extra);
-      });
-    }
   }
 
   // ── Hover & raycasting ─────────────────────────────────────────
@@ -830,9 +795,7 @@ async function initCity() {
     setHover(mesh);
     if (mesh) {
       canvas.style.cursor = 'pointer';
-      showBuildingTooltip(mesh, e.clientX, e.clientY, {
-        isCurrent: () => hovered === mesh,
-      });
+      showTooltip(buildTooltipHTML(mesh.userData.b), e.clientX, e.clientY);
     } else {
       canvas.style.cursor = 'grab';
       hideTooltip();
@@ -895,11 +858,7 @@ async function initCity() {
       lastTouchedMesh = mesh;
       setHover(mesh);
       const extra = '<div style="margin-top:6px;font-size:.72rem;color:var(--accent);opacity:.8">tap again to open →</div>';
-      showBuildingTooltip(mesh, t.clientX, t.clientY, {
-        above: true,
-        extra,
-        isCurrent: () => lastTouchedMesh === mesh,
-      });
+      showTooltip(buildTooltipHTML(mesh.userData.b, extra), t.clientX, t.clientY, true);
     }
   }, { passive: true });
 
