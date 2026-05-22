@@ -747,6 +747,125 @@ h1, h2, h3, h4 {
 .study__title { font-size: 0.975rem; font-weight: 700; }
 .study__skills { font-size: 0.84rem; color: var(--text-muted); line-height: 1.65; }
 
+/* ===== Commit Skyline ===== */
+.city-section { background: var(--bg-alt); }
+
+.city__subtitle {
+  font-size: 0.925rem;
+  color: var(--text-muted);
+  margin-top: -36px;
+  margin-bottom: 36px;
+  max-width: 560px;
+}
+
+.city__wrap {
+  position: relative;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#city-canvas {
+  display: block;
+  width: 100%;
+  cursor: default;
+}
+
+.city__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--text-dim);
+  font-size: 0.875rem;
+  background: var(--bg-card);
+  z-index: 2;
+  transition: opacity 0.4s ease;
+}
+.city__loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.city__spinner {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.city__tooltip {
+  position: fixed;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 300;
+  min-width: 160px;
+  box-shadow: var(--shadow-card);
+}
+.city__tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.city__tooltip-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.city__tooltip-row {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.city__tooltip-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.city__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 16px;
+}
+.city__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.775rem;
+  color: var(--text-muted);
+}
+.city__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
 /* ===== Contact ===== */
 .contact {
   text-align: center;

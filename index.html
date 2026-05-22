@@ -25,6 +25,7 @@
       <ul class="nav__links" id="nav-links" role="list">
         <li><a href="#about">About</a></li>
         <li><a href="#projects">Projects</a></li>
+        <li><a href="#city">Skyline</a></li>
         <li><a href="#stack">Stack</a></li>
         <li><a href="#study">Study</a></li>
         <li><a href="#contact" class="nav__cta">Contact</a></li>
@@ -306,6 +307,23 @@
           </article>
 
         </div>
+      </div>
+    </section>
+
+    <!-- Commit Skyline -->
+    <section class="section city-section" id="city">
+      <div class="container">
+        <h2 class="section__title reveal">Commit Skyline</h2>
+        <p class="city__subtitle reveal">Every public repo on my GitHub — taller buildings have more commits. Hover to explore, click to open.</p>
+        <div class="city__wrap reveal">
+          <div class="city__loading" id="city-loading" aria-live="polite">
+            <span class="city__spinner" aria-hidden="true"></span>
+            <span>Loading repositories…</span>
+          </div>
+          <canvas id="city-canvas" role="img" aria-label="Isometric skyline of GitHub repositories"></canvas>
+          <div class="city__tooltip" id="city-tooltip" aria-hidden="true"></div>
+        </div>
+        <div class="city__legend" id="city-legend" aria-label="Language color key"></div>
       </div>
     </section>
 
