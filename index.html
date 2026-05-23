@@ -55,14 +55,14 @@
           I build real, production-quality software — not just assignments.<br />
           From commissioned mobile apps to game engines, autonomous bots to box scores — I ship the whole stack.
         </p>
-        <div class="hero__stats" aria-label="Quick stats">
-          <span><strong>6</strong> Projects</span>
+        <div class="hero__stats" id="github-stats-grid" aria-label="Live GitHub stats">
+          <span data-stat="commits"><strong class="github-stats__value"><span class="github-stats__shimmer">000</span></strong> Commits</span>
           <span class="hero__stats-sep" aria-hidden="true">·</span>
-          <span><strong>1</strong> Production App</span>
+          <span data-stat="repos"><strong class="github-stats__value"><span class="github-stats__shimmer">00</span></strong> Repos</span>
           <span class="hero__stats-sep" aria-hidden="true">·</span>
-          <span><strong>8+</strong> Languages</span>
+          <span data-stat="stars"><strong class="github-stats__value"><span class="github-stats__shimmer">00</span></strong> Stars</span>
           <span class="hero__stats-sep" aria-hidden="true">·</span>
-          <span><strong>1</strong> Hackathon</span>
+          <span data-stat="followers"><strong class="github-stats__value"><span class="github-stats__shimmer">00</span></strong> Followers</span>
         </div>
         <div class="hero__links">
           <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
@@ -329,65 +329,14 @@
     <!-- GitHub Status -->
     <section class="section" id="github">
       <div class="container">
-        <h2 class="section__title reveal">GitHub at a Glance</h2>
+        <h2 class="section__title reveal">Contribution Activity</h2>
         <p class="github-stats__subtitle reveal">
-          Live activity from
-          <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">github.com/gvogas</a>
-          — refreshed when you visit.
+          A year of public contributions on
+          <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">github.com/gvogas</a>.
         </p>
-        <div class="github-stats__grid reveal" id="github-stats-grid">
-          <div class="github-stats__card github-stats__card--headline reveal" data-stat="commits">
-            <div class="github-stats__head">
-              <span class="github-stats__icon" aria-hidden="true">
-                <iconify-icon icon="lucide:git-commit-horizontal"></iconify-icon>
-              </span>
-              <span class="github-stats__label">Total Commits</span>
-              <span class="github-stats__pulse" aria-hidden="true" title="Live data"></span>
-            </div>
-            <span class="github-stats__value"><span class="github-stats__shimmer">000,000</span></span>
-            <span class="github-stats__sub">across public repositories</span>
-          </div>
-          <div class="github-stats__card reveal" data-stat="repos">
-            <div class="github-stats__head">
-              <span class="github-stats__icon" aria-hidden="true">
-                <iconify-icon icon="lucide:folder-git-2"></iconify-icon>
-              </span>
-              <span class="github-stats__label">Public Repositories</span>
-            </div>
-            <span class="github-stats__value"><span class="github-stats__shimmer">00</span></span>
-          </div>
-          <div class="github-stats__card reveal" data-stat="stars">
-            <div class="github-stats__head">
-              <span class="github-stats__icon" aria-hidden="true">
-                <iconify-icon icon="lucide:star"></iconify-icon>
-              </span>
-              <span class="github-stats__label">Stars Received</span>
-            </div>
-            <span class="github-stats__value"><span class="github-stats__shimmer">00</span></span>
-          </div>
-          <div class="github-stats__card reveal" data-stat="followers">
-            <div class="github-stats__head">
-              <span class="github-stats__icon" aria-hidden="true">
-                <iconify-icon icon="lucide:users-round"></iconify-icon>
-              </span>
-              <span class="github-stats__label">Followers</span>
-            </div>
-            <span class="github-stats__value"><span class="github-stats__shimmer">00</span></span>
-          </div>
-          <div class="github-stats__card reveal" data-stat="language">
-            <div class="github-stats__head">
-              <span class="github-stats__icon" aria-hidden="true">
-                <iconify-icon icon="lucide:code-2"></iconify-icon>
-              </span>
-              <span class="github-stats__label">Primary Language</span>
-            </div>
-            <span class="github-stats__value"><span class="github-stats__shimmer">JavaScript</span></span>
-          </div>
-        </div>
 
         <div class="github-graph reveal" id="github-graph" aria-busy="true">
           <div class="github-graph__header">
-            <span class="github-graph__title">Contribution Activity</span>
             <span class="github-graph__total"><span class="github-stats__shimmer">0,000</span> contributions</span>
           </div>
           <div class="github-graph__tabs" role="tablist" aria-label="Select contribution year"></div>

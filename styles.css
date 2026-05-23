@@ -375,6 +375,26 @@ h1, h2, h3, h4 {
 .hero__stats strong {
   color: var(--text);
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+/* Hero context: live GitHub value should inherit the inline hero typography,
+   not the larger card styling defined further down. */
+.hero__stats .github-stats__value {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  letter-spacing: 0;
+  color: var(--text);
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+}
+.hero__stats .github-stats__shimmer {
+  min-width: 2.4ch;
+  border-radius: 4px;
+  padding: 0 2px;
+  vertical-align: baseline;
 }
 .hero__stats-sep {
   color: var(--border);
