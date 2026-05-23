@@ -753,7 +753,14 @@ export async function initCity() {
     return hits[0]?.object || null;
   }
 
-  const openRepo = (url) => window.open(url, '_blank', 'noopener,noreferrer');
+  // Open a repo in a new tab. `window.open(url, '_blank', 'noopener…')`
+  // flashes a blank tab in Chrome before navigating, so use an anchor
+  // click — same security guarantees, no blank-tab flash.
+  function openRepo(url) {
+    const a = document.createElement('a');
+    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.click();
+  }
 
   // ── Mouse interaction ──────────────────────────────────────────
   canvas.addEventListener('pointermove', (e) => {
