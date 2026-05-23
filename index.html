@@ -329,31 +329,58 @@
     <!-- GitHub Status -->
     <section class="section" id="github">
       <div class="container">
-        <h2 class="section__title reveal">GitHub Status</h2>
+        <h2 class="section__title reveal">GitHub at a Glance</h2>
         <p class="github-stats__subtitle reveal">
-          Live numbers pulled from
-          <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">github.com/gvogas</a>.
+          Live activity from
+          <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">github.com/gvogas</a>
+          — refreshed when you visit.
         </p>
         <div class="github-stats__grid reveal" id="github-stats-grid">
           <div class="github-stats__card github-stats__card--headline reveal" data-stat="commits">
-            <span class="github-stats__label">Total Commits</span>
+            <div class="github-stats__head">
+              <span class="github-stats__icon" aria-hidden="true">
+                <iconify-icon icon="lucide:git-commit-horizontal"></iconify-icon>
+              </span>
+              <span class="github-stats__label">Total Commits</span>
+              <span class="github-stats__pulse" aria-hidden="true" title="Live data"></span>
+            </div>
             <span class="github-stats__value"><span class="github-stats__shimmer">000,000</span></span>
-            <span class="github-stats__sub">across public repos</span>
+            <span class="github-stats__sub">across public repositories</span>
           </div>
           <div class="github-stats__card reveal" data-stat="repos">
-            <span class="github-stats__label">Public Repos</span>
+            <div class="github-stats__head">
+              <span class="github-stats__icon" aria-hidden="true">
+                <iconify-icon icon="lucide:folder-git-2"></iconify-icon>
+              </span>
+              <span class="github-stats__label">Public Repositories</span>
+            </div>
             <span class="github-stats__value"><span class="github-stats__shimmer">00</span></span>
           </div>
           <div class="github-stats__card reveal" data-stat="stars">
-            <span class="github-stats__label">Stars Earned</span>
+            <div class="github-stats__head">
+              <span class="github-stats__icon" aria-hidden="true">
+                <iconify-icon icon="lucide:star"></iconify-icon>
+              </span>
+              <span class="github-stats__label">Stars Received</span>
+            </div>
             <span class="github-stats__value"><span class="github-stats__shimmer">00</span></span>
           </div>
           <div class="github-stats__card reveal" data-stat="followers">
-            <span class="github-stats__label">Followers</span>
+            <div class="github-stats__head">
+              <span class="github-stats__icon" aria-hidden="true">
+                <iconify-icon icon="lucide:users-round"></iconify-icon>
+              </span>
+              <span class="github-stats__label">Followers</span>
+            </div>
             <span class="github-stats__value"><span class="github-stats__shimmer">00</span></span>
           </div>
           <div class="github-stats__card reveal" data-stat="language">
-            <span class="github-stats__label">Top Language</span>
+            <div class="github-stats__head">
+              <span class="github-stats__icon" aria-hidden="true">
+                <iconify-icon icon="lucide:code-2"></iconify-icon>
+              </span>
+              <span class="github-stats__label">Primary Language</span>
+            </div>
             <span class="github-stats__value"><span class="github-stats__shimmer">JavaScript</span></span>
           </div>
         </div>

@@ -8,17 +8,46 @@ export async function initGithubStats() {
   const grid = document.getElementById('github-stats-grid');
   if (!grid) return;
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   const cards = {};
+  const currentValues = {};
   grid.querySelectorAll('[data-stat]').forEach(card => {
     cards[card.dataset.stat] = card;
   });
+
+  // Smooth count-up between the previously displayed numeric value and the
+  // new one. Eased so big jumps decelerate rather than blur past.
+  function animateNumber(el, from, to, duration = 750) {
+    if (reduceMotion || from === to) {
+      el.textContent = to.toLocaleString();
+      return;
+    }
+    const start = performance.now();
+    const delta = to - from;
+    function tick(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const value = Math.round(from + delta * eased);
+      el.textContent = value.toLocaleString();
+      if (t < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
 
   function setStat(name, value, sub) {
     const card = cards[name];
     if (!card) return;
     const valueEl = card.querySelector('.github-stats__value');
     if (valueEl) {
-      valueEl.textContent = typeof value === 'number' ? value.toLocaleString() : value;
+      if (typeof value === 'number') {
+        const from = currentValues[name] ?? 0;
+        animateNumber(valueEl, from, value);
+        currentValues[name] = value;
+      } else {
+        valueEl.textContent = value;
+        delete currentValues[name];
+      }
     }
     if (sub !== undefined) {
       const subEl = card.querySelector('.github-stats__sub');
@@ -33,6 +62,7 @@ export async function initGithubStats() {
     if (valueEl) {
       valueEl.innerHTML = '<span class="github-stats__error">unavailable</span>';
     }
+    delete currentValues[name];
   }
 
   // Tab-level cache so a reload after the first successful run is instant.
@@ -45,7 +75,7 @@ export async function initGithubStats() {
         setStat('stars', cached.stars);
         setStat('followers', cached.followers);
         setStat('language', cached.language || '—');
-        setStat('commits', cached.commits, `across ${cached.repos} repos`);
+        setStat('commits', cached.commits, `across ${cached.repos.toLocaleString()} public repositories`);
         return;
       }
     }
@@ -78,7 +108,7 @@ export async function initGithubStats() {
     repos = await reposPromise;
     if (!Array.isArray(repos)) repos = [];
     stars = repos.reduce((sum, r) => sum + (r.stargazers_count || 0), 0);
-    // Top language = mode of non-null language; tie-break by total stars desc.
+    // Primary language = mode of non-null language; tie-break by total stars desc.
     const langStats = new Map();
     for (const r of repos) {
       if (!r.language) continue;
@@ -96,7 +126,6 @@ export async function initGithubStats() {
     }
     setStat('stars', stars);
     setStat('language', topLanguage);
-    // Correct the repo count from the actual listing.
     setStat('repos', repos.length);
     publicRepos = repos.length;
     reposOk = true;
@@ -118,7 +147,7 @@ export async function initGithubStats() {
   let total = 0;
   let resolved = 0;
   let rateLimited = false;
-  setStat('commits', 0, `0 / ${repos.length} repos`);
+  setStat('commits', 0, `Counting ${repos.length} repositories…`);
 
   for (const r of repos) {
     try {
@@ -131,15 +160,16 @@ export async function initGithubStats() {
       }
     }
     resolved += 1;
-    setStat('commits', total, `${resolved} / ${repos.length} repos`);
+    const progressSub = resolved === repos.length
+      ? `across ${repos.length.toLocaleString()} public repositories`
+      : `Counting… ${resolved} of ${repos.length} repositories`;
+    setStat('commits', total, progressSub);
   }
 
   if (rateLimited) {
-    setStat('commits', total, `so far — rate-limited (${resolved} / ${repos.length} repos)`);
+    setStat('commits', total, `partial total — rate-limited after ${resolved} of ${repos.length} repositories`);
     return;
   }
-
-  setStat('commits', total, `across ${repos.length} repos`);
 
   try {
     sessionStorage.setItem(CACHE_KEY, JSON.stringify({
