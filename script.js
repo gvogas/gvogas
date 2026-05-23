@@ -119,9 +119,10 @@
     cityLoader.observe(citySection);
   }
 
-  // ── Lazy-load the GitHub Status panel ─────────────────────────
-  // Spends GitHub's unauthenticated rate-limit budget only when the
-  // section approaches the viewport, not on initial page load.
+  // ── Lazy-load the GitHub Status panel & heatmap ───────────────
+  // Both spend external API budget only when the section approaches the
+  // viewport. Each panel's import is independent so one failure doesn't
+  // disable the other.
   const ghSection = document.getElementById('github');
   if (ghSection) {
     const ghLoader = new IntersectionObserver((entries) => {
@@ -135,6 +136,13 @@
           ghSection.querySelectorAll('.github-stats__value').forEach(el => {
             el.innerHTML = '<span class="github-stats__error">unavailable</span>';
           });
+        });
+      import('./github-graph.js')
+        .then(({ initGithubGraph }) => initGithubGraph())
+        .catch(err => {
+          console.error('initGithubGraph failed:', err);
+          const graph = document.getElementById('github-graph');
+          if (graph) graph.innerHTML = '<span class="github-stats__error">Contribution graph unavailable.</span>';
         });
     }, { rootMargin: '400px 0px' });
     ghLoader.observe(ghSection);
