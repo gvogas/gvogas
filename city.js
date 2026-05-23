@@ -16,14 +16,18 @@ const CONFIG = {
   COLS_OVERSHOOT:   1.6,              // sqrt(N * this) → grid columns
   MIN_H:            1.5,
   MAX_H:            9.5,
+  // City fill — grid is sized larger than the repo count; leftover cells
+  // become parks so the map reads full and towers aren't packed side-by-side.
+  PARK_RATIO:       0.3,              // target fraction of cells that are green space
+  TREES_PER_PARK:   3,               // max trees per park (deterministic count)
   // Weighting
   RECENCY_W:        1.5,              // additive bump for repos pushed within RECENCY_DAYS
   RECENCY_DAYS:     365,
   // Roads
   ROAD_W:           1.8,
   // Mount Royal
-  MOUNT_R_MUL:      1.4,              // multiplier of gridMax
-  MOUNT_Y_SCALE:    0.35,
+  MOUNT_R_MUL:      1.15,             // multiplier of gridMax (smaller footprint = sits closer)
+  MOUNT_Y_SCALE:    0.5,              // taller, loomier profile
   // Lamps / arena
   LAMP_POLE_H:      1.6,
   LAMP_HEAD_H:      0.14,
@@ -121,27 +125,64 @@ export async function initCity() {
   buildings.sort((a, b) => b.weight - a.weight);
 
   // ── Layout (centered grid in world space, Y is up) ─────────────
+  // The grid is sized for MORE cells than buildings: buildings fill ~(1-PARK_RATIO)
+  // of the cells and every leftover cell becomes a park. That fills the whole map
+  // (no blank cells), scatters greenery between the towers, and — because roads and
+  // lamps are generated per grid line — adds more streets for free.
   const N    = buildings.length;
-  const COLS = Math.ceil(Math.sqrt(N * CONFIG.COLS_OVERSHOOT));
-  const ROWS = Math.ceil(N / COLS);
+  const totalCells = Math.max(N, Math.ceil(N / (1 - CONFIG.PARK_RATIO)));
+  const COLS = Math.ceil(Math.sqrt(totalCells * CONFIG.COLS_OVERSHOOT));
+  const ROWS = Math.ceil(totalCells / COLS);
   const { TILE, SPACING } = CONFIG;
   const gridW = COLS * SPACING;
   const gridD = ROWS * SPACING;
   const gridMax = Math.max(gridW, gridD);
 
+  const cellX = cx => cx * SPACING - gridW / 2 + SPACING / 2;
+  const cellZ = cz => cz * SPACING - gridD / 2 + SPACING / 2;
+
   const maxW = Math.max(...buildings.map(b => b.weight)) || 1;
 
-  buildings.forEach((b, i) => {
-    const cx = i % COLS;
-    const cz = Math.floor(i / COLS);
-    b.x = cx * SPACING - gridW / 2 + SPACING / 2;
-    b.z = cz * SPACING - gridD / 2 + SPACING / 2;
-    b.height = CONFIG.MIN_H + (b.weight / maxW) * (CONFIG.MAX_H - CONFIG.MIN_H);
-    b.seed = i;
-    b.animDelay = (i / N) * CONFIG.ANIM_DELAY_RANGE;
-    b.color = uniqueColor(b.name);
-    b.isSignature = (i === 0); // tallest = 1000-de-la-Gauchetière-style spire
-  });
+  // Deterministically choose which cells are parks: score every cell, then take
+  // the highest-scoring `parkCount` as parks. Scoring by hash gives a stable,
+  // well-spread scatter rather than a clustered block of green.
+  const cellCount = COLS * ROWS;
+  const parkCount = cellCount - N;
+  const allCells = [];
+  for (let cz = 0; cz < ROWS; cz++) {
+    for (let cx = 0; cx < COLS; cx++) {
+      allCells.push({ cx, cz, score: rand(cx * 73856093 ^ cz * 19349663) });
+    }
+  }
+  const parkIds = new Set(
+    [...allCells].sort((a, b) => b.score - a.score)
+      .slice(0, parkCount)
+      .map(c => c.cz * COLS + c.cx)
+  );
+
+  // Walk cells row-major: park cells go to `parks`, the rest receive buildings in
+  // weight order (tallest first → still lands in an early/core cell as the signature).
+  const parks = [];
+  let bi = 0;
+  for (let cz = 0; cz < ROWS; cz++) {
+    for (let cx = 0; cx < COLS; cx++) {
+      const id = cz * COLS + cx;
+      if (parkIds.has(id)) {
+        parks.push({ x: cellX(cx), z: cellZ(cz), seed: id });
+        continue;
+      }
+      if (bi >= N) continue;
+      const b = buildings[bi];
+      b.x = cellX(cx);
+      b.z = cellZ(cz);
+      b.height = CONFIG.MIN_H + (b.weight / maxW) * (CONFIG.MAX_H - CONFIG.MIN_H);
+      b.seed = bi;
+      b.animDelay = (bi / N) * CONFIG.ANIM_DELAY_RANGE;
+      b.color = uniqueColor(b.name);
+      b.isSignature = (bi === 0); // tallest = 1000-de-la-Gauchetière-style spire
+      bi++;
+    }
+  }
 
   // ── Three.js renderer, scene, camera ───────────────────────────
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -151,12 +192,32 @@ export async function initCity() {
   renderer.toneMappingExposure = 1.45;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(CONFIG.SKY_COLOR);
-  scene.fog = new THREE.Fog(CONFIG.SKY_COLOR, gridMax * 0.6, gridMax * 3.2);
 
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
+  // Vertical-gradient night sky: deep navy at the zenith easing to a faint
+  // teal horizon glow. Stretched to fill the frame, so the top of the canvas
+  // is the top of the sky. The fog colour is matched to the horizon band so
+  // towers melt into the skyline rather than into a hard seam.
+  const HORIZON = 0x123047;
+  {
+    const c = document.createElement('canvas');
+    c.width = 4; c.height = 256;
+    const cx = c.getContext('2d');
+    const g = cx.createLinearGradient(0, 0, 0, 256);
+    g.addColorStop(0.00, '#070d1a'); // zenith
+    g.addColorStop(0.55, '#0c1c30');
+    g.addColorStop(0.82, '#123047'); // horizon glow band
+    g.addColorStop(1.00, '#0a1828'); // ground haze just below horizon
+    cx.fillStyle = g;
+    cx.fillRect(0, 0, 4, 256);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    scene.background = tex;
+  }
+  scene.fog = new THREE.Fog(HORIZON, gridMax * 0.9, gridMax * 5.0);
+
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, Math.max(200, gridMax * 7));
   const camDist = gridMax * 1.15;
-  camera.position.set(camDist, camDist * 0.78, camDist);
+  camera.position.set(camDist, camDist * 0.55, camDist); // lower, more skyline-like — opens up the sky
 
   // ── Lights ─────────────────────────────────────────────────────
   // Cool overhead like rink lighting, with a warm cyan fill from the cyber side.
@@ -172,6 +233,18 @@ export async function initCity() {
   const rinkGlow = new THREE.DirectionalLight(0xe63946, 0.22);
   rinkGlow.position.set(0, gridW * 0.3, gridD);
   scene.add(rinkGlow);
+  // Cool moonlight rim from the north-west, where the moon hangs — gives the
+  // mountain a soft edge and silvers the rooftops.
+  const moonLight = new THREE.DirectionalLight(0xaecbff, 0.5);
+  moonLight.position.set(-gridMax * 0.6, gridMax * 1.0, -gridMax * 2.2); // aligned with the moon sprite
+  scene.add(moonLight);
+
+  // Scene-scoped handles the animation loop reads from (assigned in the
+  // blocks below). Declared here so the tick closure can see them.
+  let starUniforms = null;
+  let crossMat = null, crossLight = null;
+  const beacons = [];
+  let meteors = null;
 
   // ── Ground & grid ──────────────────────────────────────────────
   const groundSize = gridMax * 6;
@@ -293,23 +366,240 @@ export async function initCity() {
   }
 
   // ── Stars (dome) ───────────────────────────────────────────────
+  // Custom point shader rather than PointsMaterial: it lets every star carry
+  // its own size, colour and twinkle phase, draws a soft glowing disc instead
+  // of a hard square, and — critically — is NOT fog-affected, so the stars
+  // stay crisp instead of washing out into the sky the way the old dome did.
   {
-    const count = 420;
-    const pos = new Float32Array(count * 3);
-    const r = gridMax * 4;
+    const count = 1100;
+    const pos    = new Float32Array(count * 3);
+    const aSize  = new Float32Array(count);
+    const aColor = new Float32Array(count * 3);
+    const aPhase = new Float32Array(count);
+    const aSpeed = new Float32Array(count);
+    const r = gridMax * 2.6;
+
+    // Three star tints: cool white (most), warm amber, and icy blue.
+    const tints = [
+      [0.90, 0.93, 1.00], [0.90, 0.93, 1.00], [0.90, 0.93, 1.00],
+      [1.00, 0.87, 0.68],
+      [0.72, 0.82, 1.00],
+    ];
+
     for (let i = 0; i < count; i++) {
       const theta = Math.random() * Math.PI * 2;
-      const phi = Math.random() * Math.PI * 0.45 + 0.02;
+      const phi   = Math.random() * Math.PI * 0.46 + 0.02; // stay above the horizon
       pos[i*3]     = r * Math.sin(phi) * Math.cos(theta);
       pos[i*3 + 1] = r * Math.cos(phi);
       pos[i*3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+      // Mostly modest stars with a sprinkling of bright "hero" stars.
+      const hero = Math.random() < 0.12;
+      aSize[i]  = hero ? 6.0 + Math.random() * 6.0 : 2.2 + Math.random() * 2.6;
+      const t   = tints[(Math.random() * tints.length) | 0];
+      const b   = 0.9 + Math.random() * 0.1;
+      aColor[i*3] = t[0]*b; aColor[i*3+1] = t[1]*b; aColor[i*3+2] = t[2]*b;
+      aPhase[i] = Math.random() * Math.PI * 2;
+      aSpeed[i] = 0.6 + Math.random() * 1.8;     // smaller = lazier twinkle
     }
+
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const mat = new THREE.PointsMaterial({
-      color: 0xdde8f5, size: 0.45, sizeAttenuation: true, transparent: true, opacity: 0.7, depthWrite: false,
+    geo.setAttribute('aSize',    new THREE.BufferAttribute(aSize, 1));
+    geo.setAttribute('aColor',   new THREE.BufferAttribute(aColor, 3));
+    geo.setAttribute('aPhase',   new THREE.BufferAttribute(aPhase, 1));
+    geo.setAttribute('aSpeed',   new THREE.BufferAttribute(aSpeed, 1));
+
+    starUniforms = {
+      uTime:       { value: 0 },
+      uPixelRatio: { value: renderer.getPixelRatio() },
+    };
+    const mat = new THREE.ShaderMaterial({
+      uniforms: starUniforms,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader: `
+        uniform float uTime;
+        uniform float uPixelRatio;
+        attribute float aSize;
+        attribute float aPhase;
+        attribute float aSpeed;
+        attribute vec3 aColor;
+        varying vec3 vColor;
+        varying float vTw;
+        void main() {
+          vColor = aColor;
+          vTw = 0.6 + 0.4 * (0.5 + 0.5 * sin(uTime * aSpeed + aPhase));
+          vec4 mv = modelViewMatrix * vec4(position, 1.0);
+          gl_Position = projectionMatrix * mv;
+          gl_PointSize = aSize * (0.5 + 0.5 * uPixelRatio) * (0.85 + 0.25 * vTw);
+        }`,
+      fragmentShader: `
+        precision mediump float;
+        varying vec3 vColor;
+        varying float vTw;
+        void main() {
+          float d = length(gl_PointCoord - 0.5);
+          if (d > 0.5) discard;
+          float core = smoothstep(0.5, 0.0, d);
+          float glow = pow(core, 3.0);
+          float a = (0.45 * core + 0.55 * glow) * vTw;
+          gl_FragColor = vec4(vColor * (0.85 + 0.7 * glow), a);
+        }`,
     });
     scene.add(new THREE.Points(geo, mat));
+  }
+
+  // ── Moon (halo + disc) + faint horizon glow ───────────────────
+  // Two additive sprites so the moon always faces the camera: a big soft halo
+  // and a crisper disc with subtle maria. fog:false keeps it luminous.
+  {
+    const MOON_POS = new THREE.Vector3(-gridMax * 0.6, gridMax * 1.0, -gridMax * 2.2);
+
+    function radialSprite(draw, size, order) {
+      const c = document.createElement('canvas');
+      c.width = c.height = 128;
+      const cx = c.getContext('2d');
+      draw(cx);
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      const mat = new THREE.SpriteMaterial({
+        map: tex, transparent: true, depthWrite: false, depthTest: false,
+        blending: THREE.AdditiveBlending, fog: false,
+      });
+      const s = new THREE.Sprite(mat);
+      s.scale.set(size, size, 1);
+      s.position.copy(MOON_POS);
+      s.renderOrder = order; // sky element — draw on top of the mountain silhouette
+      return s;
+    }
+
+    // Soft outer halo
+    const halo = radialSprite((cx) => {
+      const g = cx.createRadialGradient(64, 64, 0, 64, 64, 64);
+      g.addColorStop(0.0, 'rgba(200, 220, 255, 0.55)');
+      g.addColorStop(0.3, 'rgba(160, 195, 255, 0.22)');
+      g.addColorStop(1.0, 'rgba(120, 160, 255, 0.0)');
+      cx.fillStyle = g; cx.fillRect(0, 0, 128, 128);
+    }, gridMax * 0.95, 1);
+    scene.add(halo);
+
+    // Moon disc with a faint terminator and a couple of maria
+    const disc = radialSprite((cx) => {
+      const g = cx.createRadialGradient(56, 52, 6, 64, 64, 52);
+      g.addColorStop(0.0, 'rgba(255, 255, 250, 1.0)');
+      g.addColorStop(0.7, 'rgba(226, 236, 255, 0.96)');
+      g.addColorStop(0.96, 'rgba(150, 178, 224, 0.55)');
+      g.addColorStop(1.0, 'rgba(120, 150, 200, 0.0)');
+      cx.fillStyle = g;
+      cx.beginPath(); cx.arc(64, 64, 52, 0, Math.PI * 2); cx.fill();
+      cx.fillStyle = 'rgba(150, 170, 205, 0.18)';
+      cx.beginPath(); cx.arc(50, 54, 11, 0, Math.PI * 2); cx.fill();
+      cx.beginPath(); cx.arc(78, 74, 8,  0, Math.PI * 2); cx.fill();
+      cx.beginPath(); cx.arc(70, 46, 5,  0, Math.PI * 2); cx.fill();
+    }, gridMax * 0.34, 2);
+    scene.add(disc);
+  }
+
+  // ── Shooting stars (occasional meteors) ────────────────────────
+  // One reusable streak rendered as overlapping glow points (WebGL caps line
+  // width at 1px, so a Line would be invisible) — a big bright head fading to
+  // a fine tail. It rests off-screen and re-arms on a randomised timer.
+  {
+    const SEGMENTS = 30;
+    const positions = new Float32Array(SEGMENTS * 3);
+    const alphas    = new Float32Array(SEGMENTS);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('aAlpha',   new THREE.BufferAttribute(alphas, 1));
+
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uColor:      { value: new THREE.Color(0xdcecff) },
+        uOpacity:    { value: 0 },
+        uPixelRatio: { value: renderer.getPixelRatio() },
+      },
+      transparent: true, depthWrite: false, depthTest: false,
+      blending: THREE.AdditiveBlending,
+      vertexShader: `
+        uniform float uPixelRatio;
+        attribute float aAlpha;
+        varying float vA;
+        void main() {
+          vA = aAlpha;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          gl_PointSize = (2.0 + 9.0 * aAlpha) * (0.5 + 0.5 * uPixelRatio);
+        }`,
+      fragmentShader: `
+        precision mediump float;
+        uniform vec3 uColor; uniform float uOpacity;
+        varying float vA;
+        void main() {
+          float d = length(gl_PointCoord - 0.5);
+          if (d > 0.5) discard;
+          float g = pow(smoothstep(0.5, 0.0, d), 2.0);
+          gl_FragColor = vec4(uColor, g * vA * uOpacity);
+        }`,
+    });
+
+    const line = new THREE.Points(geo, mat);
+    line.frustumCulled = false;
+    line.renderOrder = 3;
+    line.visible = false;
+    scene.add(line);
+
+    const R = gridMax * 2.5;
+    const tmp = new THREE.Vector3();
+
+    meteors = {
+      active: false,
+      t: 0,
+      duration: 1.1,
+      nextIn: 2.5 + Math.random() * 5,
+      head: new THREE.Vector3(),
+      dir: new THREE.Vector3(),
+      length: gridMax * 1.2,
+      _arm() {
+        // Start in the low visible sky band, biased toward where the camera is
+        // currently looking, and skim across it drifting down — so meteors land
+        // in view instead of streaking across sky that's off-screen.
+        const camAz = Math.atan2(-camera.position.z, -camera.position.x);
+        const theta = camAz + (Math.random() - 0.5) * 1.5;
+        const phi   = Math.PI * (0.40 + Math.random() * 0.07); // low sky, near the stars
+        this.head.set(
+          R * Math.sin(phi) * Math.cos(theta),
+          R * Math.cos(phi),
+          R * Math.sin(phi) * Math.sin(theta)
+        );
+        this.dir.set((Math.random() - 0.5) * 1.8, -0.18 - Math.random() * 0.22, (Math.random() - 0.5) * 1.8).normalize();
+        this.duration = 0.9 + Math.random() * 0.7;
+        this.length   = gridMax * (0.9 + Math.random() * 0.8);
+        this.t = 0;
+        this.active = true;
+        line.visible = true;
+      },
+      update(dt) {
+        if (!this.active) {
+          this.nextIn -= dt;
+          if (this.nextIn <= 0) { this._arm(); this.nextIn = 6 + Math.random() * 10; }
+          return;
+        }
+        this.t += dt / this.duration;
+        if (this.t >= 1) { this.active = false; line.visible = false; mat.uniforms.uOpacity.value = 0; return; }
+        // Head slides along dir from the start point; the streak trails behind it.
+        const travel = this.length * 2.4 * this.t;
+        for (let i = 0; i < SEGMENTS; i++) {
+          const f = i / (SEGMENTS - 1);             // 0 = head, 1 = tail end
+          tmp.copy(this.head).addScaledVector(this.dir, travel - this.length * f);
+          positions[i*3] = tmp.x; positions[i*3+1] = tmp.y; positions[i*3+2] = tmp.z;
+          alphas[i] = (1 - f) * (1 - f);            // bright head, fading tail
+        }
+        geo.attributes.position.needsUpdate = true;
+        geo.attributes.aAlpha.needsUpdate = true;
+        mat.uniforms.uOpacity.value = Math.sin(this.t * Math.PI); // fade in then out
+      },
+    };
   }
 
   // ── Mount Royal silhouette + illuminated cross ────────────────
@@ -347,7 +637,7 @@ export async function initCity() {
     lumpDome(mountGeo, MOUNT_R, 0.09, 4);
     mountGeo.scale(1, Y_SCALE, 1);
     const mount = new THREE.Mesh(mountGeo, mountMat);
-    mount.position.set(-gridMax * 0.5, 0, -gridMax * 2.2);
+    mount.position.set(-gridMax * 0.5, 0, -gridMax * 1.7);
     scene.add(mount);
 
     // Outremont — secondary lower peak slightly east-northeast of the main summit
@@ -356,11 +646,11 @@ export async function initCity() {
     lumpDome(outGeo, outR, 0.10, 3.2);
     outGeo.scale(1, Y_SCALE * 0.8, 1);
     const outremont = new THREE.Mesh(outGeo, mountMat);
-    outremont.position.set(gridMax * 0.15, 0, -gridMax * 2.45);
+    outremont.position.set(gridMax * 0.15, 0, -gridMax * 1.9);
     scene.add(outremont);
 
-    // Cross at the main summit
-    const crossMat = new THREE.MeshStandardMaterial({
+    // Cross at the main summit — emissive, gently pulsing (animated in tick).
+    crossMat = new THREE.MeshStandardMaterial({
       color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.4,
     });
     const summitY = MOUNT_R * Y_SCALE;
@@ -371,6 +661,12 @@ export async function initCity() {
     const arm = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.32, 0.32), crossMat);
     arm.position.set(mount.position.x, summitY + pillarH * 0.7, mount.position.z);
     scene.add(arm);
+
+    // A small point light at the cross so its glow actually spills onto the
+    // summit instead of the cross just looking like a flat white decal.
+    crossLight = new THREE.PointLight(0xeaf2ff, 6, gridMax * 1.2, 2);
+    crossLight.position.set(mount.position.x, summitY + pillarH * 0.7, mount.position.z);
+    scene.add(crossLight);
   }
 
   // ── Bell Centre arena (south of the tower cluster) ────────────
@@ -480,9 +776,16 @@ export async function initCity() {
     const geo = new THREE.CylinderGeometry(0.018, 0.045, h, 6);
     geo.translate(0, b.height + h / 2, 0);
     mesh.add(new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
-      color: 0x2e2e2e, emissive: 0xff3322, emissiveIntensity: 0.5,
-      roughness: 0.6, metalness: 0.4,
+      color: 0x2e2e2e, roughness: 0.6, metalness: 0.4,
     })));
+    // Aviation warning beacon at the tip — blinks in the tick loop.
+    const tipMat = new THREE.MeshStandardMaterial({
+      color: 0x3a0a06, emissive: 0xff2a1a, emissiveIntensity: 1.6,
+    });
+    const tip = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), tipMat);
+    tip.position.set(0, b.height + h, 0);
+    mesh.add(tip);
+    beacons.push({ mat: tipMat, phase: rand(b.seed, 7) * Math.PI * 2 });
   }
   function addRoofBox(mesh, b, sideMat, topMat, edgeMat) {
     const rH = 0.22 + rand(b.seed, 2) * 0.18;
@@ -604,21 +907,102 @@ export async function initCity() {
     buildingMeshes.push(mesh);
   });
 
+  // ── Parks (green blocks between the towers) ────────────────────
+  // Leftover cells from the layout pass. Each is a grass lawn with a few
+  // low-poly trees, lit by the surrounding street lamps. Parks are decorative
+  // only — they're never added to `buildingMeshes`, so they don't intercept
+  // the hover/click raycast.
+  if (parks.length) {
+    const parksGroup = new THREE.Group();
+    scene.add(parksGroup);
+
+    const LAWN = SPACING - CONFIG.ROAD_W - 0.3;   // fill the block, leave a sidewalk
+    const lawnGeo = new THREE.PlaneGeometry(LAWN, LAWN);
+    const lawnMat = new THREE.MeshStandardMaterial({
+      color: 0x1d3a28, emissive: 0x0f2417, emissiveIntensity: 0.3,
+      roughness: 1, metalness: 0,
+    });
+
+    // First pass: lay out grass and collect tree transforms so the trunk and
+    // foliage instanced meshes can be allocated at the right size.
+    const treePos = [];                 // [x, y, z, scale, rotY] per tree
+    for (const p of parks) {
+      const lawn = new THREE.Mesh(lawnGeo, lawnMat);
+      lawn.rotation.x = -Math.PI / 2;
+      lawn.position.set(p.x, 0.018, p.z);
+      parksGroup.add(lawn);
+
+      const n = 1 + Math.floor(rand(p.seed, 1) * CONFIG.TREES_PER_PARK);
+      const spread = LAWN * 0.32;
+      for (let t = 0; t < n; t++) {
+        treePos.push(
+          p.x + (rand(p.seed, t * 4 + 2) - 0.5) * 2 * spread,
+          0.018,
+          p.z + (rand(p.seed, t * 4 + 3) - 0.5) * 2 * spread,
+          0.8 + rand(p.seed, t * 4 + 4) * 0.5,
+          rand(p.seed, t * 4 + 5) * Math.PI * 2
+        );
+      }
+    }
+    const treeCount = treePos.length / 5;
+
+    if (treeCount) {
+      const TRUNK_H = 0.5, FOLIAGE_H = 0.95;
+      const trunkGeo = new THREE.CylinderGeometry(0.05, 0.075, TRUNK_H, 6);
+      trunkGeo.translate(0, TRUNK_H / 2, 0);      // base at origin → grows up from ground
+      const trunkMat = new THREE.MeshStandardMaterial({ color: 0x3b2a1a, roughness: 0.9, metalness: 0 });
+      const trunks = new THREE.InstancedMesh(trunkGeo, trunkMat, treeCount);
+
+      const foliageGeo = new THREE.ConeGeometry(0.42, FOLIAGE_H, 7);
+      foliageGeo.translate(0, TRUNK_H * 0.85 + FOLIAGE_H / 2, 0);
+      const foliageMat = new THREE.MeshStandardMaterial({
+        color: 0x224e2f, emissive: 0x0e2a16, emissiveIntensity: 0.35,
+        roughness: 0.85, metalness: 0,
+      });
+      const foliage = new THREE.InstancedMesh(foliageGeo, foliageMat, treeCount);
+
+      const m = new THREE.Matrix4();
+      const pos = new THREE.Vector3();
+      const quat = new THREE.Quaternion();
+      const scl = new THREE.Vector3();
+      const yAxis = new THREE.Vector3(0, 1, 0);
+      for (let i = 0; i < treeCount; i++) {
+        pos.set(treePos[i*5], treePos[i*5 + 1], treePos[i*5 + 2]);
+        const s = treePos[i*5 + 3];
+        scl.set(s, s, s);
+        quat.setFromAxisAngle(yAxis, treePos[i*5 + 4]);
+        m.compose(pos, quat, scl);
+        trunks.setMatrixAt(i, m);
+        foliage.setMatrixAt(i, m);
+      }
+      trunks.instanceMatrix.needsUpdate = true;
+      foliage.instanceMatrix.needsUpdate = true;
+      parksGroup.add(trunks);
+      parksGroup.add(foliage);
+    }
+  }
+
   // ── OrbitControls ──────────────────────────────────────────────
   const controls = new OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
-  controls.target.set(0, 1.5, 0);
+  controls.target.set(0, 3.0, 0);
   controls.minDistance = 6;
   controls.maxDistance = gridMax * 2.6;
   controls.maxPolarAngle = Math.PI * 0.49;
   controls.minPolarAngle = Math.PI * 0.08;
   controls.zoomSpeed = 0.8;
   controls.rotateSpeed = 0.9;
+  controls.autoRotate = true;        // slow show-off spin on load…
+  controls.autoRotateSpeed = 0.5;
   controls.update();
 
   let isDragging = false;
-  controls.addEventListener('start', () => { isDragging = true; hideTooltip(); });
+  controls.addEventListener('start', () => {
+    isDragging = true;
+    controls.autoRotate = false;     // …stops for good the moment you grab it
+    hideTooltip();
+  });
   controls.addEventListener('end',   () => { isDragging = false; });
 
   // ── Sizing ─────────────────────────────────────────────────────
@@ -827,12 +1211,36 @@ export async function initCity() {
   let buildupStart = null;
   let buildupActive = false;
   let cityVisible  = false;
+  let lastNow = null;
 
   function tick(now) {
     requestAnimationFrame(tick);
-    if (!cityVisible) return;
+    if (!cityVisible) { lastNow = now; return; }
+
+    const dt = lastNow == null ? 0 : Math.min(0.05, (now - lastNow) / 1000);
+    lastNow = now;
+    const time = now / 1000;
 
     controls.update();
+
+    // Twinkling stars
+    if (starUniforms) starUniforms.uTime.value = time;
+
+    // Cross: slow breathing glow
+    if (crossMat) {
+      const pulse = 1.15 + 0.35 * (0.5 + 0.5 * Math.sin(time * 1.3));
+      crossMat.emissiveIntensity = pulse;
+      if (crossLight) crossLight.intensity = 4 + pulse * 2;
+    }
+
+    // Rooftop aviation beacons — slow red blink, each on its own phase
+    for (let i = 0; i < beacons.length; i++) {
+      const s = Math.sin(time * 2.2 + beacons[i].phase);
+      beacons[i].mat.emissiveIntensity = s > 0.55 ? 2.6 : 0.25;
+    }
+
+    // Occasional shooting star
+    if (meteors) meteors.update(dt);
 
     if (buildupActive) {
       const t = Math.min((now - buildupStart) / CONFIG.BUILDUP_MS, 1);
