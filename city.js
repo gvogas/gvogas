@@ -753,13 +753,16 @@ export async function initCity() {
     return hits[0]?.object || null;
   }
 
-  // Open a repo in a new tab. `window.open(url, '_blank', 'noopener…')`
-  // flashes a blank tab in Chrome before navigating, so use an anchor
-  // click — same security guarantees, no blank-tab flash.
+  // Open a repo in a new tab. The anchor must be attached to the DOM
+  // for click() to navigate reliably in Chrome — a detached <a> can
+  // silently open a blank tab instead of following the href.
   function openRepo(url) {
     const a = document.createElement('a');
     a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    a.style.display = 'none';
+    document.body.appendChild(a);
     a.click();
+    a.remove();
   }
 
   // ── Mouse interaction ──────────────────────────────────────────
