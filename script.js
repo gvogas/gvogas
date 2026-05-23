@@ -118,4 +118,25 @@
     }, { rootMargin: '400px 0px' });
     cityLoader.observe(citySection);
   }
+
+  // ── Lazy-load the GitHub Status panel ─────────────────────────
+  // Spends GitHub's unauthenticated rate-limit budget only when the
+  // section approaches the viewport, not on initial page load.
+  const ghSection = document.getElementById('github');
+  if (ghSection) {
+    const ghLoader = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (!entry || !entry.isIntersecting) return;
+      ghLoader.disconnect();
+      import('./github-stats.js')
+        .then(({ initGithubStats }) => initGithubStats())
+        .catch(err => {
+          console.error('initGithubStats failed:', err);
+          ghSection.querySelectorAll('.github-stats__value').forEach(el => {
+            el.innerHTML = '<span class="github-stats__error">unavailable</span>';
+          });
+        });
+    }, { rootMargin: '400px 0px' });
+    ghLoader.observe(ghSection);
+  }
 })();
