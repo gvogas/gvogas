@@ -6,7 +6,7 @@ I build real, production-quality software — not just assignments.
 From commissioned mobile apps to game engines, my work spans the full stack and beyond.
  
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Terminator320)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/gvogas)
 [![Devpost](https://img.shields.io/badge/Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/Terminator320)
 
 ---
@@ -25,7 +25,7 @@ What sets my work apart: I've shipped a **client-commissioned production app** s
  
 ---
  
-### 📅 Scheduling App &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Scheduling-App)
+### 📅 Scheduling App &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/Scheduling-App)
  
 > **Flutter · Firebase · Google Places API · Dart**  
 > *Client-commissioned · Production · Android*
@@ -45,7 +45,7 @@ A real business application built for a service company to replace paper-based s
 
 ---
  
-### 🎟️ TicketMaestrix &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Ticketmaestrix)
+### 🎟️ TicketMaestrix &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/Ticketmaestrix)
  
 > **PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel**  
 > *Team Project · Deployed*
@@ -63,7 +63,7 @@ A full-stack event ticketing platform — users browse and purchase tickets for 
 
 ---
 
-### 🤖 AI Study Assistant &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/AI-Study-Assistant) &nbsp;·&nbsp; [Devpost →](https://devpost.com/software/ai-study-assistant-giursf)
+### 🤖 AI Study Assistant &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/AI-Study-Assistant) &nbsp;·&nbsp; [Devpost →](https://devpost.com/software/ai-study-assistant-giursf)
  
 > **Python · FastAPI · Groq (LLaMA 3.3) · Tavily · SQLite · Vanilla JS**  
 > *Hackathon Project · MariHacks · Team*
@@ -84,7 +84,7 @@ A gamified, AI-powered study companion built at MariHacks. Drop in any topic plu
  
 ---
  
-### 🖥️ Point-of-Sales Patterns &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Point-of-Sales_Patterns)
+### 🖥️ Point-of-Sales Patterns &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/Point-of-Sales_Patterns)
  
 > **Java · JavaFX · MySQL · Maven · JDK 24**  
 > *Final Project — Programming Patterns Course*
@@ -101,7 +101,7 @@ A full desktop POS system that's also a showcase of applied software design patt
  
 ---
  
-### 🌌 The Rogue Market &nbsp;·&nbsp; [View Repo →](https://github.com/Terminator320/Star-wars-Interactive-Web-Application)
+### 🌌 The Rogue Market &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/Star-wars-Interactive-Web-Application)
  
 > **JavaScript · HTML · CSS · JSON · XML**  
 > *Final Project — Internet Programming Course*

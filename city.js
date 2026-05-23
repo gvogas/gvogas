@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { makeCommitCounter } from './gh-commits.js';
 
 const GH_USER = 'gvogas';
 
@@ -72,31 +73,15 @@ export async function initCity() {
   const tooltip = document.getElementById('city-tooltip');
   if (!canvas) return;
 
-  // ── Lazy commit-count fetch — one request per repo, only when hovered.
-  // Cached per page load so repeated hovers don't refetch. The promise is
-  // stored on the record while in-flight so concurrent hovers coalesce.
-  // `value === undefined` = pending; `null` = failed; number = resolved.
-  const commitCache = new Map();
-  async function fetchCommitCount(name) {
-    const res = await fetch(`https://api.github.com/repos/${GH_USER}/${name}/commits?per_page=1`);
-    if (!res.ok) return null;
-    const link = res.headers.get('Link') || '';
-    const m = link.match(/[?&]page=(\d+)>;\s*rel="last"/);
-    return m ? parseInt(m[1], 10) : 1;
-  }
+  // Lazy commit-count fetch — one request per repo, only when hovered.
+  // Shared with the GitHub Status panel so cross-section duplicate fetches
+  // are coalesced through gh-commits.js.
+  const commitCounter = makeCommitCounter(GH_USER);
   function ensureCommits(b) {
-    let rec = commitCache.get(b.name);
-    if (rec) return rec.value === undefined ? rec.promise : null;
-    rec = { value: undefined, promise: null };
-    rec.promise = fetchCommitCount(b.name)
+    if (b.commits !== undefined) return null;
+    return commitCounter.ensure(b.name)
       .catch(() => null)
-      .then(n => {
-        rec.value = n;
-        b.commits = n;
-        return n;
-      });
-    commitCache.set(b.name, rec);
-    return rec.promise;
+      .then(n => { b.commits = n; return n; });
   }
 
   // ── Fetch repos (single request — no per-repo fan-out) ─────────
