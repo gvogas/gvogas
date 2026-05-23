@@ -11,7 +11,6 @@
   --accent-dim: rgba(230, 57, 70, 0.12);
   --accent-glow: rgba(230, 57, 70, 0.22);
   --accent-hover: #ff5566;
-  --accent-purple: #22d3ee;
   --accent-cyan: #22d3ee;
   --accent-ice: #7dd3fc;
   --text: #e6edf3;
@@ -43,6 +42,7 @@
   --radius: 8px;
   --radius-lg: 14px;
   --nav-h: 64px;
+  --font-sm: 0.875rem;
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.55);
   --shadow-glow: 0 0 0 1px var(--accent), 0 8px 32px rgba(230, 57, 70, 0.18);
   --transition: 0.18s ease;
@@ -97,12 +97,12 @@ h1, h2, h3, h4 {
 /* ===== Skip Link ===== */
 .skip-link {
   position: fixed;
-  top: 12px;
+  top: calc(12px + env(safe-area-inset-top, 0px));
   left: 12px;
   z-index: 9999;
   background: var(--accent);
   color: #fff;
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 600;
   padding: 8px 16px;
   border-radius: var(--radius);
@@ -114,11 +114,11 @@ h1, h2, h3, h4 {
 /* ===== Progress Bar ===== */
 #progress-bar {
   position: fixed;
-  top: 0;
+  top: env(safe-area-inset-top, 0px);
   left: 0;
   height: 2px;
   width: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+  background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
   z-index: 200;
   transform-origin: left center;
   transform: scaleX(0);
@@ -153,7 +153,10 @@ h1, h2, h3, h4 {
   left: 0;
   right: 0;
   z-index: 100;
-  height: var(--nav-h);
+  /* Grow into the safe-area inset so the inner row sits below a notch/status bar
+     instead of being clipped under it on iOS PWA / Dynamic Island. */
+  height: calc(var(--nav-h) + env(safe-area-inset-top, 0px));
+  padding-top: env(safe-area-inset-top, 0px);
   background: rgba(10, 16, 24, 0);
   backdrop-filter: blur(0px);
   border-bottom: 1px solid transparent;
@@ -169,7 +172,7 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 100%;
+  height: var(--nav-h);
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 28px;
@@ -179,7 +182,7 @@ h1, h2, h3, h4 {
   font-size: 1.2rem;
   font-weight: 700;
   letter-spacing: -0.5px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+  background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -193,7 +196,7 @@ h1, h2, h3, h4 {
 }
 .nav__links a {
   position: relative;
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 500;
   color: var(--text-muted);
   padding: 6px 14px;
@@ -215,18 +218,20 @@ h1, h2, h3, h4 {
 .nav__links a:hover { color: var(--text); }
 .nav__links a.active { color: var(--text); }
 .nav__links a.active::after { transform: translateX(-50%) scaleX(1); }
-.nav__cta {
-  background: var(--accent-dim) !important;
-  color: var(--accent) !important;
+/* Specificity bumped via `.nav__links a.nav__cta` so the CTA wins naturally
+   over `.nav__links a` — avoids the `!important` cascade. */
+.nav__links a.nav__cta {
+  background: var(--accent-dim);
+  color: var(--accent);
   border: 1px solid rgba(230, 57, 70, 0.35);
   margin-left: 6px;
 }
-.nav__cta:hover {
-  background: var(--accent) !important;
-  color: #fff !important;
-  border-color: var(--accent) !important;
+.nav__links a.nav__cta:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
 }
-.nav__cta::after { display: none !important; }
+.nav__links a.nav__cta::after { display: none; }
 
 .nav__hamburger {
   display: none;
@@ -269,7 +274,7 @@ h1, h2, h3, h4 {
   display: block;
   width: 36px;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+  background: linear-gradient(90deg, var(--accent), var(--accent-cyan));
   margin-top: 12px;
   border-radius: 2px;
 }
@@ -283,7 +288,7 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: calc(var(--nav-h) + 60px) 28px 100px;
+  padding: calc(var(--nav-h) + 60px + env(safe-area-inset-top, 0px)) 28px 100px;
   overflow: hidden;
 }
 
@@ -339,7 +344,7 @@ h1, h2, h3, h4 {
   animation: heroUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.18s both;
 }
 .hero__name-accent {
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-purple) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-cyan) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -364,7 +369,7 @@ h1, h2, h3, h4 {
   animation: heroUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.42s both;
 }
 .hero__stats span {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--text-dim);
 }
 .hero__stats strong {
@@ -424,7 +429,7 @@ h1, h2, h3, h4 {
   align-items: center;
   gap: 8px;
   font-family: 'Inter', sans-serif;
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 600;
   padding: 10px 20px;
   border-radius: var(--radius);
@@ -635,7 +640,7 @@ h1, h2, h3, h4 {
 .card__stack { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .card__desc {
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   color: var(--text-muted);
   line-height: 1.7;
 }
@@ -817,7 +822,7 @@ h1, h2, h3, h4 {
   justify-content: center;
   gap: 14px;
   color: var(--text-dim);
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   background: var(--bg-card);
   z-index: 2;
   transition: opacity 0.4s ease;
@@ -857,7 +862,7 @@ h1, h2, h3, h4 {
 }
 .city__tooltip-name {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.875rem;
+  font-size: var(--font-sm);
   font-weight: 700;
   color: var(--text);
   margin-bottom: 4px;
@@ -989,7 +994,7 @@ h1, h2, h3, h4 {
   .nav__hamburger { display: flex; }
   .nav__links {
     position: fixed;
-    top: var(--nav-h);
+    top: calc(var(--nav-h) + env(safe-area-inset-top, 0px));
     left: 0;
     right: 0;
     background: rgba(7, 11, 18, 0.98);
@@ -1028,7 +1033,7 @@ h1, h2, h3, h4 {
   .section__title { margin-bottom: 32px; font-size: 1.55rem; }
 
   /* Hero */
-  .hero { padding: calc(var(--nav-h) + 36px) 18px 68px; }
+  .hero { padding: calc(var(--nav-h) + 36px + env(safe-area-inset-top, 0px)) 18px 68px; }
   .hero__name { letter-spacing: -1.5px; }
   .hero__tagline { font-size: 1rem; }
   .hero__stats { gap: 6px 10px; }
@@ -1046,7 +1051,7 @@ h1, h2, h3, h4 {
 
   /* City */
   .city__wrap { min-height: 300px; }
-  .city__subtitle { font-size: 0.875rem; margin-top: -24px; margin-bottom: 24px; }
+  .city__subtitle { font-size: var(--font-sm); margin-top: -24px; margin-bottom: 24px; }
   .city__touch-hint { display: block; }
 
   /* Study */
