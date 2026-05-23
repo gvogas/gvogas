@@ -119,24 +119,37 @@
     cityLoader.observe(citySection);
   }
 
-  // ── Lazy-load the GitHub Status panel & heatmap ───────────────
-  // Both spend external API budget only when the section approaches the
-  // viewport. Each panel's import is independent so one failure doesn't
-  // disable the other.
+  // ── Hero live GitHub numbers ──────────────────────────────────
+  // The hero stats line is always visible on first paint, so kick the fetch
+  // shortly after load (idle if available) — the shimmer placeholder covers
+  // the brief gap before the API responds.
+  const heroStatsGrid = document.getElementById('github-stats-grid');
+  if (heroStatsGrid) {
+    const kickStats = () => {
+      import('./github-stats.js')
+        .then(({ initGithubStats }) => initGithubStats())
+        .catch(err => {
+          console.error('initGithubStats failed:', err);
+          heroStatsGrid.querySelectorAll('.github-stats__value').forEach(el => {
+            el.innerHTML = '<span class="github-stats__error">—</span>';
+          });
+        });
+    };
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(kickStats, { timeout: 1500 });
+    } else {
+      setTimeout(kickStats, 200);
+    }
+  }
+
+  // ── Lazy-load the contribution heatmap ────────────────────────
+  // Only fires when the user scrolls near #github.
   const ghSection = document.getElementById('github');
   if (ghSection) {
     const ghLoader = new IntersectionObserver((entries) => {
       const entry = entries[0];
       if (!entry || !entry.isIntersecting) return;
       ghLoader.disconnect();
-      import('./github-stats.js')
-        .then(({ initGithubStats }) => initGithubStats())
-        .catch(err => {
-          console.error('initGithubStats failed:', err);
-          ghSection.querySelectorAll('.github-stats__value').forEach(el => {
-            el.innerHTML = '<span class="github-stats__error">unavailable</span>';
-          });
-        });
       import('./github-graph.js')
         .then(({ initGithubGraph }) => initGithubGraph())
         .catch(err => {
