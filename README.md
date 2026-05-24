@@ -59,7 +59,7 @@ A real business application built for a service company to replace paper-based s
 
 ---
 
-### 🎟️ TicketMaestrix &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/Ticketmaestrix)
+### 🎟️ TicketMaestrix &nbsp;·&nbsp; [View Website →](https://ticketmaestrix.shop/) &nbsp;·&nbsp; [View Repo →](https://github.com/gvogas/Ticketmaestrix)
 
 > **PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel** &nbsp;·&nbsp; *Team Project · Deployed*
 
