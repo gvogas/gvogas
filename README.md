@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0d1117,50:1a1a2e,100:16213e&height=200&section=header&text=George%20Vogas&fontSize=60&fontColor=ffffff&fontAlignY=35&desc=CS%20Student%20%40%20Vanier%20College&descAlignY=55&descSize=20&animation=fadeIn" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1a1b2e,50:2a2d5e,100:414868&height=200&section=header&text=George%20Vogas&fontSize=60&fontColor=ffffff&fontAlignY=35&desc=CS%20Student%20%40%20Vanier%20College&descAlignY=55&descSize=20&animation=fadeIn" width="100%" />
 
   <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=58A6FF&center=true&vCenter=true&width=600&lines=Building+production+software%2C+not+demos;Full-stack+%7C+Mobile+%7C+Systems;Open+to+internship+%26+collaboration" alt="Typing SVG" />
 
@@ -202,4 +202,4 @@ A collaborative Unity game project. Contributed to gameplay systems and renderin
 [![LinkedIn](https://img.shields.io/badge/Let's%20Connect-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
 [![Devpost](https://img.shields.io/badge/My%20Projects-Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/Terminator320)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:16213e,50:1a1a2e,100:0d1117&height=120&section=footer" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:414868,50:2a2d5e,100:1a1b2e&height=120&section=footer" width="100%" />
