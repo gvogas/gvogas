@@ -24,11 +24,11 @@ I'm a CS student who gravitates toward projects that solve real problems for rea
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img height="170" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=gvogas&theme=github_dark" />
+  <img height="170" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=gvogas&theme=tokyonight" />
   &nbsp;&nbsp;
-  <img height="170" src="https://streak-stats.demolab.com?user=gvogas&theme=github-dark&hide_border=true" />
+  <img height="170" src="https://streak-stats.demolab.com?user=gvogas&theme=tokyonight&hide_border=true" />
   <br/><br/>
-  <img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=gvogas&theme=github_dark" />
+  <img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=gvogas&theme=tokyonight" />
 </div>
 
 ---
