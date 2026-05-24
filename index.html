@@ -7,7 +7,7 @@
   <meta name="description" content="Portfolio of George Vogas — CS student, robotics enthusiast, and hockey fan building production-quality software across mobile, web, desktop, and game development." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;1,14..32,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <script type="importmap">
   {
@@ -87,7 +87,10 @@
     <!-- About -->
     <section class="section" id="about">
       <div class="container">
-        <h2 class="section__title reveal">About Me</h2>
+        <div class="section__head reveal">
+          <p class="section__kicker">01 — Profile</p>
+          <h2 class="section__title">About Me</h2>
+        </div>
         <div class="about__grid">
           <div class="about__text reveal">
             <p>
@@ -122,13 +125,16 @@
     <!-- Projects -->
     <section class="section section--alt" id="projects">
       <div class="container">
-        <h2 class="section__title reveal">Projects</h2>
+        <div class="section__head reveal">
+          <p class="section__kicker">02 — Selected Work</p>
+          <h2 class="section__title">Projects</h2>
+        </div>
         <div class="projects__grid">
 
           <!-- Scheduling App — featured -->
           <article class="card card--featured reveal">
             <div class="card__header">
-              <span class="card__icon" aria-hidden="true">📅</span>
+              <span class="card__index" aria-hidden="true">01</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--production">Production</span>
@@ -164,7 +170,7 @@
           <!-- TicketMaestrix -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon" aria-hidden="true">🎟️</span>
+              <span class="card__index" aria-hidden="true">02</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--team">Team</span>
@@ -203,7 +209,7 @@
           <!-- AI Study Assistant -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon" aria-hidden="true">🤖</span>
+              <span class="card__index" aria-hidden="true">03</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--hackathon">Hackathon</span>
@@ -242,7 +248,7 @@
           <!-- Point-of-Sales -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon" aria-hidden="true">🖥️</span>
+              <span class="card__index" aria-hidden="true">04</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--academic">Academic</span>
@@ -274,7 +280,7 @@
           <!-- The Rogue Market -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon" aria-hidden="true">🌌</span>
+              <span class="card__index" aria-hidden="true">05</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--academic">Academic</span>
@@ -307,7 +313,7 @@
           <!-- Last Signal -->
           <article class="card reveal">
             <div class="card__header">
-              <span class="card__icon" aria-hidden="true">🎮</span>
+              <span class="card__index" aria-hidden="true">06</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--contributor">Contributor</span>
@@ -337,7 +343,10 @@
     <!-- GitHub Status -->
     <section class="section" id="github">
       <div class="container">
-        <h2 class="section__title reveal">Contribution Activity</h2>
+        <div class="section__head reveal">
+          <p class="section__kicker">03 — Activity</p>
+          <h2 class="section__title">Contribution Activity</h2>
+        </div>
         <p class="github-stats__subtitle reveal">
           A year of public contributions on
           <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">github.com/gvogas</a>.
@@ -380,7 +389,10 @@
     <!-- Commit Skyline -->
     <section class="section city-section" id="city">
       <div class="container">
-        <h2 class="section__title reveal">Commit Skyline</h2>
+        <div class="section__head reveal">
+          <p class="section__kicker">04 — Montréal at Night</p>
+          <h2 class="section__title">Commit Skyline</h2>
+        </div>
         <p class="city__subtitle reveal">Downtown Montréal at night — every public repo is a tower, and the Bell Centre sits where it belongs. Taller towers hold more code and have been pushed more recently. Drag to rotate, scroll to zoom, click a building to open.</p>
         <div class="city__wrap reveal">
           <div class="city__loading" id="city-loading" aria-live="polite">
@@ -397,7 +409,10 @@
     <!-- Tech Stack -->
     <section class="section" id="stack">
       <div class="container">
-        <h2 class="section__title reveal">Tech Stack</h2>
+        <div class="section__head reveal">
+          <p class="section__kicker">05 — Toolkit</p>
+          <h2 class="section__title">Tech Stack</h2>
+        </div>
         <div class="stack__groups">
 
           <article class="stack__group stack__group--lang reveal">
@@ -411,7 +426,7 @@
               <span class="pill pill--lang" style="--brand:#ED8B00; --i:1"><iconify-icon icon="simple-icons:openjdk" aria-hidden="true"></iconify-icon>Java</span>
               <span class="pill pill--lang" style="--brand:#9B4F96; --i:2"><iconify-icon icon="simple-icons:csharp" aria-hidden="true"></iconify-icon>C#</span>
               <span class="pill pill--lang" style="--brand:#0175C2; --i:3"><iconify-icon icon="simple-icons:dart" aria-hidden="true"></iconify-icon>Dart</span>
-              <span class="pill pill--lang" style="--brand:#F7DF1E; --i:4"><iconify-icon icon="simple-icons:javascript" aria-hidden="true"></iconify-icon>JavaScript</span>
+              <span class="pill pill--lang" style="--brand:#B8860B; --i:4"><iconify-icon icon="simple-icons:javascript" aria-hidden="true"></iconify-icon>JavaScript</span>
               <span class="pill pill--lang" style="--brand:#777BB4; --i:5"><iconify-icon icon="simple-icons:php" aria-hidden="true"></iconify-icon>PHP</span>
               <span class="pill pill--lang" style="--brand:#E34F26; --i:6"><iconify-icon icon="simple-icons:html5" aria-hidden="true"></iconify-icon>HTML5</span>
               <span class="pill pill--lang" style="--brand:#1572B6; --i:7"><iconify-icon icon="simple-icons:css3" aria-hidden="true"></iconify-icon>CSS3</span>
@@ -432,13 +447,13 @@
               <span class="pill pill--framework" style="--brand:#02569B; --i:1"><iconify-icon icon="simple-icons:flutter" aria-hidden="true"></iconify-icon>Flutter</span>
               <span class="pill pill--framework" style="--brand:#512BD4; --i:2"><iconify-icon icon="simple-icons:dotnet" aria-hidden="true"></iconify-icon>.NET</span>
               <span class="pill pill--framework" style="--brand:#5382A1; --i:3"><iconify-icon icon="simple-icons:openjdk" aria-hidden="true"></iconify-icon>JavaFX</span>
-              <span class="pill pill--framework" style="--brand:#E8E8E8; --i:4"><iconify-icon icon="simple-icons:unity" aria-hidden="true"></iconify-icon>Unity</span>
-              <span class="pill pill--framework" style="--brand:#95C13D; --i:5"><iconify-icon icon="simple-icons:slim" aria-hidden="true"></iconify-icon>Slim</span>
-              <span class="pill pill--framework" style="--brand:#7ABB52; --i:6"><iconify-icon icon="simple-icons:twig" aria-hidden="true"></iconify-icon>Twig</span>
+              <span class="pill pill--framework" style="--brand:#1F2933; --i:4"><iconify-icon icon="simple-icons:unity" aria-hidden="true"></iconify-icon>Unity</span>
+              <span class="pill pill--framework" style="--brand:#6E9A1E; --i:5"><iconify-icon icon="simple-icons:slim" aria-hidden="true"></iconify-icon>Slim</span>
+              <span class="pill pill--framework" style="--brand:#5E9A38; --i:6"><iconify-icon icon="simple-icons:twig" aria-hidden="true"></iconify-icon>Twig</span>
               <span class="pill pill--framework" style="--brand:#635BFF; --i:7"><iconify-icon icon="simple-icons:stripe" aria-hidden="true"></iconify-icon>Stripe</span>
               <span class="pill pill--framework" style="--brand:#4285F4; --i:8"><iconify-icon icon="simple-icons:googlemaps" aria-hidden="true"></iconify-icon>Google Maps</span>
-              <span class="pill pill--framework" style="--brand:#A2AAAD; --i:9"><iconify-icon icon="simple-icons:ios" aria-hidden="true"></iconify-icon>iOS</span>
-              <span class="pill pill--framework" style="--brand:#3DDC84; --i:10"><iconify-icon icon="simple-icons:android" aria-hidden="true"></iconify-icon>Android</span>
+              <span class="pill pill--framework" style="--brand:#5A6166; --i:9"><iconify-icon icon="simple-icons:ios" aria-hidden="true"></iconify-icon>iOS</span>
+              <span class="pill pill--framework" style="--brand:#258A52; --i:10"><iconify-icon icon="simple-icons:android" aria-hidden="true"></iconify-icon>Android</span>
               <span class="pill pill--framework" style="--brand:#0769AD; --i:11"><iconify-icon icon="simple-icons:jquery" aria-hidden="true"></iconify-icon>jQuery</span>
               <span class="pill pill--framework" style="--brand:#D22128; --i:12"><iconify-icon icon="simple-icons:apache" aria-hidden="true"></iconify-icon>Apache</span>
             </div>
@@ -451,11 +466,11 @@
               <span class="stack__group-count" aria-hidden="true">7</span>
             </header>
             <div class="stack__pills">
-              <span class="pill pill--infra" style="--brand:#FFCA28; --i:0"><iconify-icon icon="simple-icons:firebase" aria-hidden="true"></iconify-icon>Firebase</span>
+              <span class="pill pill--infra" style="--brand:#E08A00; --i:0"><iconify-icon icon="simple-icons:firebase" aria-hidden="true"></iconify-icon>Firebase</span>
               <span class="pill pill--infra" style="--brand:#4479A1; --i:1"><iconify-icon icon="simple-icons:mysql" aria-hidden="true"></iconify-icon>MySQL</span>
               <span class="pill pill--infra" style="--brand:#0F80CC; --i:2"><iconify-icon icon="simple-icons:sqlite" aria-hidden="true"></iconify-icon>SQLite</span>
               <span class="pill pill--infra" style="--brand:#C71A36; --i:3"><iconify-icon icon="simple-icons:apachemaven" aria-hidden="true"></iconify-icon>Maven</span>
-              <span class="pill pill--infra" style="--brand:#FCC624; --i:4"><iconify-icon icon="simple-icons:linux" aria-hidden="true"></iconify-icon>Linux</span>
+              <span class="pill pill--infra" style="--brand:#B8860B; --i:4"><iconify-icon icon="simple-icons:linux" aria-hidden="true"></iconify-icon>Linux</span>
               <span class="pill pill--infra" style="--brand:#2088FF; --i:5"><iconify-icon icon="simple-icons:githubactions" aria-hidden="true"></iconify-icon>GitHub Actions</span>
               <span class="pill pill--infra" style="--brand:#FF6C2C; --i:6"><iconify-icon icon="simple-icons:cpanel" aria-hidden="true"></iconify-icon>cPanel</span>
             </div>
@@ -468,53 +483,56 @@
     <!-- Areas of Study -->
     <section class="section section--alt" id="study">
       <div class="container">
-        <h2 class="section__title reveal">Areas of Study</h2>
+        <div class="section__head reveal">
+          <p class="section__kicker">06 — Focus Areas</p>
+          <h2 class="section__title">Areas of Study</h2>
+        </div>
         <div class="study__grid">
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">⚙️</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:blocks"></iconify-icon></span>
             <h3 class="study__title">Software Development</h3>
             <p class="study__skills">OOP, Design Patterns (Factory, MVC, Observer), multithreading &amp; synchronization</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">📱</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:smartphone"></iconify-icon></span>
             <h3 class="study__title">Mobile Development</h3>
             <p class="study__skills">Flutter / Dart, Firebase (Auth, Firestore, Storage, App Check), offline-first architecture</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">🌐</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:globe"></iconify-icon></span>
             <h3 class="study__title">Web Development</h3>
             <p class="study__skills">Full-stack PHP/MySQL, REST APIs, modular JavaScript, Twig templating, responsive CSS</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">🗄️</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:database"></iconify-icon></span>
             <h3 class="study__title">Database Design</h3>
             <p class="study__skills">Schema design, normalization, stored procedures, MySQL / MariaDB / Firestore</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">🐧</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:terminal"></iconify-icon></span>
             <h3 class="study__title">Systems</h3>
             <p class="study__skills">Linux/Unix scripting, Apache, cPanel deployment, CI/CD with GitHub Actions</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">🎮</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:gamepad-2"></iconify-icon></span>
             <h3 class="study__title">Game Development</h3>
             <p class="study__skills">Unity, C# game logic, ShaderLab / HLSL custom shaders</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">🤖</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:bot"></iconify-icon></span>
             <h3 class="study__title">Robotics</h3>
             <p class="study__skills">Embedded C/C++, microcontroller firmware, PID control loops, sensor fusion, mechatronic prototyping</p>
           </div>
 
           <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true">🏒</span>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="mdi:hockey-sticks"></iconify-icon></span>
             <h3 class="study__title">Hockey &amp; Analytics</h3>
             <p class="study__skills">Box-score scraping, possession metrics, shot-quality models — coding the game I grew up watching</p>
           </div>
@@ -554,7 +572,7 @@
       <p class="footer__copy">
         <span>George Vogas</span>
         <span class="footer__sep" aria-hidden="true">·</span>
-        <span>&copy; 2025</span>
+        <span>&copy; 2026</span>
       </p>
       <nav class="footer__links" aria-label="Footer navigation">
         <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">GitHub</a>
