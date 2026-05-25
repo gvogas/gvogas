@@ -2,14 +2,14 @@
    George Vogas — portfolio
    Light editorial system on a lavender-white base, deep-indigo ink,
    and a vibrant blue→violet accent palette. Color-coded project cards.
-   Fraunces / Inter / JetBrains Mono.
+   DM Serif Display / DM Sans / DM Mono.
    ============================================================ */
 
 :root {
   /* Type */
-  --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
-  --sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --serif: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* Surfaces — lavender white */
   --bg: #f5f6fe;
