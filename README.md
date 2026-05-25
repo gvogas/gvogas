@@ -1,14 +1,14 @@
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:1a1b2e,50:2a2d5e,100:414868&height=200&section=header&text=George%20Vogas&fontSize=60&fontColor=ffffff&fontAlignY=35&desc=CS%20Student%20%40%20Vanier%20College&descAlignY=55&descSize=20&animation=fadeIn" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:3F0282,50:3A06BA,100:7164F5&height=200&section=header&text=George%20Vogas&fontSize=60&fontColor=ffffff&fontAlignY=35&desc=CS%20Student%20%40%20Vanier%20College&descAlignY=55&descSize=20&animation=fadeIn" width="100%" />
 
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=58A6FF&center=true&vCenter=true&width=600&lines=Building+production+software%2C+not+demos;Full-stack+%7C+Mobile+%7C+Systems;Open+to+internship+%26+collaboration" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=7164F5&center=true&vCenter=true&width=600&lines=Building+production+software%2C+not+demos;Full-stack+%7C+Mobile+%7C+Systems;Open+to+internship+%26+collaboration" alt="Typing SVG" />
 
   <br/>
 
   [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
   [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/gvogas)
   [![Devpost](https://img.shields.io/badge/Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/Terminator320)
-  [![Profile Views](https://komarev.com/ghpvc/?username=gvogas&style=for-the-badge&color=58A6FF&label=PROFILE+VIEWS)](https://github.com/gvogas)
+  [![Profile Views](https://komarev.com/ghpvc/?username=gvogas&style=for-the-badge&color=0F19FC&label=PROFILE+VIEWS)](https://github.com/gvogas)
 </div>
 
 ---
@@ -24,11 +24,11 @@ I'm a CS student who gravitates toward projects that solve real problems for rea
 ## 📊 GitHub Stats
 
 <div align="center">
-  <img height="170" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=gvogas&theme=tokyonight" />
+  <img height="170" src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=gvogas&theme=dracula" />
   &nbsp;&nbsp;
-  <img height="170" src="https://streak-stats.demolab.com?user=gvogas&theme=tokyonight&hide_border=true" />
+  <img height="170" src="https://streak-stats.demolab.com?user=gvogas&hide_border=true&background=1a0535&ring=7164F5&fire=0F19FC&currStreakLabel=54D5FF&sideLabels=7164F5&dates=9a9cc0&currStreakNum=ffffff&sideNums=ffffff&stroke=3A06BA" />
   <br/><br/>
-  <img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=gvogas&theme=tokyonight" />
+  <img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=gvogas&theme=dracula" />
 </div>
 
 ---
@@ -202,4 +202,4 @@ A collaborative Unity game project. Contributed to gameplay systems and renderin
 [![LinkedIn](https://img.shields.io/badge/Let's%20Connect-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/george-vogas-b13944338/)
 [![Devpost](https://img.shields.io/badge/My%20Projects-Devpost-003E54?style=for-the-badge&logo=devpost&logoColor=white)](https://devpost.com/Terminator320)
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:414868,50:2a2d5e,100:1a1b2e&height=120&section=footer" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:7164F5,50:3A06BA,100:3F0282&height=120&section=footer" width="100%" />

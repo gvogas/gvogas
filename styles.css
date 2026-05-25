@@ -27,30 +27,30 @@
   --line: #e2e5f6;
   --line-strong: #cfd4ee;
 
-  /* Accent — brand blue (bright for large/decorative, strong for text/buttons) */
-  --accent: #4b77ee;
-  --accent-strong: #3b55cf;
-  --accent-deep: #2f44a8;
-  --accent-soft: rgba(75, 119, 238, 0.10);
-  --accent-line: rgba(75, 119, 238, 0.30);
+  /* Accent — electric blue */
+  --accent: #0F19FC;
+  --accent-strong: #3A06BA;
+  --accent-deep: #3F0282;
+  --accent-soft: rgba(15, 25, 252, 0.09);
+  --accent-line: rgba(15, 25, 252, 0.25);
 
-  /* Secondary — violet */
-  --violet: #894ced;
-  --violet-deep: #6c34c4;
-  --violet-soft: rgba(137, 76, 237, 0.10);
+  /* Secondary — periwinkle violet */
+  --violet: #7164F5;
+  --violet-deep: #3A06BA;
+  --violet-soft: rgba(113, 100, 245, 0.10);
 
-  /* Tertiary — cyan (deepened so it reads on white) */
-  --cyan: #1ba7be;
-  --cyan-soft: rgba(76, 221, 237, 0.16);
+  /* Tertiary — cyan (accessible dark of #54D5FF) */
+  --cyan: #1ab8d9;
+  --cyan-soft: rgba(84, 213, 255, 0.16);
 
   /* Tag colours */
-  --tag-production:  #3b55cf;  --tag-production-bg:  rgba(59, 85, 207, 0.10);
-  --tag-commissioned:#3b55cf;  --tag-commissioned-bg:rgba(59, 85, 207, 0.10);
-  --tag-deployed:    #1b7194;  --tag-deployed-bg:    rgba(27, 113, 148, 0.12);
-  --tag-team:        #1b7194;  --tag-team-bg:        rgba(27, 113, 148, 0.12);
-  --tag-hackathon:   #7a3fce;  --tag-hackathon-bg:   rgba(122, 63, 206, 0.12);
+  --tag-production:  #3A06BA;  --tag-production-bg:  rgba(58, 6, 186, 0.10);
+  --tag-commissioned:#3A06BA;  --tag-commissioned-bg:rgba(58, 6, 186, 0.10);
+  --tag-deployed:    #1ab8d9;  --tag-deployed-bg:    rgba(26, 184, 217, 0.12);
+  --tag-team:        #1ab8d9;  --tag-team-bg:        rgba(26, 184, 217, 0.12);
+  --tag-hackathon:   #7164F5;  --tag-hackathon-bg:   rgba(113, 100, 245, 0.12);
   --tag-academic:    #5b5f86;  --tag-academic-bg:    rgba(91, 95, 134, 0.10);
-  --tag-contributor: #6c34c4;  --tag-contributor-bg: rgba(108, 52, 196, 0.10);
+  --tag-contributor: #3A06BA;  --tag-contributor-bg: rgba(58, 6, 186, 0.10);
 
   /* Geometry */
   --radius: 8px;
@@ -78,7 +78,7 @@ html {
 ::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--faint); }
 
-::selection { background: rgba(75, 119, 238, 0.22); color: var(--ink); }
+::selection { background: rgba(15, 25, 252, 0.18); color: var(--ink); }
 
 body {
   font-family: var(--sans);
@@ -451,7 +451,7 @@ h1, h2, h3, h4 {
 .btn--primary:hover {
   background: var(--accent-deep);
   border-color: var(--accent-deep);
-  box-shadow: 0 12px 26px -14px rgba(59, 85, 207, 0.7);
+  box-shadow: 0 12px 26px -14px rgba(58, 6, 186, 0.7);
 }
 .btn--secondary {
   background: var(--surface);
@@ -461,7 +461,7 @@ h1, h2, h3, h4 {
 .btn--secondary:hover {
   border-color: var(--accent);
   color: var(--accent-strong);
-  box-shadow: 0 12px 26px -16px rgba(75, 119, 238, 0.5);
+  box-shadow: 0 12px 26px -16px rgba(15, 25, 252, 0.45);
 }
 
 /* ===== About ===== */
