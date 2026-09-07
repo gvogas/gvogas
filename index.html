@@ -114,11 +114,11 @@
     <section class="hero" id="hero">
       <div class="hero__bg" aria-hidden="true"></div>
       <div class="container hero__content">
-        <p class="hero__eyebrow">CS Student · Vanier College · Montréal, QC</p>
-        <h1 class="hero__name">Hey, I'm <span class="hero__name-accent">George.</span></h1>
+        <p class="hero__eyebrow">CS student at Vanier College · Montréal, QC</p>
+        <h1 class="hero__name">Hey, I'm <span class="hero__name-accent">George.<svg class="hero__underline" viewBox="0 0 260 12" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M4 8.4c31-3.4 63-5.2 96-5.4 51-.3 101 1.7 156 5.9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
         <p class="hero__tagline">
-          I build mobile, web, and desktop software, including a<br />
-          client-commissioned scheduling app in daily use.
+          I build mobile, web, and desktop software. One of them is a scheduling app I was
+          commissioned to write, and the company that asked for it uses it every day.
         </p>
         <div class="hero__stats" id="github-stats-grid" aria-label="Live GitHub stats">
           <span data-stat="commits"><strong class="github-stats__value"><span class="github-stats__shimmer" aria-hidden="true">000</span></strong> Commits</span>
@@ -144,17 +144,13 @@
           </a>
         </div>
       </div>
-      <a href="#about" class="hero__scroll-hint" aria-label="Scroll to about section">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-      </a>
     </section>
 
     <!-- About -->
     <section class="section" id="about">
       <div class="container">
         <div class="section__head reveal">
-          <p class="section__kicker">01 · Profile</p>
-          <h2 class="section__title">About Me</h2>
+          <h2 class="section__title">About me</h2>
         </div>
         <div class="about__grid">
           <div class="about__text reveal">
@@ -190,8 +186,7 @@
     <section class="section section--alt" id="projects">
       <div class="container">
         <div class="section__head reveal">
-          <p class="section__kicker">02 · Selected Work</p>
-          <h2 class="section__title">Projects</h2>
+          <h2 class="section__title">Things I've built</h2>
         </div>
         <div class="projects__grid">
 
@@ -199,7 +194,6 @@
           <article class="card card--featured reveal" style="--card-tint:#544CED">
             <div class="card__aside">
               <div class="card__header">
-                <span class="card__index" aria-hidden="true">01</span>
                 <div class="card__meta">
                   <div class="card__tags">
                     <span class="tag tag--production">Production</span>
@@ -222,7 +216,7 @@
             </div>
             <div class="card__body">
               <p class="card__desc">
-                Built for a service company that was doing all of its scheduling on paper. It's been in daily use since I delivered it.
+                A service company was running its whole schedule on paper, so they hired me to replace it. It has been in daily use since I handed it over.
               </p>
               <ul class="card__bullets">
                 <li>Real-time appointment calendar with per-employee color coding and admin/employee role separation</li>
@@ -236,9 +230,8 @@
           </article>
 
           <!-- TicketMaestrix -->
-          <article class="card reveal" style="--card-tint:#4B77EE">
+          <article class="card reveal" style="--card-tint:#1ab8d9">
             <div class="card__header">
-              <span class="card__index" aria-hidden="true">02</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--team">Team</span>
@@ -275,9 +268,8 @@
           </article>
 
           <!-- AI Study Assistant -->
-          <article class="card reveal" style="--card-tint:#4CAAED">
+          <article class="card reveal" style="--card-tint:#7164F5">
             <div class="card__header">
-              <span class="card__index" aria-hidden="true">03</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--hackathon">Hackathon</span>
@@ -314,9 +306,8 @@
           </article>
 
           <!-- Point-of-Sales -->
-          <article class="card reveal" style="--card-tint:#4CDDED">
+          <article class="card reveal" style="--card-tint:#5b5f86">
             <div class="card__header">
-              <span class="card__index" aria-hidden="true">04</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--academic">Academic</span>
@@ -335,7 +326,7 @@
               <span class="pill">JDK 24</span>
             </div>
             <p class="card__desc">
-              Final project for my programming patterns course: a JavaFX point-of-sale system built around the design patterns covered in class.
+              Final project for my programming patterns course. A JavaFX register system, built as an excuse to actually use the patterns we spent the term reading about.
             </p>
             <ul class="card__bullets">
               <li>Multi-screen JavaFX GUI: main menu, order flow, inventory management, sales analytics, and payment</li>
@@ -346,9 +337,8 @@
           </article>
 
           <!-- The Rogue Market -->
-          <article class="card reveal" style="--card-tint:#894CED">
+          <article class="card reveal" style="--card-tint:#5b5f86">
             <div class="card__header">
-              <span class="card__index" aria-hidden="true">05</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--academic">Academic</span>
@@ -367,7 +357,7 @@
               <span class="pill">XML</span>
             </div>
             <p class="card__desc">
-              Star Wars–themed store for my internet programming final. Twelve pages, vanilla JS, no backend.
+              Star Wars themed store for my internet programming final. Twelve pages, vanilla JS, no backend, no framework.
             </p>
             <ul class="card__bullets">
               <li>Live product search with suggestion dropdown and highlighted infinite-scroll results</li>
@@ -379,9 +369,8 @@
           </article>
 
           <!-- Last Signal -->
-          <article class="card reveal" style="--card-tint:#9BB1ED">
+          <article class="card reveal" style="--card-tint:#3A06BA">
             <div class="card__header">
-              <span class="card__index" aria-hidden="true">06</span>
               <div class="card__meta">
                 <div class="card__tags">
                   <span class="tag tag--contributor">Contributor</span>
@@ -400,7 +389,7 @@
               <span class="pill">Wolfram Language</span>
             </div>
             <p class="card__desc">
-              A Unity game I contribute to, mostly gameplay code and custom shaders. The repo is about half ShaderLab and HLSL.
+              A Unity game I help out on. I write gameplay code and custom shaders, which is most of why the repo is half ShaderLab and HLSL.
             </p>
           </article>
 
@@ -412,8 +401,7 @@
     <section class="section" id="github">
       <div class="container">
         <div class="section__head reveal">
-          <p class="section__kicker">03 · Activity</p>
-          <h2 class="section__title">Contribution Activity</h2>
+          <h2 class="section__title">What the past year looked like</h2>
         </div>
         <p class="github-stats__subtitle reveal">
           A year of public contributions on
@@ -458,8 +446,7 @@
     <section class="section city-section" id="city">
       <div class="container">
         <div class="section__head reveal">
-          <p class="section__kicker">04 · Montréal at Night</p>
-          <h2 class="section__title">Commit Skyline</h2>
+          <h2 class="section__title">My repos, as a skyline</h2>
         </div>
         <p class="city__subtitle reveal">Downtown Montréal at night: every public repo is a tower, and the Bell Centre sits where it belongs. Taller towers hold more code and have been pushed more recently. Drag to rotate, scroll to zoom, click a building to open.</p>
         <div class="city__wrap reveal">
@@ -478,8 +465,7 @@
     <section class="section" id="stack">
       <div class="container">
         <div class="section__head reveal">
-          <p class="section__kicker">05 · Toolkit</p>
-          <h2 class="section__title">Tech Stack</h2>
+          <h2 class="section__title">What I work with</h2>
         </div>
         <div class="sphere reveal" id="skill-sphere" data-sphere>
           <div class="sphere__stage" aria-hidden="true"></div>
@@ -555,60 +541,42 @@
     <section class="section section--alt" id="study">
       <div class="container">
         <div class="section__head reveal">
-          <p class="section__kicker">06 · Focus Areas</p>
-          <h2 class="section__title">Areas of Study</h2>
+          <h2 class="section__title">What I'm studying</h2>
         </div>
-        <div class="study__grid">
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:blocks"></iconify-icon></span>
+        <ul class="study__list reveal">
+          <li class="study__item">
             <h3 class="study__title">Software Development</h3>
             <p class="study__skills">OOP, Design Patterns (Factory, MVC, Observer), multithreading &amp; synchronization</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:smartphone"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Mobile Development</h3>
             <p class="study__skills">Flutter / Dart, Firebase (Auth, Firestore, Storage, App Check), offline-first architecture</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:globe"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Web Development</h3>
             <p class="study__skills">Full-stack PHP/MySQL, REST APIs, modular JavaScript, Twig templating, responsive CSS</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:database"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Database Design</h3>
             <p class="study__skills">Schema design, normalization, stored procedures, MySQL / MariaDB / Firestore</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:terminal"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Systems</h3>
             <p class="study__skills">Linux/Unix scripting, Apache, cPanel deployment, CI/CD with GitHub Actions</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:gamepad-2"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Game Development</h3>
             <p class="study__skills">Unity, C# game logic, ShaderLab / HLSL custom shaders</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:bot"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Robotics</h3>
             <p class="study__skills">Embedded C/C++, microcontroller firmware, PID control loops, sensor fusion, mechatronic prototyping</p>
-          </div>
-
-          <div class="study__card reveal">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="mdi:hockey-sticks"></iconify-icon></span>
+          </li>
+          <li class="study__item">
             <h3 class="study__title">Hockey &amp; Analytics</h3>
             <p class="study__skills">Box-score scraping, possession metrics, shot-quality models</p>
-          </div>
-
-        </div>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -616,10 +584,10 @@
     <section class="section contact" id="contact">
       <div class="container">
         <div class="contact__inner reveal">
-          <p class="contact__sub">Open to collaboration and internship opportunities</p>
-          <h2 class="contact__heading">Always building something.</h2>
+          <h2 class="contact__heading">Say hi.</h2>
           <p class="contact__body">
-            If you're hiring interns or have a project in mind, the best way to reach me is LinkedIn.
+            I'm looking for an internship, and I'm happy to talk about a project even if
+            you're not hiring. LinkedIn is the fastest way to reach me.
           </p>
           <div class="contact__links">
             <a href="https://www.linkedin.com/in/george-vogas-b13944338/" target="_blank" rel="noopener noreferrer" class="btn btn--primary">
@@ -642,6 +610,8 @@
     <div class="container">
       <p class="footer__copy">
         <span>George Vogas</span>
+        <span class="footer__sep" aria-hidden="true">·</span>
+        <span>Montréal, QC</span>
         <span class="footer__sep" aria-hidden="true">·</span>
         <span>&copy; 2026</span>
       </p>
