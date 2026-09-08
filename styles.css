@@ -1,7 +1,7 @@
 /* ============================================================
    George Vogas — portfolio
-   Light editorial system on a lavender-white base, deep-indigo ink,
-   and a vibrant blue→violet accent palette. Color-coded project cards.
+   Light editorial system on warm paper, charcoal ink, and an
+   ember / teal / amber accent palette. Color-coded project cards.
    DM Serif Display / DM Sans / DM Mono.
    ============================================================ */
 
@@ -13,70 +13,70 @@
   --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
   --mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  /* Surfaces — lavender white */
-  --bg: #f5f6fe;
-  --bg-alt: #eceffc;
-  --surface: #ffffff;
-  --surface-2: #f4f6fe;
+  /* Surfaces — warm paper */
+  --bg: #f7f4ee;
+  --bg-alt: #efeae0;
+  --surface: #fffdf9;
+  --surface-2: #f4f0e8;
 
-  /* Ink + text — deep indigo */
-  --ink: #1a1c3d;
-  --text: #353963;
-  --muted: #6b6f93;
-  --faint: #9a9cc0;
+  /* Ink + text — warm charcoal */
+  --ink: #1c1a17;
+  --text: #3d3a34;
+  --muted: #6f6a61;
+  --faint: #9d978c;
 
   /* Hairlines */
-  --line: #e2e5f6;
-  --line-strong: #cfd4ee;
+  --line: #e5e0d5;
+  --line-strong: #d3ccbe;
 
-  /* Accent — electric blue */
-  --accent: #0F19FC;
-  --accent-strong: #3A06BA;
-  --accent-deep: #3F0282;
-  --accent-soft: rgba(15, 25, 252, 0.09);
-  --accent-line: rgba(15, 25, 252, 0.25);
+  /* Accent — ember */
+  --accent: #c2410c;
+  --accent-strong: #9a3412;
+  --accent-deep: #7c2d12;
+  --accent-soft: rgba(194, 65, 12, 0.09);
+  --accent-line: rgba(194, 65, 12, 0.28);
 
-  /* Secondary — periwinkle violet */
-  --violet: #7164F5;
-  --violet-deep: #3A06BA;
-  --violet-soft: rgba(113, 100, 245, 0.10);
+  /* Secondary — deep teal */
+  --violet: #0f766e;
+  --violet-deep: #115e59;
+  --violet-soft: rgba(15, 118, 110, 0.10);
 
-  /* Tertiary — cyan (accessible dark of #54D5FF) */
-  --cyan: #1ab8d9;
-  --cyan-soft: rgba(84, 213, 255, 0.16);
+  /* Tertiary — amber */
+  --cyan: #b45309;
+  --cyan-soft: rgba(217, 119, 6, 0.14);
 
   /* Tag colours */
-  --tag-production:  #3A06BA;  --tag-production-bg:  rgba(58, 6, 186, 0.10);
-  --tag-commissioned:#3A06BA;  --tag-commissioned-bg:rgba(58, 6, 186, 0.10);
-  --tag-deployed:    #1ab8d9;  --tag-deployed-bg:    rgba(26, 184, 217, 0.12);
-  --tag-team:        #1ab8d9;  --tag-team-bg:        rgba(26, 184, 217, 0.12);
-  --tag-hackathon:   #7164F5;  --tag-hackathon-bg:   rgba(113, 100, 245, 0.12);
-  --tag-academic:    #5b5f86;  --tag-academic-bg:    rgba(91, 95, 134, 0.10);
-  --tag-contributor: #3A06BA;  --tag-contributor-bg: rgba(58, 6, 186, 0.10);
+  --tag-production:  #9a3412;  --tag-production-bg:  rgba(194, 65, 12, 0.10);
+  --tag-commissioned:#9a3412;  --tag-commissioned-bg:rgba(194, 65, 12, 0.10);
+  --tag-deployed:    #0f766e;  --tag-deployed-bg:    rgba(15, 118, 110, 0.12);
+  --tag-team:        #0f766e;  --tag-team-bg:        rgba(15, 118, 110, 0.12);
+  --tag-hackathon:   #b45309;  --tag-hackathon-bg:   rgba(217, 119, 6, 0.14);
+  --tag-academic:    #6b6558;  --tag-academic-bg:    rgba(107, 101, 88, 0.10);
+  --tag-contributor: #9a3412;  --tag-contributor-bg: rgba(194, 65, 12, 0.10);
 
   /* Buttons — accent surfaces that carry white text in both themes */
-  --accent-btn: #3A06BA;
-  --accent-btn-hover: #3F0282;
+  --accent-btn: #c2410c;
+  --accent-btn-hover: #9a3412;
 
   /* Theme-swapped surfaces that can't route through the vars above */
-  --nav-glass: rgba(245, 246, 254, 0.82);
-  --nav-glass-solid: rgba(245, 246, 254, 0.97);
-  --card-mix-base: #ffffff;
-  --card-pill-bg: #ffffff;
-  --dot-field: rgba(26, 28, 61, 0.07);
-  --selection-bg: rgba(15, 25, 252, 0.18);
-  --tooltip-bg: #1a1c3d;
-  --tooltip-fg: #f5f6fe;
+  --nav-glass: rgba(247, 244, 238, 0.82);
+  --nav-glass-solid: rgba(247, 244, 238, 0.97);
+  --card-mix-base: #fffdf9;
+  --card-pill-bg: #fffdf9;
+  --dot-field: rgba(28, 26, 23, 0.08);
+  --selection-bg: rgba(194, 65, 12, 0.18);
+  --tooltip-bg: #1c1a17;
+  --tooltip-fg: #f7f4ee;
 
   /* Contribution heatmap ramp */
-  --heat-0: #e8eafb;
-  --heat-1: #cdd8f7;
-  --heat-2: #7ea2f0;
-  --heat-3: #4b77ee;
-  --heat-4: #3b55cf;
+  --heat-0: #ece7dc;
+  --heat-1: #f6c9a8;
+  --heat-2: #f0955c;
+  --heat-3: #d9622a;
+  --heat-4: #9a3412;
 
   /* Skill-sphere wireframe line colour (r, g, b) */
-  --sphere-wire: 113, 100, 245;
+  --sphere-wire: 15, 118, 110;
 
   /* Geometry */
   --radius: 8px;
@@ -84,73 +84,73 @@
   --nav-h: 64px;
   --font-sm: 0.875rem;
 
-  --shadow-card: 0 18px 40px -28px rgba(26, 28, 61, 0.30);
-  --shadow-lift: 0 26px 55px -30px rgba(26, 28, 61, 0.36);
+  --shadow-card: 0 18px 40px -28px rgba(28, 26, 23, 0.30);
+  --shadow-lift: 0 26px 55px -30px rgba(28, 26, 23, 0.36);
 
   --transition: 0.18s ease;
   --transition-slow: 0.35s ease;
 }
 
 /* ===== Dark theme =====
-   Same editorial system on a deep indigo night surface. Accents shift
+   Same editorial system on a warm charcoal surface. Accents shift
    lighter so text-level uses keep AA contrast; buttons keep their own
    saturated surface via --accent-btn. */
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #12142e;
-  --bg-alt: #171a38;
-  --surface: #1c1f42;
-  --surface-2: #232752;
+  --bg: #161513;
+  --bg-alt: #1c1b18;
+  --surface: #22201c;
+  --surface-2: #2a2823;
 
-  --ink: #eef0ff;
-  --text: #c3c7ea;
-  --muted: #8d92bd;
-  --faint: #62678f;
+  --ink: #f3efe6;
+  --text: #cfc9bd;
+  --muted: #9b958a;
+  --faint: #6f6a60;
 
-  --line: #2b2f5c;
-  --line-strong: #3a3f75;
+  --line: #33302a;
+  --line-strong: #45413a;
 
-  --accent: #6b74ff;
-  --accent-strong: #98a0ff;
-  --accent-deep: #b3b9ff;
-  --accent-soft: rgba(107, 116, 255, 0.13);
-  --accent-line: rgba(107, 116, 255, 0.38);
+  --accent: #f0955c;
+  --accent-strong: #f7b98f;
+  --accent-deep: #fbd3b8;
+  --accent-soft: rgba(240, 149, 92, 0.13);
+  --accent-line: rgba(240, 149, 92, 0.38);
 
-  --violet: #8a7eff;
-  --violet-deep: #a89dff;
-  --violet-soft: rgba(138, 126, 255, 0.14);
+  --violet: #5eead4;
+  --violet-deep: #99f6e4;
+  --violet-soft: rgba(94, 234, 212, 0.12);
 
-  --cyan: #54d5ff;
-  --cyan-soft: rgba(84, 213, 255, 0.12);
+  --cyan: #fbbf24;
+  --cyan-soft: rgba(251, 191, 36, 0.12);
 
-  --tag-production:  #b3a3ff;  --tag-production-bg:  rgba(138, 126, 255, 0.16);
-  --tag-commissioned:#b3a3ff;  --tag-commissioned-bg:rgba(138, 126, 255, 0.16);
-  --tag-deployed:    #54d5ff;  --tag-deployed-bg:    rgba(84, 213, 255, 0.13);
-  --tag-team:        #54d5ff;  --tag-team-bg:        rgba(84, 213, 255, 0.13);
-  --tag-hackathon:   #a89dff;  --tag-hackathon-bg:   rgba(138, 126, 255, 0.16);
-  --tag-academic:    #9ba0c8;  --tag-academic-bg:    rgba(155, 160, 200, 0.14);
-  --tag-contributor: #b3a3ff;  --tag-contributor-bg: rgba(138, 126, 255, 0.16);
+  --tag-production:  #f7b98f;  --tag-production-bg:  rgba(240, 149, 92, 0.16);
+  --tag-commissioned:#f7b98f;  --tag-commissioned-bg:rgba(240, 149, 92, 0.16);
+  --tag-deployed:    #5eead4;  --tag-deployed-bg:    rgba(94, 234, 212, 0.13);
+  --tag-team:        #5eead4;  --tag-team-bg:        rgba(94, 234, 212, 0.13);
+  --tag-hackathon:   #fbbf24;  --tag-hackathon-bg:   rgba(251, 191, 36, 0.14);
+  --tag-academic:    #b3ada1;  --tag-academic-bg:    rgba(179, 173, 161, 0.14);
+  --tag-contributor: #f7b98f;  --tag-contributor-bg: rgba(240, 149, 92, 0.16);
 
-  --accent-btn: #4a3fd6;
-  --accent-btn-hover: #5a50e8;
+  --accent-btn: #c2410c;
+  --accent-btn-hover: #d9531d;
 
-  --nav-glass: rgba(18, 20, 46, 0.82);
-  --nav-glass-solid: rgba(18, 20, 46, 0.97);
-  --card-mix-base: #1c1f42;
-  --card-pill-bg: #14163a;
-  --dot-field: rgba(214, 218, 255, 0.06);
-  --selection-bg: rgba(107, 116, 255, 0.35);
-  --tooltip-bg: #eef0ff;
-  --tooltip-fg: #12142e;
+  --nav-glass: rgba(22, 21, 19, 0.82);
+  --nav-glass-solid: rgba(22, 21, 19, 0.97);
+  --card-mix-base: #22201c;
+  --card-pill-bg: #1a1916;
+  --dot-field: rgba(243, 239, 230, 0.06);
+  --selection-bg: rgba(240, 149, 92, 0.35);
+  --tooltip-bg: #f3efe6;
+  --tooltip-fg: #161513;
 
-  --heat-0: #1e2148;
-  --heat-1: #33396f;
-  --heat-2: #4d59c9;
-  --heat-3: #6b74ff;
-  --heat-4: #9aa1ff;
+  --heat-0: #26231e;
+  --heat-1: #4a3325;
+  --heat-2: #8a4520;
+  --heat-3: #d9622a;
+  --heat-4: #f7b98f;
 
-  --sphere-wire: 138, 126, 255;
+  --sphere-wire: 94, 234, 212;
 
   --shadow-card: 0 18px 40px -28px rgba(0, 0, 0, 0.55);
   --shadow-lift: 0 26px 55px -30px rgba(0, 0, 0, 0.65);
@@ -260,7 +260,7 @@ h1, h2, h3, h4 {
   z-index: 100;
   height: calc(var(--nav-h) + env(safe-area-inset-top, 0px));
   padding-top: env(safe-area-inset-top, 0px);
-  background: rgba(245, 246, 254, 0);
+  background: rgba(247, 244, 238, 0);
   backdrop-filter: blur(0px);
   border-bottom: 1px solid transparent;
   transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
@@ -665,7 +665,7 @@ h1, h2, h3, h4 {
 .btn--primary:hover {
   background: var(--accent-btn-hover);
   border-color: var(--accent-btn-hover);
-  box-shadow: 0 12px 26px -14px rgba(58, 6, 186, 0.7);
+  box-shadow: 0 12px 26px -14px rgba(154, 52, 18, 0.7);
 }
 .btn--secondary {
   background: var(--surface);
@@ -675,7 +675,7 @@ h1, h2, h3, h4 {
 .btn--secondary:hover {
   border-color: var(--accent);
   color: var(--accent-strong);
-  box-shadow: 0 12px 26px -16px rgba(15, 25, 252, 0.45);
+  box-shadow: 0 12px 26px -16px rgba(194, 65, 12, 0.45);
 }
 
 /* ===== About ===== */
@@ -699,7 +699,7 @@ h1, h2, h3, h4 {
   border: 1px solid var(--line-strong);
   border-radius: 3px;
   padding: 28px 28px 30px;
-  box-shadow: 0 10px 26px -22px rgba(26, 28, 61, 0.5);
+  box-shadow: 0 10px 26px -22px rgba(28, 26, 23, 0.5);
   transform: rotate(-0.7deg);
   margin-top: 6px;
 }
@@ -1103,36 +1103,63 @@ h1, h2, h3, h4 {
 }
 .stack__pills .pill:hover iconify-icon { color: var(--brand, var(--accent)); transform: scale(1.14); }
 
-/* ===== Areas of study ===== */
+/* ===== Areas of study — card grid ===== */
 .study__list {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 56px;
-  border-top: 1px solid var(--line);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
 }
 .study__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px 22px 22px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+}
+.study__item:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-lift);
+}
+.study__icon {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
-  grid-template-areas: "num title" "num skills";
-  column-gap: 12px;
-  row-gap: 4px;
-  align-items: baseline;
-  padding: 20px 2px 22px;
-  border-bottom: 1px solid var(--line);
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--tint-soft, var(--accent-soft));
+  color: var(--tint, var(--accent));
+  font-size: 1.25rem;
+  margin-bottom: 4px;
 }
-.study__num {
-  grid-area: num;
+.study__icon iconify-icon { display: block; width: 1em; height: 1em; }
+.study__title { font-size: 1.08rem; font-weight: 600; letter-spacing: -0.01em; }
+.study__blurb { font-size: 0.92rem; color: var(--text); line-height: 1.55; }
+.study__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+.study__item--self .study__icon { --tint: var(--violet); --tint-soft: var(--violet-soft); }
+.study__item--play .study__icon { --tint: var(--cyan); --tint-soft: var(--cyan-soft); }
+.study__note {
   font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--accent-strong);
-  letter-spacing: 0.06em;
-  transition: color var(--transition);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tint, var(--muted));
+  position: absolute;
+  top: 26px; right: 22px;
 }
-.study__item:hover .study__title { color: var(--accent-strong); }
-.study__title { grid-area: title; transition: color var(--transition); }
-.study__title { font-size: 1.04rem; font-weight: 600; letter-spacing: -0.01em; }
-.study__skills { grid-area: skills; font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+.study__item--self .study__note { color: var(--violet); }
+.study__item--play .study__note { color: var(--cyan); }
 
 /* ===== Commit skyline (dark night panel inside light page) ===== */
 .city-section { background: var(--bg-alt); }
@@ -1490,7 +1517,7 @@ h1, h2, h3, h4 {
     from { opacity: 0; transform: translateY(26px) rotate(-2deg); }
     to { opacity: 1; transform: rotate(-0.6deg); }
   }
-  .study__list { grid-template-columns: 1fr; column-gap: 0; }
+  .study__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 768px) {
@@ -1557,7 +1584,7 @@ h1, h2, h3, h4 {
   .github-graph__days { display: none; }
   .github-graph__chart { grid-template-columns: 1fr; grid-template-areas: "months" "grid"; }
 
-  .study__item { padding: 16px 2px; }
+  .study__item { padding: 20px 18px 18px; }
   .hero__card { width: 100%; transform: none; }
   .hero__card::before { display: none; }
 
@@ -1575,6 +1602,7 @@ h1, h2, h3, h4 {
   .hero__links .btn { flex: 1 1 auto; justify-content: center; }
 
   .section { padding: 58px 0; }
+  .study__list { grid-template-columns: 1fr; }
 
   .card { padding: 22px 18px; }
 
