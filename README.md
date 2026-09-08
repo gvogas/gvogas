@@ -41,7 +41,7 @@ Here's a snake eating a year of my commits:
 | Project | What it is | Status | Stack |
 | --- | --- | --- | --- |
 | [Scheduling App](#scheduling-app) | Appointment calendar and client directory for a service company | In production, commissioned | Flutter · Firebase |
-| [TicketMaestrix](#ticketmaestrix) | Event ticketing site, [live](https://ticketmaestrix.shop/) | Deployed, team of 3 | PHP · Slim · MySQL |
+| [TicketMaestrix](#ticketmaestrix) | Event ticketing site | Team of 3, deployed | PHP · Slim · MySQL |
 | [AI Study Assistant](#ai-study-assistant) | Turns a topic or your notes into study material | Hackathon, team of 4 | FastAPI · LLaMA 3.3 |
 | [Point-of-Sales Patterns](#point-of-sales-patterns) | JavaFX register built around design patterns | Course final | Java · JavaFX · MySQL |
 | [The Rogue Market](#the-rogue-market) | Star Wars themed store, no backend | Course final | Vanilla JS |
@@ -68,11 +68,11 @@ sync client records, and surface payment status in the app.
 
 ### TicketMaestrix
 
-*PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel* — [site](https://ticketmaestrix.shop/) · [repo](https://github.com/gvogas/Ticketmaestrix)
+*PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel* — [repo](https://github.com/gvogas/Ticketmaestrix)
 
 Event ticketing site I built with two classmates, Fadwa Shalby and Lucas Coveyduck. Users
-buy tickets for concerts, raffles, and movies; admins manage events, inventory, and sales.
-It's deployed and running.
+bought tickets for concerts, raffles, and movies; admins managed events, inventory, and
+sales. We deployed it to cPanel through a GitHub Actions pipeline.
 
 - User accounts with event browsing, ticket purchase, and order history
 - Admin dashboard for event creation, ticket inventory control, and transaction monitoring
