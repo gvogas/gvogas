@@ -66,7 +66,7 @@
         theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
     }
     document.querySelectorAll('meta[name="theme-color"]').forEach(meta => {
-      meta.setAttribute('content', theme === 'dark' ? '#161513' : '#f7f4ee');
+      meta.setAttribute('content', theme === 'dark' ? '#0a1628' : '#f4f8fc');
     });
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
   }

@@ -1,7 +1,7 @@
 /* ============================================================
    George Vogas — portfolio
-   Light editorial system on warm paper, charcoal ink, and an
-   ember / teal / amber accent palette. Color-coded project cards.
+   Light editorial system on baby-blue tinted paper, navy ink, and a
+   royal blue / sky / cyan accent palette. Color-coded project cards.
    DM Serif Display / DM Sans / DM Mono.
    ============================================================ */
 
@@ -13,70 +13,70 @@
   --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
   --mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  /* Surfaces — warm paper */
-  --bg: #f7f4ee;
-  --bg-alt: #efeae0;
-  --surface: #fffdf9;
-  --surface-2: #f4f0e8;
+  /* Surfaces — baby-blue paper */
+  --bg: #f4f8fc;
+  --bg-alt: #e9f1f9;
+  --surface: #ffffff;
+  --surface-2: #f1f6fb;
 
-  /* Ink + text — warm charcoal */
-  --ink: #1c1a17;
-  --text: #3d3a34;
-  --muted: #6f6a61;
-  --faint: #9d978c;
+  /* Ink + text — navy */
+  --ink: #0b1f3a;
+  --text: #2a3d57;
+  --muted: #5d7189;
+  --faint: #93a4b8;
 
   /* Hairlines */
-  --line: #e5e0d5;
-  --line-strong: #d3ccbe;
+  --line: #dbe6f1;
+  --line-strong: #c3d3e3;
 
-  /* Accent — ember */
-  --accent: #c2410c;
-  --accent-strong: #9a3412;
-  --accent-deep: #7c2d12;
-  --accent-soft: rgba(194, 65, 12, 0.09);
-  --accent-line: rgba(194, 65, 12, 0.28);
+  /* Accent — royal blue */
+  --accent: #1a56db;
+  --accent-strong: #0b2a5b;
+  --accent-deep: #071b3d;
+  --accent-soft: rgba(26, 86, 219, 0.09);
+  --accent-line: rgba(26, 86, 219, 0.28);
 
-  /* Secondary — deep teal */
-  --violet: #0f766e;
-  --violet-deep: #115e59;
-  --violet-soft: rgba(15, 118, 110, 0.10);
+  /* Secondary — sky blue */
+  --violet: #0284c7;
+  --violet-deep: #075985;
+  --violet-soft: rgba(56, 189, 248, 0.14);
 
-  /* Tertiary — amber */
-  --cyan: #b45309;
-  --cyan-soft: rgba(217, 119, 6, 0.14);
+  /* Tertiary — cyan */
+  --cyan: #0e7490;
+  --cyan-soft: rgba(34, 211, 238, 0.14);
 
   /* Tag colours */
-  --tag-production:  #9a3412;  --tag-production-bg:  rgba(194, 65, 12, 0.10);
-  --tag-commissioned:#9a3412;  --tag-commissioned-bg:rgba(194, 65, 12, 0.10);
-  --tag-deployed:    #0f766e;  --tag-deployed-bg:    rgba(15, 118, 110, 0.12);
-  --tag-team:        #0f766e;  --tag-team-bg:        rgba(15, 118, 110, 0.12);
-  --tag-hackathon:   #b45309;  --tag-hackathon-bg:   rgba(217, 119, 6, 0.14);
-  --tag-academic:    #6b6558;  --tag-academic-bg:    rgba(107, 101, 88, 0.10);
-  --tag-contributor: #9a3412;  --tag-contributor-bg: rgba(194, 65, 12, 0.10);
+  --tag-production:  #0b2a5b;  --tag-production-bg:  rgba(26, 86, 219, 0.10);
+  --tag-commissioned:#0b2a5b;  --tag-commissioned-bg:rgba(26, 86, 219, 0.10);
+  --tag-deployed:    #0369a1;  --tag-deployed-bg:    rgba(56, 189, 248, 0.16);
+  --tag-team:        #0369a1;  --tag-team-bg:        rgba(56, 189, 248, 0.16);
+  --tag-hackathon:   #0e7490;  --tag-hackathon-bg:   rgba(34, 211, 238, 0.14);
+  --tag-academic:    #5d7189;  --tag-academic-bg:    rgba(93, 113, 137, 0.10);
+  --tag-contributor: #0b2a5b;  --tag-contributor-bg: rgba(26, 86, 219, 0.10);
 
   /* Buttons — accent surfaces that carry white text in both themes */
-  --accent-btn: #c2410c;
-  --accent-btn-hover: #9a3412;
+  --accent-btn: #1a56db;
+  --accent-btn-hover: #0b2a5b;
 
   /* Theme-swapped surfaces that can't route through the vars above */
-  --nav-glass: rgba(247, 244, 238, 0.82);
-  --nav-glass-solid: rgba(247, 244, 238, 0.97);
-  --card-mix-base: #fffdf9;
-  --card-pill-bg: #fffdf9;
-  --dot-field: rgba(28, 26, 23, 0.08);
-  --selection-bg: rgba(194, 65, 12, 0.18);
-  --tooltip-bg: #1c1a17;
-  --tooltip-fg: #f7f4ee;
+  --nav-glass: rgba(244, 248, 252, 0.82);
+  --nav-glass-solid: rgba(244, 248, 252, 0.97);
+  --card-mix-base: #ffffff;
+  --card-pill-bg: #ffffff;
+  --dot-field: rgba(11, 31, 58, 0.08);
+  --selection-bg: rgba(26, 86, 219, 0.18);
+  --tooltip-bg: #0b1f3a;
+  --tooltip-fg: #f4f8fc;
 
   /* Contribution heatmap ramp */
-  --heat-0: #ece7dc;
-  --heat-1: #f6c9a8;
-  --heat-2: #f0955c;
-  --heat-3: #d9622a;
-  --heat-4: #9a3412;
+  --heat-0: #e1ecf7;
+  --heat-1: #bfdcf5;
+  --heat-2: #7fbcf0;
+  --heat-3: #3b82f6;
+  --heat-4: #1e40af;
 
   /* Skill-sphere wireframe line colour (r, g, b) */
-  --sphere-wire: 15, 118, 110;
+  --sphere-wire: 56, 189, 248;
 
   /* Geometry */
   --radius: 8px;
@@ -84,73 +84,73 @@
   --nav-h: 64px;
   --font-sm: 0.875rem;
 
-  --shadow-card: 0 18px 40px -28px rgba(28, 26, 23, 0.30);
-  --shadow-lift: 0 26px 55px -30px rgba(28, 26, 23, 0.36);
+  --shadow-card: 0 18px 40px -28px rgba(11, 31, 58, 0.30);
+  --shadow-lift: 0 26px 55px -30px rgba(11, 31, 58, 0.36);
 
   --transition: 0.18s ease;
   --transition-slow: 0.35s ease;
 }
 
 /* ===== Dark theme =====
-   Same editorial system on a warm charcoal surface. Accents shift
+   Same editorial system on a navy night surface. Accents shift
    lighter so text-level uses keep AA contrast; buttons keep their own
    saturated surface via --accent-btn. */
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #161513;
-  --bg-alt: #1c1b18;
-  --surface: #22201c;
-  --surface-2: #2a2823;
+  --bg: #0a1628;
+  --bg-alt: #0e1c33;
+  --surface: #132340;
+  --surface-2: #1a2d4d;
 
-  --ink: #f3efe6;
-  --text: #cfc9bd;
-  --muted: #9b958a;
-  --faint: #6f6a60;
+  --ink: #eaf2fb;
+  --text: #b9c9dc;
+  --muted: #7f93ac;
+  --faint: #56698a;
 
-  --line: #33302a;
-  --line-strong: #45413a;
+  --line: #223757;
+  --line-strong: #2f4769;
 
-  --accent: #f0955c;
-  --accent-strong: #f7b98f;
-  --accent-deep: #fbd3b8;
-  --accent-soft: rgba(240, 149, 92, 0.13);
-  --accent-line: rgba(240, 149, 92, 0.38);
+  --accent: #7ab8ff;
+  --accent-strong: #a8d0ff;
+  --accent-deep: #cbe2ff;
+  --accent-soft: rgba(122, 184, 255, 0.13);
+  --accent-line: rgba(122, 184, 255, 0.38);
 
-  --violet: #5eead4;
-  --violet-deep: #99f6e4;
-  --violet-soft: rgba(94, 234, 212, 0.12);
+  --violet: #7dd3fc;
+  --violet-deep: #bae6fd;
+  --violet-soft: rgba(125, 211, 252, 0.12);
 
-  --cyan: #fbbf24;
-  --cyan-soft: rgba(251, 191, 36, 0.12);
+  --cyan: #67e8f9;
+  --cyan-soft: rgba(103, 232, 249, 0.12);
 
-  --tag-production:  #f7b98f;  --tag-production-bg:  rgba(240, 149, 92, 0.16);
-  --tag-commissioned:#f7b98f;  --tag-commissioned-bg:rgba(240, 149, 92, 0.16);
-  --tag-deployed:    #5eead4;  --tag-deployed-bg:    rgba(94, 234, 212, 0.13);
-  --tag-team:        #5eead4;  --tag-team-bg:        rgba(94, 234, 212, 0.13);
-  --tag-hackathon:   #fbbf24;  --tag-hackathon-bg:   rgba(251, 191, 36, 0.14);
-  --tag-academic:    #b3ada1;  --tag-academic-bg:    rgba(179, 173, 161, 0.14);
-  --tag-contributor: #f7b98f;  --tag-contributor-bg: rgba(240, 149, 92, 0.16);
+  --tag-production:  #a8d0ff;  --tag-production-bg:  rgba(122, 184, 255, 0.16);
+  --tag-commissioned:#a8d0ff;  --tag-commissioned-bg:rgba(122, 184, 255, 0.16);
+  --tag-deployed:    #7dd3fc;  --tag-deployed-bg:    rgba(125, 211, 252, 0.13);
+  --tag-team:        #7dd3fc;  --tag-team-bg:        rgba(125, 211, 252, 0.13);
+  --tag-hackathon:   #67e8f9;  --tag-hackathon-bg:   rgba(103, 232, 249, 0.14);
+  --tag-academic:    #9fb0c8;  --tag-academic-bg:    rgba(159, 176, 200, 0.14);
+  --tag-contributor: #a8d0ff;  --tag-contributor-bg: rgba(122, 184, 255, 0.16);
 
-  --accent-btn: #c2410c;
-  --accent-btn-hover: #d9531d;
+  --accent-btn: #1a56db;
+  --accent-btn-hover: #2563eb;
 
-  --nav-glass: rgba(22, 21, 19, 0.82);
-  --nav-glass-solid: rgba(22, 21, 19, 0.97);
-  --card-mix-base: #22201c;
-  --card-pill-bg: #1a1916;
-  --dot-field: rgba(243, 239, 230, 0.06);
-  --selection-bg: rgba(240, 149, 92, 0.35);
-  --tooltip-bg: #f3efe6;
-  --tooltip-fg: #161513;
+  --nav-glass: rgba(10, 22, 40, 0.82);
+  --nav-glass-solid: rgba(10, 22, 40, 0.97);
+  --card-mix-base: #132340;
+  --card-pill-bg: #0d1a30;
+  --dot-field: rgba(234, 242, 251, 0.06);
+  --selection-bg: rgba(122, 184, 255, 0.35);
+  --tooltip-bg: #eaf2fb;
+  --tooltip-fg: #0a1628;
 
-  --heat-0: #26231e;
-  --heat-1: #4a3325;
-  --heat-2: #8a4520;
-  --heat-3: #d9622a;
-  --heat-4: #f7b98f;
+  --heat-0: #16294a;
+  --heat-1: #1e3f6e;
+  --heat-2: #2f6fc0;
+  --heat-3: #5aa2ff;
+  --heat-4: #a8d0ff;
 
-  --sphere-wire: 94, 234, 212;
+  --sphere-wire: 125, 211, 252;
 
   --shadow-card: 0 18px 40px -28px rgba(0, 0, 0, 0.55);
   --shadow-lift: 0 26px 55px -30px rgba(0, 0, 0, 0.65);
@@ -260,7 +260,7 @@ h1, h2, h3, h4 {
   z-index: 100;
   height: calc(var(--nav-h) + env(safe-area-inset-top, 0px));
   padding-top: env(safe-area-inset-top, 0px);
-  background: rgba(247, 244, 238, 0);
+  background: rgba(244, 248, 252, 0);
   backdrop-filter: blur(0px);
   border-bottom: 1px solid transparent;
   transition: background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
@@ -665,7 +665,7 @@ h1, h2, h3, h4 {
 .btn--primary:hover {
   background: var(--accent-btn-hover);
   border-color: var(--accent-btn-hover);
-  box-shadow: 0 12px 26px -14px rgba(154, 52, 18, 0.7);
+  box-shadow: 0 12px 26px -14px rgba(11, 42, 91, 0.7);
 }
 .btn--secondary {
   background: var(--surface);
@@ -675,7 +675,7 @@ h1, h2, h3, h4 {
 .btn--secondary:hover {
   border-color: var(--accent);
   color: var(--accent-strong);
-  box-shadow: 0 12px 26px -16px rgba(194, 65, 12, 0.45);
+  box-shadow: 0 12px 26px -16px rgba(26, 86, 219, 0.45);
 }
 
 /* ===== About ===== */
@@ -699,7 +699,7 @@ h1, h2, h3, h4 {
   border: 1px solid var(--line-strong);
   border-radius: 3px;
   padding: 28px 28px 30px;
-  box-shadow: 0 10px 26px -22px rgba(28, 26, 23, 0.5);
+  box-shadow: 0 10px 26px -22px rgba(11, 31, 58, 0.5);
   transform: rotate(-0.7deg);
   margin-top: 6px;
 }
