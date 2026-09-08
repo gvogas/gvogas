@@ -153,7 +153,7 @@
           <h2 class="section__title">About me</h2>
         </div>
         <div class="about__grid">
-          <div class="about__text reveal">
+          <div class="about__text">
             <p>
               I'm a CS student at Vanier College in Montréal. I've learned primarily by building:
               a scheduling app a client uses every day, a ticketing site my team deployed,
@@ -169,7 +169,7 @@
               I'm interested in hockey analytics: box scores, possession metrics, shot quality.
             </p>
           </div>
-          <div class="about__callout reveal">
+          <div class="about__callout">
             <p class="about__callout-label">Right now</p>
             <ul class="about__callout-list">
               <li>Completing my studies at Vanier College</li>
@@ -191,7 +191,7 @@
         <div class="projects__grid">
 
           <!-- Scheduling App (featured) -->
-          <article class="card card--featured reveal" style="--card-tint:#544CED">
+          <article class="card card--featured" style="--card-tint:#544CED">
             <div class="card__aside">
               <div class="card__header">
                 <div class="card__meta">
@@ -230,7 +230,7 @@
           </article>
 
           <!-- TicketMaestrix -->
-          <article class="card reveal" style="--card-tint:#1ab8d9">
+          <article class="card" style="--card-tint:#1ab8d9">
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -268,7 +268,7 @@
           </article>
 
           <!-- AI Study Assistant -->
-          <article class="card reveal" style="--card-tint:#7164F5">
+          <article class="card" style="--card-tint:#7164F5">
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -306,7 +306,7 @@
           </article>
 
           <!-- Point-of-Sales -->
-          <article class="card reveal" style="--card-tint:#5b5f86">
+          <article class="card" style="--card-tint:#5b5f86">
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -337,7 +337,7 @@
           </article>
 
           <!-- The Rogue Market -->
-          <article class="card reveal" style="--card-tint:#5b5f86">
+          <article class="card" style="--card-tint:#5b5f86">
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -369,7 +369,7 @@
           </article>
 
           <!-- Last Signal -->
-          <article class="card reveal" style="--card-tint:#3A06BA">
+          <article class="card" style="--card-tint:#3A06BA">
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -403,12 +403,12 @@
         <div class="section__head reveal">
           <h2 class="section__title">What the past year looked like</h2>
         </div>
-        <p class="github-stats__subtitle reveal">
+        <p class="github-stats__subtitle">
           A year of public contributions on
           <a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">github.com/gvogas</a>.
         </p>
 
-        <div class="github-graph reveal" id="github-graph" aria-busy="true">
+        <div class="github-graph" id="github-graph" aria-busy="true">
           <div class="github-graph__header">
             <span class="github-graph__total"><span class="github-stats__shimmer" aria-hidden="true">0,000</span> contributions</span>
           </div>
@@ -448,8 +448,8 @@
         <div class="section__head reveal">
           <h2 class="section__title">My repos, as a skyline</h2>
         </div>
-        <p class="city__subtitle reveal">Downtown Montréal at night: every public repo is a tower, and the Bell Centre sits where it belongs. Taller towers hold more code and have been pushed more recently. Drag to rotate, scroll to zoom, click a building to open.</p>
-        <div class="city__wrap reveal">
+        <p class="city__subtitle">Downtown Montréal at night: every public repo is a tower, and the Bell Centre sits where it belongs. Taller towers hold more code and have been pushed more recently. Drag to rotate, scroll to zoom, click a building to open.</p>
+        <div class="city__wrap">
           <div class="city__loading" id="city-loading" aria-live="polite">
             <span class="city__spinner" aria-hidden="true"></span>
             <span>Loading repositories…</span>
@@ -467,15 +467,14 @@
         <div class="section__head reveal">
           <h2 class="section__title">What I work with</h2>
         </div>
-        <div class="sphere reveal" id="skill-sphere" data-sphere>
+        <div class="sphere" id="skill-sphere" data-sphere>
           <div class="sphere__stage" aria-hidden="true"></div>
           <div class="stack__groups sphere__fallback">
 
-          <article class="stack__group stack__group--lang reveal">
+          <article class="stack__group stack__group--lang">
             <header class="stack__group-header">
               <span class="stack__group-dot stack__group-dot--lang" aria-hidden="true"></span>
               <h3 class="stack__group-title">Languages</h3>
-              <span class="stack__group-count" aria-hidden="true">11</span>
             </header>
             <div class="stack__pills">
               <span class="pill pill--lang" style="--brand:#3776AB; --i:0"><iconify-icon icon="simple-icons:python" aria-hidden="true"></iconify-icon>Python</span>
@@ -492,11 +491,10 @@
             </div>
           </article>
 
-          <article class="stack__group stack__group--framework reveal">
+          <article class="stack__group stack__group--framework">
             <header class="stack__group-header">
               <span class="stack__group-dot stack__group-dot--framework" aria-hidden="true"></span>
               <h3 class="stack__group-title">Frameworks &amp; Platforms</h3>
-              <span class="stack__group-count" aria-hidden="true">13</span>
             </header>
             <div class="stack__pills">
               <span class="pill pill--framework" style="--brand:#009688; --i:0"><iconify-icon icon="simple-icons:fastapi" aria-hidden="true"></iconify-icon>FastAPI</span>
@@ -515,11 +513,10 @@
             </div>
           </article>
 
-          <article class="stack__group stack__group--infra reveal">
+          <article class="stack__group stack__group--infra">
             <header class="stack__group-header">
               <span class="stack__group-dot stack__group-dot--infra" aria-hidden="true"></span>
               <h3 class="stack__group-title">Data &amp; Infrastructure</h3>
-              <span class="stack__group-count" aria-hidden="true">7</span>
             </header>
             <div class="stack__pills">
               <span class="pill pill--infra" style="--brand:#E08A00; --i:0"><iconify-icon icon="simple-icons:firebase" aria-hidden="true"></iconify-icon>Firebase</span>
@@ -543,7 +540,7 @@
         <div class="section__head reveal">
           <h2 class="section__title">What I'm studying</h2>
         </div>
-        <ul class="study__list reveal">
+        <ul class="study__list">
           <li class="study__item">
             <h3 class="study__title">Software Development</h3>
             <p class="study__skills">OOP, Design Patterns (Factory, MVC, Observer), multithreading &amp; synchronization</p>
@@ -583,7 +580,7 @@
     <!-- Contact -->
     <section class="section contact" id="contact">
       <div class="container">
-        <div class="contact__inner reveal">
+        <div class="contact__inner">
           <h2 class="contact__heading">Say hi.</h2>
           <p class="contact__body">
             I'm looking for an internship, and I'm happy to talk about a project even if
