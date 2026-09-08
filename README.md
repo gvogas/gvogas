@@ -11,6 +11,13 @@ coursework, my main interests are robotics and hockey analytics.
 My portfolio site has an interactive 3D view of these repositories, if you'd rather click
 around than read.
 
+Here's a snake eating a year of my commits:
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake-dark.svg" />
+  <img alt="A snake eating my GitHub contribution graph" src="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake.svg" />
+</picture>
+
 ## Things I've built
 
 ### Scheduling App
