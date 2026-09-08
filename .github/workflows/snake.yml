@@ -21,8 +21,8 @@ jobs:
         with:
           github_user_name: gvogas
           outputs: |
-            dist/github-snake.svg?color_snake=#9a3412&color_dots=#ece7dc,#f6c9a8,#f0955c,#d9622a,#9a3412
-            dist/github-snake-dark.svg?color_snake=#f7b98f&color_dots=#26231e,#4a3325,#8a4520,#d9622a,#f7b98f
+            dist/github-snake.svg?color_snake=#1e40af&color_dots=#e1ecf7,#bfdcf5,#7fbcf0,#3b82f6,#1e40af
+            dist/github-snake-dark.svg?color_snake=#a8d0ff&color_dots=#16294a,#1e3f6e,#2f6fc0,#5aa2ff,#a8d0ff
 
       - name: Push to output branch
         uses: crazy-max/ghaction-github-pages@v4
