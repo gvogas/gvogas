@@ -2,7 +2,7 @@
 
 CS student at Vanier College, in Montréal. I build mobile, web, and desktop software.
 
-[gvogas.github.io](https://gvogas.github.io/) · [LinkedIn](https://www.linkedin.com/in/george-vogas-b13944338/) · [Devpost](https://devpost.com/Terminator320)
+[gvogas.github.io](https://gvogas.github.io/gvogas/) · [LinkedIn](https://www.linkedin.com/in/georgevogas/) · [Devpost](https://devpost.com/Terminator320)
 
 I've learned primarily by building: a scheduling app a client uses every day, a ticketing
 site my team deployed, a desktop POS system, and a Unity game I contribute to. Outside of
