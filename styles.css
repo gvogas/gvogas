@@ -385,29 +385,6 @@ h1, h2, h3, h4 {
 .section--alt { background: var(--bg-alt); }
 
 .section__head { margin-bottom: 44px; }
-.section__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-.section__num {
-  color: var(--accent-strong);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-.section__eyebrow::after {
-  content: '';
-  width: 44px;
-  height: 1px;
-  background: var(--line-strong);
-}
 .section__title {
   font-size: clamp(2rem, 4.5vw, 2.9rem);
   font-weight: 600;
