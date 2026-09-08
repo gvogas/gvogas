@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="300" viewBox="0 0 1200 300" role="img" aria-label="Hey, I'm George. CS student at Vanier College in Montréal.">
+  <defs>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1.1" fill="rgba(26,28,61,0.09)"/></pattern>
+    <radialGradient id="mask-g" cx="0.28" cy="0.45" r="0.6"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient>
+    <mask id="fade"><rect width="1200" height="300" fill="url(#mask-g)"/></mask>
+    <linearGradient id="bar" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7ea2f0"/><stop offset="1" stop-color="#3b55cf"/></linearGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="60"/></filter>
+    <style>
+      .serif { font-family: Georgia, 'Times New Roman', 'DM Serif Display', serif; }
+      .mono  { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'DM Mono', monospace; }
+    </style>
+  </defs>
+  <rect width="1200" height="300" fill="#f5f6fe"/>
+  <ellipse cx="220" cy="-20" rx="420" ry="170" fill="rgba(15,25,252,0.10)" filter="url(#blur)"/>
+  <ellipse cx="1080" cy="290" rx="320" ry="140" fill="rgba(84,213,255,0.18)" filter="url(#blur)"/>
+  <rect width="1200" height="300" fill="url(#dots)" mask="url(#fade)"/>
+
+  <text x="72" y="92" class="mono" font-size="13" font-weight="500" letter-spacing="1.6" fill="#6b6f93">CS STUDENT AT VANIER COLLEGE · MONTRÉAL, QC</text>
+  <text x="70" y="188" class="serif" font-size="84" font-weight="600" letter-spacing="-2" fill="#1a1c3d">Hey, I'm <tspan fill="#0F19FC" font-style="italic">George.</tspan></text>
+  <path d="M390 203c40-5 80-8 122-8 50 0 92 3 130 8" stroke="#7164F5" stroke-width="3.2" stroke-linecap="round" fill="none" opacity="0.8"/>
+  <text x="72" y="240" class="mono" font-size="15" fill="#6b6f93">I build mobile, web, and desktop software.  One of them runs a business every day.</text>
+
+  <g transform="translate(0 0)">
+    <rect x="838" y="56" width="300" height="200" rx="4" fill="#ffffff" stroke="#cfd4ee" transform="rotate(1.4 988 156)"/>
+    <text x="862" y="90" class="serif" font-size="20" font-style="italic" fill="#0F19FC" transform="rotate(1.4 988 156)">GV</text>
+    <text x="1112" y="88" class="mono" font-size="10" font-weight="600" letter-spacing="2" text-anchor="end" fill="#0F19FC" transform="rotate(1.4 988 156)">AT A GLANCE</text>
+    <line x1="838" y1="104" x2="1138" y2="104" stroke="#e2e5f6" transform="rotate(1.4 988 156)"/>
+    <text x="862" y="130" class="mono" font-size="10.5" letter-spacing="1.2" fill="#6b6f93" transform="rotate(1.4 988 156)">BUILDING</text>
+    <text x="952" y="130" class="mono" font-size="12" fill="#1a1c3d" transform="rotate(1.4 988 156)">Flutter, FastAPI, Unity</text>
+    <text x="862" y="156" class="mono" font-size="10.5" letter-spacing="1.2" fill="#6b6f93" transform="rotate(1.4 988 156)">OPEN TO</text>
+    <circle cx="966" cy="152" r="3.5" fill="#1ab8d9" transform="rotate(1.4 988 156)"/>
+    <text x="978" y="156" class="mono" font-size="12.5" fill="#1a1c3d" transform="rotate(1.4 988 156)">Internships</text>
+    <g transform="rotate(1.4 988 156)"><rect x="866" y="197.5" width="14" height="38.5" rx="2" fill="url(#bar)"/><rect x="886" y="173.0" width="14" height="63.0" rx="2" fill="url(#bar)"/><rect x="906" y="211.5" width="14" height="24.5" rx="2" fill="url(#bar)"/><rect x="926" y="187.0" width="14" height="49.0" rx="2" fill="url(#bar)"/><rect x="946" y="166.0" width="14" height="70.0" rx="2" fill="url(#bar)"/><rect x="966" y="201.0" width="14" height="35.0" rx="2" fill="url(#bar)"/><rect x="986" y="180.0" width="14" height="56.0" rx="2" fill="url(#bar)"/><rect x="1006" y="206.6" width="14" height="29.4" rx="2" fill="url(#bar)"/><rect x="1026" y="190.5" width="14" height="45.5" rx="2" fill="url(#bar)"/><rect x="1046" y="215.0" width="14" height="21.0" rx="2" fill="url(#bar)"/><rect x="1066" y="183.5" width="14" height="52.5" rx="2" fill="url(#bar)"/><rect x="1086" y="195.4" width="14" height="40.6" rx="2" fill="url(#bar)"/></g>
+  </g>
+</svg>

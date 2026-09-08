@@ -114,6 +114,7 @@
     <section class="hero" id="hero">
       <div class="hero__bg" aria-hidden="true"></div>
       <div class="container hero__content">
+        <div class="hero__copy">
         <p class="hero__eyebrow">CS student at Vanier College · Montréal, QC</p>
         <h1 class="hero__name">Hey, I'm <span class="hero__name-accent">George.<svg class="hero__underline" viewBox="0 0 260 12" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M4 8.4c31-3.4 63-5.2 96-5.4 51-.3 101 1.7 156 5.9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
         <p class="hero__tagline">
@@ -143,6 +144,39 @@
             Devpost
           </a>
         </div>
+        </div>
+
+        <aside class="hero__card" aria-label="At a glance">
+          <div class="hero__card-top">
+            <span class="hero__card-mark" aria-hidden="true">GV</span>
+            <span class="hero__card-stamp">At a glance</span>
+          </div>
+          <dl class="hero__card-list">
+            <div class="hero__card-row">
+              <dt>Based in</dt>
+              <dd>Montréal, QC <span class="hero__card-clock" id="hero-clock" aria-label="Local time"></span></dd>
+            </div>
+            <div class="hero__card-row">
+              <dt>Studying</dt>
+              <dd>Computer Science, Vanier College</dd>
+            </div>
+            <div class="hero__card-row">
+              <dt>Building</dt>
+              <dd>Wave invoicing for a scheduling app in daily use</dd>
+            </div>
+            <div class="hero__card-row">
+              <dt>Off hours</dt>
+              <dd>Robotics, PID loops, hockey analytics</dd>
+            </div>
+            <div class="hero__card-row hero__card-row--open">
+              <dt>Open to</dt>
+              <dd><span class="hero__card-dot" aria-hidden="true"></span>Internships</dd>
+            </div>
+          </dl>
+          <div class="hero__card-bars" aria-hidden="true">
+            <span style="--h:.55"></span><span style="--h:.9"></span><span style="--h:.35"></span><span style="--h:.7"></span><span style="--h:1"></span><span style="--h:.5"></span><span style="--h:.8"></span><span style="--h:.42"></span><span style="--h:.65"></span><span style="--h:.3"></span><span style="--h:.75"></span><span style="--h:.58"></span>
+          </div>
+        </aside>
       </div>
     </section>
 
@@ -151,6 +185,7 @@
       <div class="container">
         <div class="section__head reveal">
           <h2 class="section__title">About me</h2>
+          <p class="section__lede">Learning by shipping</p>
         </div>
         <div class="about__grid">
           <div class="about__text">
@@ -170,12 +205,12 @@
             </p>
           </div>
           <div class="about__callout">
-            <p class="about__callout-label">Right now</p>
-            <ul class="about__callout-list">
-              <li>Completing my studies at Vanier College</li>
-              <li>Adding Wave invoicing to the scheduling app</li>
-              <li>Working with microcontrollers and PID control</li>
-              <li>Open to internship opportunities</li>
+            <p class="about__callout-label">Elsewhere</p>
+            <ul class="about__callout-list about__callout-list--links">
+              <li><a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">GitHub<span class="about__callout-note">all of the code</span></a></li>
+              <li><a href="https://www.linkedin.com/in/georgevogas/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="about__callout-note">fastest way to reach me</span></a></li>
+              <li><a href="https://devpost.com/Terminator320" target="_blank" rel="noopener noreferrer">Devpost<span class="about__callout-note">hackathon write-ups</span></a></li>
+              <li><a href="https://ticketmaestrix.shop/" target="_blank" rel="noopener noreferrer">TicketMaestrix<span class="about__callout-note">the ticketing site, live</span></a></li>
             </ul>
           </div>
         </div>
@@ -187,6 +222,7 @@
       <div class="container">
         <div class="section__head reveal">
           <h2 class="section__title">Things I've built</h2>
+          <p class="section__lede">Real users, real deadlines</p>
         </div>
         <div class="projects__grid">
 
@@ -540,37 +576,46 @@
       <div class="container">
         <div class="section__head reveal">
           <h2 class="section__title">What I'm studying</h2>
+          <p class="section__lede">What the coursework covers, and what I chase on my own</p>
         </div>
         <ul class="study__list">
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">01</span>
             <h3 class="study__title">Software Development</h3>
             <p class="study__skills">OOP, Design Patterns (Factory, MVC, Observer), multithreading &amp; synchronization</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">02</span>
             <h3 class="study__title">Mobile Development</h3>
             <p class="study__skills">Flutter / Dart, Firebase (Auth, Firestore, Storage, App Check), offline-first architecture</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">03</span>
             <h3 class="study__title">Web Development</h3>
             <p class="study__skills">Full-stack PHP/MySQL, REST APIs, modular JavaScript, Twig templating, responsive CSS</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">04</span>
             <h3 class="study__title">Database Design</h3>
             <p class="study__skills">Schema design, normalization, stored procedures, MySQL / MariaDB / Firestore</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">05</span>
             <h3 class="study__title">Systems</h3>
             <p class="study__skills">Linux/Unix scripting, Apache, cPanel deployment, CI/CD with GitHub Actions</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">06</span>
             <h3 class="study__title">Game Development</h3>
             <p class="study__skills">Unity, C# game logic, ShaderLab / HLSL custom shaders</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">07</span>
             <h3 class="study__title">Robotics</h3>
             <p class="study__skills">Embedded C/C++, microcontroller firmware, PID control loops, sensor fusion, mechatronic prototyping</p>
           </li>
           <li class="study__item">
+            <span class="study__num" aria-hidden="true">08</span>
             <h3 class="study__title">Hockey &amp; Analytics</h3>
             <p class="study__skills">Box-score scraping, possession metrics, shot-quality models</p>
           </li>

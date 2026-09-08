@@ -390,6 +390,13 @@ h1, h2, h3, h4 {
   font-weight: 600;
   letter-spacing: -0.02em;
 }
+.section__lede {
+  margin-top: 12px;
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
 
 /* ===== Hero ===== */
 .hero {
@@ -420,7 +427,138 @@ h1, h2, h3, h4 {
   mask-image: radial-gradient(ellipse 70% 64% at 28% 44%, #000 0%, transparent 74%);
   -webkit-mask-image: radial-gradient(ellipse 70% 64% at 28% 44%, #000 0%, transparent 74%);
 }
-.hero__content { position: relative; z-index: 1; }
+.hero__content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.85fr);
+  gap: 48px 72px;
+  align-items: center;
+}
+.hero__copy { min-width: 0; }
+
+/* Index card: a paper note pinned beside the intro. Same stock as the
+   About callout so the two read as one system. */
+.hero__card {
+  position: relative;
+  justify-self: end;
+  width: min(100%, 380px);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 22px 24px 20px;
+  box-shadow: var(--shadow-lift);
+  transform: rotate(1.4deg);
+  animation: heroCard 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+}
+.hero__card::before {
+  /* Ruled margin line, like an index card. */
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 58px;
+  height: 1px;
+  background: var(--accent-line);
+  opacity: 0.6;
+}
+.hero__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26px;
+}
+.hero__card-mark {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+.hero__card-stamp {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+  border: 1px solid var(--accent-line);
+  border-radius: 999px;
+  padding: 3px 10px;
+}
+.hero__card-list { display: flex; flex-direction: column; gap: 12px; }
+.hero__card-row {
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 14px;
+  align-items: baseline;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--line);
+}
+.hero__card-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.hero__card-row dt {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.hero__card-row dd {
+  font-size: 0.93rem;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.45;
+}
+.hero__card-clock {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.hero__card-clock:empty { display: none; }
+.hero__card-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  margin-right: 8px;
+  vertical-align: 1px;
+  box-shadow: 0 0 0 3px var(--cyan-soft);
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { box-shadow: 0 0 0 3px var(--cyan-soft); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+/* A tiny skyline at the foot of the card, a nod to the repo city below. */
+.hero__card-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 46px;
+  margin-top: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.hero__card-bars span {
+  flex: 1;
+  height: calc(var(--h) * 34px);
+  background: linear-gradient(to top, var(--heat-2), var(--heat-4));
+  border-radius: 2px 2px 0 0;
+  opacity: 0.85;
+  transform-origin: bottom;
+  animation: barUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.hero__card-bars span:nth-child(odd) { animation-delay: 0.9s; }
+.hero__card-bars span:nth-child(even) { animation-delay: 1.05s; }
+.hero__card-bars span:nth-child(3n) { animation-delay: 1.2s; }
+@keyframes barUp { from { transform: scaleY(0); } to { transform: none; } }
+@keyframes heroCard {
+  from { opacity: 0; transform: translateY(26px) rotate(3deg); }
+  to { opacity: 1; transform: rotate(1.4deg); }
+}
 
 .hero__eyebrow {
   font-family: var(--mono);
@@ -433,7 +571,7 @@ h1, h2, h3, h4 {
   animation: heroUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
 }
 .hero__name {
-  font-size: clamp(3rem, 8.5vw, 5.8rem);
+  font-size: clamp(3rem, 6.6vw, 5.2rem);
   font-weight: 600;
   letter-spacing: -0.025em;
   margin-bottom: 26px;
@@ -595,6 +733,22 @@ h1, h2, h3, h4 {
   width: 11px; height: 2px;
   background: var(--violet);
   border-radius: 2px;
+}
+.about__callout-list--links a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: color var(--transition);
+}
+.about__callout-list--links a:hover { color: var(--accent-strong); }
+.about__callout-list--links li:hover::before { background: var(--accent); width: 16px; }
+.about__callout-list li::before { transition: width var(--transition), background var(--transition); }
+.about__callout-note {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0.01em;
 }
 
 /* ===== Projects — color-coded cards ===== */
@@ -950,19 +1104,35 @@ h1, h2, h3, h4 {
 .stack__pills .pill:hover iconify-icon { color: var(--brand, var(--accent)); transform: scale(1.14); }
 
 /* ===== Areas of study ===== */
-.study__list { border-top: 1px solid var(--line); }
+.study__list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 56px;
+  border-top: 1px solid var(--line);
+}
 .study__item {
   display: grid;
-  grid-template-columns: minmax(0, 250px) minmax(0, 1fr);
-  gap: 6px 40px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-areas: "num title" "num skills";
+  column-gap: 12px;
+  row-gap: 4px;
   align-items: baseline;
-  padding: 18px 2px;
+  padding: 20px 2px 22px;
   border-bottom: 1px solid var(--line);
 }
+.study__num {
+  grid-area: num;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent-strong);
+  letter-spacing: 0.06em;
+  transition: color var(--transition);
+}
 .study__item:hover .study__title { color: var(--accent-strong); }
-.study__title { transition: color var(--transition); }
+.study__title { grid-area: title; transition: color var(--transition); }
 .study__title { font-size: 1.04rem; font-weight: 600; letter-spacing: -0.01em; }
-.study__skills { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+.study__skills { grid-area: skills; font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
 
 /* ===== Commit skyline (dark night panel inside light page) ===== */
 .city-section { background: var(--bg-alt); }
@@ -1314,6 +1484,13 @@ h1, h2, h3, h4 {
   .projects__grid { grid-template-columns: 1fr; }
   .card--featured { grid-template-columns: 1fr; gap: 22px; }
   .card--featured .card__bullets { grid-template-columns: 1fr; }
+  .hero__content { grid-template-columns: 1fr; gap: 44px; }
+  .hero__card { justify-self: start; transform: rotate(-0.6deg); }
+  @keyframes heroCard {
+    from { opacity: 0; transform: translateY(26px) rotate(-2deg); }
+    to { opacity: 1; transform: rotate(-0.6deg); }
+  }
+  .study__list { grid-template-columns: 1fr; column-gap: 0; }
 }
 
 @media (max-width: 768px) {
@@ -1380,8 +1557,9 @@ h1, h2, h3, h4 {
   .github-graph__days { display: none; }
   .github-graph__chart { grid-template-columns: 1fr; grid-template-areas: "months" "grid"; }
 
-  .study__list { grid-template-columns: 1fr; column-gap: 0; }
-  .study__item { grid-template-columns: 1fr; gap: 5px; padding: 16px 2px; }
+  .study__item { padding: 16px 2px; }
+  .hero__card { width: 100%; transform: none; }
+  .hero__card::before { display: none; }
 
   .btn { min-height: 44px; }
 
