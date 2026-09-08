@@ -98,63 +98,73 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #0a1628;
-  --bg-alt: #0e1c33;
-  --surface: #132340;
-  --surface-2: #1a2d4d;
+  --bg: #0b1220;
+  --bg-alt: #0f172a;
+  --surface: #141e33;
+  --surface-2: #1b2740;
 
-  --ink: #eaf2fb;
-  --text: #b9c9dc;
-  --muted: #7f93ac;
-  --faint: #56698a;
+  --ink: #f1f6ff;
+  --text: #c5d3e8;
+  --muted: #8a9bb8;
+  --faint: #5c6d8a;
 
-  --line: #223757;
-  --line-strong: #2f4769;
+  --line: #22304a;
+  --line-strong: #33456a;
 
-  --accent: #7ab8ff;
-  --accent-strong: #a8d0ff;
-  --accent-deep: #cbe2ff;
-  --accent-soft: rgba(122, 184, 255, 0.13);
-  --accent-line: rgba(122, 184, 255, 0.38);
+  --accent: #8ec5ff;
+  --accent-strong: #b6dbff;
+  --accent-deep: #d6eaff;
+  --accent-soft: rgba(142, 197, 255, 0.14);
+  --accent-line: rgba(142, 197, 255, 0.42);
 
-  --violet: #7dd3fc;
-  --violet-deep: #bae6fd;
-  --violet-soft: rgba(125, 211, 252, 0.12);
+  --violet: #5fd4ff;
+  --violet-deep: #a5e8ff;
+  --violet-soft: rgba(95, 212, 255, 0.14);
 
-  --cyan: #67e8f9;
-  --cyan-soft: rgba(103, 232, 249, 0.12);
+  --cyan: #22d3ee;
+  --cyan-soft: rgba(34, 211, 238, 0.14);
 
-  --tag-production:  #a8d0ff;  --tag-production-bg:  rgba(122, 184, 255, 0.16);
-  --tag-commissioned:#a8d0ff;  --tag-commissioned-bg:rgba(122, 184, 255, 0.16);
-  --tag-deployed:    #7dd3fc;  --tag-deployed-bg:    rgba(125, 211, 252, 0.13);
-  --tag-team:        #7dd3fc;  --tag-team-bg:        rgba(125, 211, 252, 0.13);
-  --tag-hackathon:   #67e8f9;  --tag-hackathon-bg:   rgba(103, 232, 249, 0.14);
-  --tag-academic:    #9fb0c8;  --tag-academic-bg:    rgba(159, 176, 200, 0.14);
-  --tag-contributor: #a8d0ff;  --tag-contributor-bg: rgba(122, 184, 255, 0.16);
+  --tag-production:  #b6dbff;  --tag-production-bg:  rgba(142, 197, 255, 0.18);
+  --tag-commissioned:#b6dbff;  --tag-commissioned-bg:rgba(142, 197, 255, 0.18);
+  --tag-deployed:    #5fd4ff;  --tag-deployed-bg:    rgba(95, 212, 255, 0.14);
+  --tag-team:        #5fd4ff;  --tag-team-bg:        rgba(95, 212, 255, 0.14);
+  --tag-hackathon:   #22d3ee;  --tag-hackathon-bg:   rgba(34, 211, 238, 0.14);
+  --tag-academic:    #a3b3cc;  --tag-academic-bg:    rgba(163, 179, 204, 0.14);
+  --tag-contributor: #b6dbff;  --tag-contributor-bg: rgba(142, 197, 255, 0.18);
 
-  --accent-btn: #1a56db;
-  --accent-btn-hover: #2563eb;
+  --accent-btn: #2563eb;
+  --accent-btn-hover: #3b82f6;
 
-  --nav-glass: rgba(10, 22, 40, 0.82);
-  --nav-glass-solid: rgba(10, 22, 40, 0.97);
-  --card-mix-base: #132340;
-  --card-pill-bg: #0d1a30;
-  --dot-field: rgba(234, 242, 251, 0.06);
-  --selection-bg: rgba(122, 184, 255, 0.35);
-  --tooltip-bg: #eaf2fb;
-  --tooltip-fg: #0a1628;
+  --nav-glass: rgba(11, 18, 32, 0.82);
+  --nav-glass-solid: rgba(11, 18, 32, 0.97);
+  --card-mix-base: #141e33;
+  --card-pill-bg: #0f172a;
+  --dot-field: rgba(241, 246, 255, 0.07);
+  --selection-bg: rgba(142, 197, 255, 0.35);
+  --tooltip-bg: #f1f6ff;
+  --tooltip-fg: #0b1220;
 
-  --heat-0: #16294a;
-  --heat-1: #1e3f6e;
-  --heat-2: #2f6fc0;
-  --heat-3: #5aa2ff;
-  --heat-4: #a8d0ff;
+  --heat-0: #172238;
+  --heat-1: #1f3a6b;
+  --heat-2: #2f66c4;
+  --heat-3: #5aa9ff;
+  --heat-4: #b6dbff;
 
-  --sphere-wire: 125, 211, 252;
+  --sphere-wire: 95, 212, 255;
 
-  --shadow-card: 0 18px 40px -28px rgba(0, 0, 0, 0.55);
-  --shadow-lift: 0 26px 55px -30px rgba(0, 0, 0, 0.65);
+  --shadow-card: 0 18px 40px -28px rgba(2, 8, 20, 0.7);
+  --shadow-lift: 0 26px 55px -30px rgba(2, 8, 20, 0.8);
 }
+
+/* Dark surfaces get a hairline top highlight so cards read as raised
+   rather than merely lighter. */
+[data-theme="dark"] .card,
+[data-theme="dark"] .study__item,
+[data-theme="dark"] .hero__card,
+[data-theme="dark"] .about__callout {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--shadow-card);
+}
+[data-theme="dark"] .study__icon { background: color-mix(in srgb, var(--tint, var(--accent)) 18%, transparent); }
 
 /* ===== Reset ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
