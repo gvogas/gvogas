@@ -161,6 +161,19 @@
     cityLoader.observe(citySection);
   }
 
+  // ── Hero card clock (Montréal local time) ────────────────────
+  const heroClock = document.getElementById('hero-clock');
+  if (heroClock && typeof Intl !== 'undefined') {
+    try {
+      const fmt = new Intl.DateTimeFormat('en-CA', {
+        hour: 'numeric', minute: '2-digit', hour12: false, timeZone: 'America/Toronto'
+      });
+      const tickClock = () => { heroClock.textContent = fmt.format(new Date()); };
+      tickClock();
+      setInterval(tickClock, 30 * 1000);
+    } catch (e) {}
+  }
+
   // ── Hero live GitHub numbers ──────────────────────────────────
   // The hero stats line is always visible on first paint, so kick the fetch
   // shortly after load (idle if available) — the shimmer placeholder covers

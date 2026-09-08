@@ -1,8 +1,11 @@
-# George Vogas
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gvogas/gvogas/main/assets/readme-banner-dark.svg" />
+  <img alt="Hey, I'm George. CS student at Vanier College in Montréal." src="https://raw.githubusercontent.com/gvogas/gvogas/main/assets/readme-banner-light.svg" width="100%" />
+</picture>
 
 CS student at Vanier College, in Montréal. I build mobile, web, and desktop software.
 
-[gvogas.github.io](https://gvogas.github.io/gvogas/) · [LinkedIn](https://www.linkedin.com/in/georgevogas/) · [Devpost](https://devpost.com/Terminator320)
+**[Portfolio](https://gvogas.github.io/gvogas/)** · **[LinkedIn](https://www.linkedin.com/in/georgevogas/)** · **[Devpost](https://devpost.com/Terminator320)**
 
 I've learned primarily by building: a scheduling app a client uses every day, a ticketing
 site my team deployed, a desktop POS system, and a Unity game I contribute to. Outside of
@@ -10,6 +13,21 @@ coursework, my main interests are robotics and hockey analytics.
 
 My portfolio site has an interactive 3D view of these repositories, if you'd rather click
 around than read.
+
+<table>
+  <tr>
+    <td><strong>Based in</strong></td>
+    <td>Montréal, QC</td>
+    <td><strong>Building</strong></td>
+    <td>Wave invoicing for the scheduling app</td>
+  </tr>
+  <tr>
+    <td><strong>Studying</strong></td>
+    <td>Computer Science, Vanier College</td>
+    <td><strong>Open to</strong></td>
+    <td>Internships</td>
+  </tr>
+</table>
 
 Here's a snake eating a year of my commits:
 
@@ -19,6 +37,15 @@ Here's a snake eating a year of my commits:
 </picture>
 
 ## Things I've built
+
+| Project | What it is | Status | Stack |
+| --- | --- | --- | --- |
+| [Scheduling App](#scheduling-app) | Appointment calendar and client directory for a service company | In production, commissioned | Flutter · Firebase |
+| [TicketMaestrix](#ticketmaestrix) | Event ticketing site, [live](https://ticketmaestrix.shop/) | Deployed, team of 3 | PHP · Slim · MySQL |
+| [AI Study Assistant](#ai-study-assistant) | Turns a topic or your notes into study material | Hackathon, team of 4 | FastAPI · LLaMA 3.3 |
+| [Point-of-Sales Patterns](#point-of-sales-patterns) | JavaFX register built around design patterns | Course final | Java · JavaFX · MySQL |
+| [The Rogue Market](#the-rogue-market) | Star Wars themed store, no backend | Course final | Vanilla JS |
+| [Last Signal](#last-signal) | Unity game, gameplay code and shaders | Contributor | Unity · C# · HLSL |
 
 ### Scheduling App
 
@@ -105,11 +132,11 @@ the repo is half ShaderLab and HLSL.
 
 ## What I work with
 
-**Languages** — Python, Java, C#, Dart, JavaScript, PHP, C++, HTML, CSS, shell, a little Wolfram
-
-**Frameworks and platforms** — Flutter, FastAPI, .NET, JavaFX, Unity, Slim, Twig, Stripe, Google Maps, Android, iOS
-
-**Data and infrastructure** — Firebase, MySQL, SQLite, Maven, Linux, Apache, GitHub Actions, cPanel
+| | |
+| --- | --- |
+| **Languages** | Python, Java, C#, Dart, JavaScript, PHP, C++, HTML, CSS, shell, a little Wolfram |
+| **Frameworks and platforms** | Flutter, FastAPI, .NET, JavaFX, Unity, Slim, Twig, Stripe, Google Maps, Android, iOS |
+| **Data and infrastructure** | Firebase, MySQL, SQLite, Maven, Linux, Apache, GitHub Actions, cPanel |
 
 Coursework has covered OOP and design patterns, multithreading and synchronization,
 schema design and normalization, REST APIs, and Linux and CI/CD deployment. On my own
@@ -119,5 +146,4 @@ and sensor fusion.
 ## Reaching me
 
 I'm looking for an internship, and I'm happy to talk about a project even if you're not
-hiring. [LinkedIn](https://www.linkedin.com/in/george-vogas-b13944338/) is the fastest way
-to reach me.
+hiring. [LinkedIn](https://www.linkedin.com/in/georgevogas/) is the fastest way to reach me.
