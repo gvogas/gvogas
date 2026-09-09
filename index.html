@@ -480,18 +480,34 @@
     <!-- Commit Skyline -->
     <section class="section city-section" id="city">
       <div class="container">
-        <div class="section__head reveal">
-          <h2 class="section__title">My repos, as a skyline</h2>
+        <div class="city__heading reveal">
+          <div>
+            <p class="city__eyebrow">A little code. A whole city.</p>
+            <h2 class="section__title">My repos, <em>as a skyline.</em></h2>
+          </div>
+          <p class="city__subtitle">Built in code. Inspired by Montréal.<br>Every tower is a public repository. Take a look around.</p>
         </div>
-        <p class="city__subtitle">Downtown Montréal at night: every public repo is a tower, and the Bell Centre sits where it belongs. Taller towers hold more code and have been pushed more recently. Drag to rotate, scroll to zoom, click a building to open.</p>
+        <div class="city__dashboard">
+        <div class="city__toolbar">
+          <div class="city__location"><span class="city__live-dot" aria-hidden="true"></span> MONTRÉAL <span>/ NIGHT VIEW</span></div>
+          <div class="city__controls" aria-label="Skyline controls">
+            <button id="city-rotate" type="button" aria-pressed="false" disabled>Auto orbit</button>
+            <button id="city-reset" type="button" disabled><span aria-hidden="true">↺</span> Reset view</button>
+          </div>
+        </div>
         <div class="city__wrap">
+          <div class="city__scene-label" aria-hidden="true"><span>THE REPOSITORY DISTRICT</span><strong>One project at a time.</strong></div>
           <div class="city__loading" id="city-loading" aria-live="polite">
             <span class="city__spinner" aria-hidden="true"></span>
             <span>Loading repositories…</span>
           </div>
           <canvas id="city-canvas" role="img" aria-label="Isometric skyline of GitHub repositories"></canvas>
           <div class="city__tooltip" id="city-tooltip" aria-hidden="true"></div>
-          <p class="city__touch-hint" aria-hidden="true">Drag to rotate · pinch to zoom · tap a building</p>
+          <p class="city__touch-hint">Drag to explore <span>·</span> Scroll or pinch to zoom <span>·</span> Select a tower</p>
+          <div class="city__coordinates" aria-hidden="true">45°30′ N<br>73°34′ W</div>
+        </div>
+        <div class="city__legend"><p><span class="city__legend-bars" aria-hidden="true">▂▅█</span> Height reflects code size &amp; recent activity</p><p id="city-summary" aria-live="polite">Discover the repositories below</p></div>
+        <details class="city__directory"><summary>Explore repositories <span aria-hidden="true">↗</span></summary><div id="city-repos" class="city__repos"><a href="https://github.com/gvogas?tab=repositories" target="_blank" rel="noopener noreferrer">Browse all repositories on GitHub ↗</a></div></details>
         </div>
       </div>
     </section>
@@ -538,14 +554,20 @@
               <span class="pill pill--framework" style="--brand:#512BD4; --i:2"><iconify-icon icon="simple-icons:dotnet" aria-hidden="true"></iconify-icon>.NET</span>
               <span class="pill pill--framework" style="--brand:#5382A1; --i:3"><iconify-icon icon="simple-icons:openjdk" aria-hidden="true"></iconify-icon>JavaFX</span>
               <span class="pill pill--framework" style="--brand:#1F2933; --i:4"><iconify-icon icon="simple-icons:unity" aria-hidden="true"></iconify-icon>Unity</span>
-              <span class="pill pill--framework" style="--brand:#6E9A1E; --i:5"><iconify-icon icon="simple-icons:slim" aria-hidden="true"></iconify-icon>Slim</span>
-              <span class="pill pill--framework" style="--brand:#5E9A38; --i:6"><iconify-icon icon="simple-icons:twig" aria-hidden="true"></iconify-icon>Twig</span>
+              <span class="pill pill--framework" style="--brand:#6E9A1E; --i:5"><iconify-icon icon="lucide:feather" aria-hidden="true"></iconify-icon>Slim</span>
+              <span class="pill pill--framework" style="--brand:#5E9A38; --i:6"><iconify-icon icon="lucide:leaf" aria-hidden="true"></iconify-icon>Twig</span>
               <span class="pill pill--framework" style="--brand:#635BFF; --i:7"><iconify-icon icon="simple-icons:stripe" aria-hidden="true"></iconify-icon>Stripe</span>
               <span class="pill pill--framework" style="--brand:#4285F4; --i:8"><iconify-icon icon="simple-icons:googlemaps" aria-hidden="true"></iconify-icon>Google Maps</span>
               <span class="pill pill--framework" style="--brand:#5A6166; --i:9"><iconify-icon icon="simple-icons:ios" aria-hidden="true"></iconify-icon>iOS</span>
               <span class="pill pill--framework" style="--brand:#258A52; --i:10"><iconify-icon icon="simple-icons:android" aria-hidden="true"></iconify-icon>Android</span>
               <span class="pill pill--framework" style="--brand:#0769AD; --i:11"><iconify-icon icon="simple-icons:jquery" aria-hidden="true"></iconify-icon>jQuery</span>
               <span class="pill pill--framework" style="--brand:#D22128; --i:12"><iconify-icon icon="simple-icons:apache" aria-hidden="true"></iconify-icon>Apache</span>
+              <span class="pill pill--framework" style="--brand:#43853D; --i:13"><iconify-icon icon="simple-icons:nodedotjs" aria-hidden="true"></iconify-icon>Node.js</span>
+              <span class="pill pill--framework" style="--brand:#0175C2; --i:14"><iconify-icon icon="lucide:waves" aria-hidden="true"></iconify-icon>Riverpod</span>
+              <span class="pill pill--framework" style="--brand:#512BD4; --i:15"><iconify-icon icon="lucide:panels-top-left" aria-hidden="true"></iconify-icon>WinForms</span>
+              <span class="pill pill--framework" style="--brand:#E92063; --i:16"><iconify-icon icon="simple-icons:pydantic" aria-hidden="true"></iconify-icon>Pydantic</span>
+              <span class="pill pill--framework" style="--brand:#F55036; --i:17"><iconify-icon icon="lucide:brain" aria-hidden="true"></iconify-icon>Groq</span>
+              <span class="pill pill--framework" style="--brand:#635BFF; --i:18"><iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>Tavily</span>
             </div>
           </article>
 
@@ -562,6 +584,10 @@
               <span class="pill pill--infra" style="--brand:#B8860B; --i:4"><iconify-icon icon="simple-icons:linux" aria-hidden="true"></iconify-icon>Linux</span>
               <span class="pill pill--infra" style="--brand:#2088FF; --i:5"><iconify-icon icon="simple-icons:githubactions" aria-hidden="true"></iconify-icon>GitHub Actions</span>
               <span class="pill pill--infra" style="--brand:#FF6C2C; --i:6"><iconify-icon icon="simple-icons:cpanel" aria-hidden="true"></iconify-icon>cPanel</span>
+              <span class="pill pill--infra" style="--brand:#E08A00; --i:7"><iconify-icon icon="lucide:database" aria-hidden="true"></iconify-icon>Firestore</span>
+              <span class="pill pill--infra" style="--brand:#4285F4; --i:8"><iconify-icon icon="simple-icons:googlecloud" aria-hidden="true"></iconify-icon>Cloud Functions</span>
+              <span class="pill pill--infra" style="--brand:#C21325; --i:9"><iconify-icon icon="simple-icons:jest" aria-hidden="true"></iconify-icon>Jest</span>
+              <span class="pill pill--infra" style="--brand:#885630; --i:10"><iconify-icon icon="simple-icons:composer" aria-hidden="true"></iconify-icon>Composer</span>
             </div>
           </article>
 
@@ -575,57 +601,61 @@
       <div class="container">
         <div class="section__head reveal">
           <h2 class="section__title">What I'm studying</h2>
-          <p class="section__lede">Some of this is coursework. The last two are what I do when nobody assigns it.</p>
+          <p class="section__lede">Here's what I'm learning in class and working on in my projects. A few interests have made their way in here too.</p>
         </div>
         <ul class="study__list">
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:braces"></iconify-icon></span>
             <h3 class="study__title">Software development</h3>
-            <p class="study__blurb">The fundamentals I lean on in every project.</p>
+            <p class="study__blurb">I'm learning how to organize my code so it's easier to change as a project grows.</p>
             <div class="study__skills"><span class="pill">OOP</span><span class="pill">Design patterns</span><span class="pill">Multithreading</span><span class="pill">Synchronization</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:smartphone"></iconify-icon></span>
             <h3 class="study__title">Mobile development</h3>
-            <p class="study__blurb">Where the scheduling app lives.</p>
+            <p class="study__blurb">My scheduling app gives me plenty to work through, from building screens to keeping data available offline.</p>
             <div class="study__skills"><span class="pill">Flutter</span><span class="pill">Dart</span><span class="pill">Firebase</span><span class="pill">Offline-first</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:globe"></iconify-icon></span>
             <h3 class="study__title">Web development</h3>
-            <p class="study__blurb">Full-stack, from the schema to the CSS.</p>
+            <p class="study__blurb">I've been putting this into practice with Ticketmaestrix, working on both the pages and what happens behind them.</p>
             <div class="study__skills"><span class="pill">PHP</span><span class="pill">MySQL</span><span class="pill">REST APIs</span><span class="pill">JavaScript</span><span class="pill">Twig</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:database"></iconify-icon></span>
             <h3 class="study__title">Database design</h3>
-            <p class="study__blurb">Getting the schema right before touching the UI.</p>
+            <p class="study__blurb">I'm learning how to structure data and write the queries my apps need.</p>
             <div class="study__skills"><span class="pill">Normalization</span><span class="pill">Stored procedures</span><span class="pill">MySQL</span><span class="pill">Firestore</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:server"></iconify-icon></span>
             <h3 class="study__title">Systems</h3>
-            <p class="study__blurb">Shipping it, and keeping it up.</p>
+            <p class="study__blurb">Getting my projects running on a server, then figuring out how to keep them running and make updates easier.</p>
             <div class="study__skills"><span class="pill">Linux</span><span class="pill">Apache</span><span class="pill">cPanel</span><span class="pill">GitHub Actions</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:gamepad-2"></iconify-icon></span>
             <h3 class="study__title">Game development</h3>
-            <p class="study__blurb">Gameplay code and shaders for Last Signal.</p>
+            <p class="study__blurb">I've been working with Unity on Last Signal, learning about gameplay code and shaders along the way.</p>
             <div class="study__skills"><span class="pill">Unity</span><span class="pill">C#</span><span class="pill">ShaderLab</span><span class="pill">HLSL</span></div>
           </li>
+        </ul>
+        <div class="study__divider">
+          <h3>What I explore on my own</h3>
+          <p>A couple of interests outside my coursework.</p>
+        </div>
+        <ul class="study__list study__list--personal">
           <li class="study__item study__item--self">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:cpu"></iconify-icon></span>
-            <span class="study__note">Own time</span>
             <h3 class="study__title">Robotics</h3>
-            <p class="study__blurb">Self-taught, on my own time.</p>
+            <p class="study__blurb">I'm teaching myself how firmware, sensors, and control systems work together.</p>
             <div class="study__skills"><span class="pill">Embedded C/C++</span><span class="pill">Firmware</span><span class="pill">PID control</span><span class="pill">Sensor fusion</span></div>
           </li>
           <li class="study__item study__item--play">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:activity"></iconify-icon></span>
-            <span class="study__note">Own time</span>
             <h3 class="study__title">Hockey analytics</h3>
-            <p class="study__blurb">What I do with box scores after the game.</p>
+            <p class="study__blurb">I use hockey stats to explore things like possession and shot quality after a game.</p>
             <div class="study__skills"><span class="pill">Scraping</span><span class="pill">Possession metrics</span><span class="pill">Shot quality</span></div>
           </li>
         </ul>

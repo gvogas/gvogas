@@ -45,6 +45,7 @@ export function initSkillSphere() {
   wire.setAttribute('aria-hidden', 'true');
   stage.appendChild(wire);
   const ctx = wire.getContext('2d');
+  if (!ctx) { wire.remove(); return; }
 
   // Precompute lat/long ring point sets once; each frame we just rotate +
   // project them rather than regenerating the geometry.
@@ -102,11 +103,43 @@ export function initSkillSphere() {
   let activeTag = null;
   let rafId = 0;
   let running = false;
+  let paused = false;
+  let lastFrame = 0;
+  let targetRotation = null;
+  let inView = true;
+
+  const controls = document.createElement('div');
+  controls.className = 'sphere__controls';
+  const pause = document.createElement('button');
+  pause.type = 'button';
+  pause.textContent = 'Pause rotation';
+  pause.setAttribute('aria-pressed', 'false');
+  const browse = document.createElement('button');
+  browse.type = 'button';
+  browse.textContent = 'View as list';
+  browse.setAttribute('aria-expanded', 'false');
+  controls.append(pause, browse);
+  root.appendChild(controls);
+  pause.addEventListener('click', () => {
+    paused = !paused;
+    setActive(null);
+    velX = 0; velY = 0;
+    pause.textContent = paused ? 'Resume rotation' : 'Pause rotation';
+    pause.setAttribute('aria-pressed', String(paused));
+  });
+  browse.addEventListener('click', () => {
+    const list = root.classList.toggle('is-list');
+    browse.textContent = list ? 'View globe' : 'View as list';
+    browse.setAttribute('aria-expanded', String(list));
+    pause.hidden = list;
+    if (list) stop();
+    else { resize(); start(); }
+  });
 
   function resize() {
     const size = stage.clientWidth || root.clientWidth || 320;
     cssSize = size;
-    radius = size * 0.36;
+    radius = size * 0.40;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     wire.width = Math.round(size * dpr);
     wire.height = Math.round(size * dpr);
@@ -118,23 +151,37 @@ export function initSkillSphere() {
     if (activeTag) activeTag.classList.remove('is-active');
     activeTag = tag;
     if (activeTag) activeTag.classList.add('is-active');
+    targetRotation = null;
+    if (tag) {
+      const p = points[tags.indexOf(tag)];
+      const yaw = Math.atan2(p.x, p.z);
+      targetRotation = {
+        x: Math.atan2(p.y, Math.hypot(p.x, p.z)),
+        y: rotY + Math.atan2(Math.sin(yaw - rotY), Math.cos(yaw - rotY)),
+      };
+      velX = 0; velY = 0;
+    }
   }
 
-  function frame() {
+  function frame(time) {
+    const dt = lastFrame ? Math.min((time - lastFrame) / 16.667, 3) : 1;
+    lastFrame = time;
+    const ease = 1 - Math.pow(0.92, dt);
     if (dragging) {
       // pointer is driving the rotation directly
-    } else if (activeTag) {
-      // park the spin while an icon is selected so it stays readable
-      velY *= 0.85;
-      velX *= 0.85;
-    } else {
+    } else if (targetRotation) {
+      rotX += (targetRotation.x - rotX) * ease;
+      rotY += (targetRotation.y - rotY) * ease;
+    } else if (!paused) {
       // ease yaw back to the resting auto-spin and pitch back to rest
-      velY += (AUTO_YAW - velY) * 0.03;
-      velX *= 0.9;
-      rotX += (REST_PITCH - rotX) * 0.03;
+      velY += (AUTO_YAW - velY) * (1 - Math.pow(0.97, dt));
+      velX *= Math.pow(0.9, dt);
+      rotX += (REST_PITCH - rotX) * (1 - Math.pow(0.97, dt));
     }
-    rotY += velY;
-    rotX += velX;
+    if (!dragging && !targetRotation && !paused) {
+      rotY += velY * dt;
+      rotX += velX * dt;
+    }
 
     const sinY = Math.sin(rotY), cosY = Math.cos(rotY);
     const sinX = Math.sin(rotX), cosX = Math.cos(rotX);
@@ -158,7 +205,7 @@ export function initSkillSphere() {
       const tag = tags[i];
       tag.style.transform =
         `translate(-50%, -50%) translate3d(${px.toFixed(1)}px, ${(-py).toFixed(1)}px, 0) scale(${scale.toFixed(3)})`;
-      tag.style.opacity = (0.25 + depth * 0.75).toFixed(3);
+      tag.style.opacity = (0.16 + depth * 0.84).toFixed(3);
       tag.style.zIndex = String(1 + ((depth * 100) | 0));
       tag.style.setProperty('--depth', depth.toFixed(3));
       // Back-facing icons shouldn't intercept taps meant for front ones.
@@ -196,8 +243,9 @@ export function initSkillSphere() {
   }
 
   function start() {
-    if (running) return;
+    if (running || document.hidden || !inView || root.classList.contains('is-list')) return;
     running = true;
+    lastFrame = 0;
     rafId = requestAnimationFrame(frame);
   }
   function stop() {
@@ -207,28 +255,34 @@ export function initSkillSphere() {
 
   // ── Pointer: drag to spin, tap to activate ───────────────────
   stage.addEventListener('pointerdown', (e) => {
+    if (!e.isPrimary || e.button !== 0) return;
     dragging = true;
     moved = false;
     lastX = downX = e.clientX;
     lastY = downY = e.clientY;
     pressTag = e.target.closest('.sphere__tag');
+    velX = 0; velY = 0;
     stage.setPointerCapture?.(e.pointerId);
     stage.classList.add('is-grabbing');
   });
   stage.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
+    if (!dragging || !e.isPrimary) return;
     if (Math.hypot(e.clientX - downX, e.clientY - downY) > TAP_SLOP) moved = true;
+    if (moved) setActive(null);
     velY = (e.clientX - lastX) * DRAG_GAIN;
     velX = -(e.clientY - lastY) * DRAG_GAIN;
+    rotY += velY;
+    rotX = Math.max(-1.4, Math.min(1.4, rotX + velX));
     lastX = e.clientX;
     lastY = e.clientY;
   });
   function endDrag(e) {
-    if (!dragging) return;
+    if (!dragging || !e.isPrimary) return;
     dragging = false;
     stage.releasePointerCapture?.(e.pointerId);
     stage.classList.remove('is-grabbing');
-    if (!moved) {
+    if (e.type === 'pointercancel') { velX = 0; velY = 0; }
+    if (!moved && e.type === 'pointerup') {
       // a tap: toggle the pressed icon, or clear when tapping empty space
       if (pressTag) setActive(pressTag === activeTag ? null : pressTag);
       else setActive(null);
@@ -240,12 +294,14 @@ export function initSkillSphere() {
 
   // ── Lifecycle: pause when offscreen, react to resize ─────────
   const io = new IntersectionObserver((entries) => {
-    if (entries[0]?.isIntersecting) start();
+    inView = !!entries[0]?.isIntersecting;
+    if (inView) start();
     else stop();
   }, { threshold: 0 });
   io.observe(root);
 
   window.addEventListener('resize', resize, { passive: true });
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
 
   // Go live: hide the fallback grid, reveal the sphere. Flip the class first so
   // the stage has its laid-out size before we measure the radius from it.
