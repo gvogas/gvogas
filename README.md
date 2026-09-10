@@ -3,56 +3,32 @@
   <img alt="Hey, I'm George. CS student at Vanier College in Montréal." src="https://raw.githubusercontent.com/gvogas/gvogas/main/assets/readme-banner-light.svg" width="100%" />
 </picture>
 
-CS student at Vanier College, in Montréal. I build mobile, web, and desktop software.
+**Computer science student at Vanier College in Montréal.**
+I build mobile, web, and desktop software, including a commissioned scheduling app that a service company uses every day.
 
 **[Portfolio](https://gvogas.github.io/gvogas/)** · **[LinkedIn](https://www.linkedin.com/in/georgevogas/)** · **[Devpost](https://devpost.com/Terminator320)**
 
-I've learned primarily by building: a scheduling app a client uses every day, a ticketing
-site my team deployed, a desktop POS system, and a Unity game I contribute to. Outside of
-coursework, my main interests are robotics and hockey analytics.
+> **Currently building:** Wave invoicing for the scheduling app.<br>
+> **Open to:** Internships where I can keep learning by shipping.
 
-My portfolio site has an interactive 3D view of these repositories, if you'd rather click
-around than read.
-
-<table>
-  <tr>
-    <td><strong>Based in</strong></td>
-    <td>Montréal, QC</td>
-    <td><strong>Building</strong></td>
-    <td>Wave invoicing for the scheduling app</td>
-  </tr>
-  <tr>
-    <td><strong>Studying</strong></td>
-    <td>Computer Science, Vanier College</td>
-    <td><strong>Open to</strong></td>
-    <td>Internships</td>
-  </tr>
-</table>
-
-Here's a snake eating a year of my commits:
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake-dark.svg" />
-  <img alt="A snake eating my GitHub contribution graph" src="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake.svg" />
-</picture>
+[Projects](#things-ive-built) · [Tools](#what-i-work-with) · [Activity](#a-year-of-building) · [Contact](#reaching-me)
 
 ## Things I've built
 
-| Project | What it is | Status | Stack |
-| --- | --- | --- | --- |
-| [Scheduling App](#scheduling-app) | Appointment calendar and client directory for a service company | In production, commissioned | Flutter · Firebase |
-| [TicketMaestrix](#ticketmaestrix) | Event ticketing site | Team of 3, deployed | PHP · Slim · MySQL |
-| [AI Study Assistant](#ai-study-assistant) | Turns a topic or your notes into study material | Hackathon, team of 4 | FastAPI · LLaMA 3.3 |
-| [Point-of-Sales Patterns](#point-of-sales-patterns) | JavaFX register built around design patterns | Course final | Java · JavaFX · MySQL |
-| [The Rogue Market](#the-rogue-market) | Star Wars themed store, no backend | Course final | Vanilla JS |
-| [Last Signal](#last-signal) | Unity game, gameplay code and shaders | Contributor | Unity · C# · HLSL |
+From a client commission to team projects and experiments.
 
 ### Scheduling App
 
-*Flutter · Firebase · Google Places API · Dart · Android · iOS* — [repo](https://github.com/gvogas/Scheduling-App)
+<sub>Featured project · Mobile · Commissioned, in daily use</sub>
 
-A service company was running its whole schedule on paper, so they hired me to replace it.
-It has been in daily use since I handed it over.
+**From paper schedules to everyday software.**
+
+A commissioned app that replaced a service company’s paper schedule with a shared calendar, client directory, and employee workflows. In daily use since handover.
+
+*Flutter · Firebase · Google Places API · Dart · Android · iOS* — [View repository](https://github.com/gvogas/Scheduling-App)
+
+<details>
+<summary>Inside the build</summary>
 
 - Real-time appointment calendar with per-employee color coding and admin/employee role separation
 - Full client directory with accent-insensitive search across large record sets
@@ -66,13 +42,20 @@ classes so that screens never query Firestore directly, behind a single centrali
 handler. I'm currently adding Wave billing: completed appointments auto-generate invoices,
 sync client records, and surface payment status in the app.
 
+</details>
+
+---
+
 ### TicketMaestrix
 
-*PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel* — [repo](https://github.com/gvogas/Ticketmaestrix)
+<sub>Web platform · Team of three · Deployed</sub>
 
-Event ticketing site I built with two classmates, Fadwa Shalby and Lucas Coveyduck. Users
-bought tickets for concerts, raffles, and movies; admins managed events, inventory, and
-sales. We deployed it to cPanel through a GitHub Actions pipeline.
+An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Customers browse events and buy tickets; admins manage inventory and sales. Deployed to cPanel through GitHub Actions.
+
+*PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel* — [View repository](https://github.com/gvogas/Ticketmaestrix)
+
+<details>
+<summary>Inside the build</summary>
 
 - User accounts with event browsing, ticket purchase, and order history
 - Admin dashboard for event creation, ticket inventory control, and transaction monitoring
@@ -80,13 +63,20 @@ sales. We deployed it to cPanel through a GitHub Actions pipeline.
 - Internationalization support via a `/translations` directory
 - CI/CD pipeline via GitHub Actions, deploying to cPanel on push
 
+</details>
+
+---
+
 ### AI Study Assistant
 
-*Python · FastAPI · Groq (LLaMA 3.3) · Tavily · SQLite · Vanilla JS* — [repo](https://github.com/gvogas/AI-Study-Assistant) · [Devpost](https://devpost.com/software/ai-study-assistant-giursf)
+<sub>Hackathon · MariHacks · Team of four</sub>
 
-Built at MariHacks with three collaborators. Give it a topic, plus optionally your notes,
-PDFs, or slides, and it generates study material. The coin economy, plant companion, and
-Spotify playback are layered on top of that.
+Built at MariHacks with three collaborators. Turns topics, notes, and slides into study guides, flashcards, and quizzes, with a plant companion that grows as you learn.
+
+*Python · FastAPI · Groq (LLaMA 3.3) · Tavily · SQLite · Vanilla JS* — [View repository](https://github.com/gvogas/AI-Study-Assistant) · [Devpost](https://devpost.com/software/ai-study-assistant-giursf)
+
+<details>
+<summary>Inside the build</summary>
 
 - Research agent (Tavily) and content agent (Groq/LLaMA 3.3) generate structured notes, 1-30 flashcards, and 1-20 multiple-choice questions at beginner, intermediate, or advanced difficulty
 - Study plans of 1-30 days with priority tagging, allocating extra time to whatever your last quiz showed you were weak on
@@ -98,23 +88,40 @@ Spotify playback are layered on top of that.
 Feature-first FastAPI routers with a dedicated agent layer for AI and search and a service
 layer holding the business logic. No framework on the frontend and no build step.
 
+</details>
+
+---
+
 ### Point-of-Sales Patterns
 
-*Java · JavaFX · MySQL · Maven · JDK 24* — [repo](https://github.com/gvogas/Point-of-Sales_Patterns)
+<sub>Desktop software · Course final</sub>
 
-Final project for my programming patterns course. A JavaFX register system, built as an
-excuse to actually use the patterns we spent the term reading about: Factory Method for
-payment processing, with Cash, Debit, and Credit each as concrete factories, and a
-multithreaded profit calculator that splits the sales list across two threads with
-semaphore synchronization. Multi-screen GUI covering the order flow, inventory, sales
-analytics, and payment, over a MySQL schema that ships with seed data in `pos.sql`.
+A JavaFX register system for my programming patterns course, covering orders, inventory, sales analytics, and payment.
+
+*Java · JavaFX · MySQL · Maven · JDK 24* — [View repository](https://github.com/gvogas/Point-of-Sales_Patterns)
+
+<details>
+<summary>Inside the build</summary>
+
+- **Payments:** Factory Method implementations for cash, debit, and credit.
+- **Concurrency:** A profit calculator splits sales across two threads, with semaphore synchronization.
+- **Interface:** Separate screens for orders, inventory, sales analytics, and payment.
+- **Data:** MySQL persistence with a schema and seed data in `pos.sql`.
+
+</details>
+
+---
 
 ### The Rogue Market
 
-*JavaScript · HTML · CSS · JSON · XML* — [repo](https://github.com/gvogas/Star-wars-Interactive-Web-Application)
+<sub>Web experiment · Course final</sub>
 
-Star Wars themed store for my internet programming final. Twelve pages, vanilla JS, no
-backend, no framework.
+A twelve-page Star Wars storefront with live search, a persistent cart, and checkout. Built in vanilla JavaScript for my internet programming final.
+
+*JavaScript · HTML · CSS · JSON · XML* — [View repository](https://github.com/gvogas/Star-wars-Interactive-Web-Application)
+
+<details>
+<summary>Inside the build</summary>
 
 - Live product search with a suggestion dropdown and highlighted infinite-scroll results
 - Cart with per-item quantity control, subtotal, and localStorage persistence
@@ -123,25 +130,50 @@ backend, no framework.
 - Products rendered from category JSONs, navigation driven by XML over AJAX
 - Modular JS: `AuthModel`, `CartManagement`, `ProductModel`, `SearchModel`, `FormValidation`
 
+</details>
+
+---
+
 ### Last Signal
 
-*Unity · C# · ShaderLab · HLSL* — [repo](https://github.com/alexder204/LastSignal)
+<sub>Game development · Contributor</sub>
 
-A Unity game I help out on. I write gameplay code and custom shaders, which is most of why
-the repo is half ShaderLab and HLSL.
+A Unity game I contribute to, focusing on gameplay code and custom shaders in ShaderLab and HLSL.
+
+*Unity · C# · ShaderLab · HLSL* — [View repository](https://github.com/alexder204/LastSignal)
+
 
 ## What I work with
 
-| | |
+| Focus | Tools I use |
 | --- | --- |
-| **Languages** | Python, Java, C#, Dart, JavaScript, PHP, C++, HTML, CSS, shell, a little Wolfram |
-| **Frameworks and platforms** | Flutter, FastAPI, .NET, JavaFX, Unity, Slim, Twig, Stripe, Google Maps, Android, iOS |
-| **Data and infrastructure** | Firebase, MySQL, SQLite, Maven, Linux, Apache, GitHub Actions, cPanel |
+| **Mobile** | Flutter · Dart · Firebase · Android · iOS |
+| **Web & APIs** | Python · FastAPI · PHP · Slim · Twig · JavaScript |
+| **Desktop & games** | Java · JavaFX · C# · .NET · Unity |
+| **Data & deployment** | MySQL · SQLite · Linux · Apache · GitHub Actions · cPanel |
+
+<details>
+<summary>More tools and foundations</summary>
+
+HTML, CSS, C++, shell, a little Wolfram, Maven, Stripe, and Google Maps.
 
 Coursework has covered OOP and design patterns, multithreading and synchronization,
-schema design and normalization, REST APIs, and Linux and CI/CD deployment. On my own
-time I work on robotics: embedded C/C++, microcontroller firmware, PID control loops,
-and sensor fusion.
+schema design and normalization, REST APIs, and Linux and CI/CD deployment.
+
+</details>
+
+Outside coursework, I work on robotics: embedded C/C++, microcontroller firmware, PID control loops, and sensor fusion. Away from the keyboard, I play hockey and follow hockey analytics.
+
+## A year of building
+
+Public contributions, one commit at a time.
+
+[Explore my repository skyline](https://gvogas.github.io/gvogas/#city) — the interactive 3D view on my portfolio.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake-dark.svg" />
+  <img alt="A snake eating my GitHub contribution graph" src="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake.svg" />
+</picture>
 
 ## Reaching me
 

@@ -18,7 +18,7 @@
   <text x="72" y="92" class="mono" font-size="13" font-weight="500" letter-spacing="1.6" fill="#5d7189">CS STUDENT AT VANIER COLLEGE · MONTRÉAL, QC</text>
   <text x="70" y="188" class="serif" font-size="84" font-weight="600" letter-spacing="-2" fill="#0b1f3a">Hey, I'm <tspan fill="#1a56db" font-style="italic">George.</tspan></text>
   <path d="M390 203c40-5 80-8 122-8 50 0 92 3 130 8" stroke="#38bdf8" stroke-width="3.2" stroke-linecap="round" fill="none" opacity="0.8"/>
-  <text x="72" y="240" class="mono" font-size="15" fill="#5d7189">I build mobile, web, and desktop software.  One of them runs a business every day.</text>
+  <text x="72" y="240" class="mono" font-size="15" fill="#5d7189">Mobile, web, and desktop. Built for real people.</text>
 
   <g transform="translate(0 0)">
     <rect x="838" y="56" width="300" height="200" rx="4" fill="#ffffff" stroke="#c3d3e3" transform="rotate(1.4 988 156)"/>

@@ -67,7 +67,7 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=8" />
   <script type="importmap">
   {
     "imports": {
@@ -219,14 +219,15 @@
     <!-- Projects -->
     <section class="section section--alt" id="projects">
       <div class="container">
-        <div class="section__head reveal">
-          <h2 class="section__title">Things I've built</h2>
-          <p class="section__lede">Real users, real deadlines</p>
+        <div class="section__head projects__heading reveal">
+          <div><p class="projects__eyebrow">SELECTED WORK</p><h2 class="section__title">Things I've <em>built.</em></h2></div>
+          <p class="section__lede">Real users, real deadlines.<br>A few things I've put into the world.</p>
         </div>
         <div class="projects__grid">
 
           <!-- Scheduling App (featured) -->
           <article class="card card--featured" style="--card-tint:#1a56db">
+            <div class="project__identity"><span>Featured project / Mobile</span></div>
             <div class="card__aside">
               <div class="card__header">
                 <div class="card__meta">
@@ -250,22 +251,24 @@
               </div>
             </div>
             <div class="card__body">
+              <p class="project__headline">From paper schedules<br>to <em>everyday software.</em></p>
               <p class="card__desc">
                 A service company was running its whole schedule on paper, so they hired me to replace it. It has been in daily use since I handed it over.
               </p>
-              <ul class="card__bullets">
+              <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
                 <li>Real-time appointment calendar with per-employee color coding and admin/employee role separation</li>
                 <li>Full client directory with accent-insensitive search across large record sets</li>
                 <li>In-app photo capture, auto-compression, and background upload to Firebase Storage</li>
                 <li>Invite-only employee onboarding with pre-whitelisted email registration</li>
                 <li>Light/dark mode, text scaling, and multi-language support, all persisted across sessions</li>
               </ul>
-              <p class="card__arch"><strong>Architecture:</strong> Feature-first folder structure; all DB access mediated through per-feature service classes, so screens never query Firestore directly.</p>
+              <p class="card__arch"><strong>Architecture:</strong> Feature-first folder structure; all DB access mediated through per-feature service classes, so screens never query Firestore directly.</p></details>
             </div>
           </article>
 
           <!-- TicketMaestrix -->
           <article class="card" style="--card-tint:#0284c7">
+            <div class="project__identity"><span>Web platform</span></div>
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -293,17 +296,18 @@
             <p class="card__desc">
               Event ticketing site built with two classmates and deployed to cPanel. Users bought tickets for concerts, raffles, and movies; admins managed events, inventory, and sales.
             </p>
-            <ul class="card__bullets">
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
               <li>User accounts with event browsing, ticket purchase, and order history</li>
               <li>Admin dashboard for event creation, ticket inventory control, and transaction monitoring</li>
               <li>Custom Slim MVC framework with Twig templating, no off-the-shelf CMS</li>
               <li>Internationalization support and CI/CD pipeline via GitHub Actions deploying to cPanel</li>
             </ul>
-            <p class="card__arch"><strong>Team:</strong> George Vogas · Fadwa Shalby · Lucas Coveyduck</p>
+            <p class="card__arch"><strong>Team:</strong> George Vogas · Fadwa Shalby · Lucas Coveyduck</p></details>
           </article>
 
           <!-- AI Study Assistant -->
           <article class="card" style="--card-tint:#0891b2">
+            <div class="project__identity"><span>Hackathon</span></div>
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -330,18 +334,19 @@
             <p class="card__desc">
               Hackathon project from MariHacks. Give it a topic, plus optionally your notes or slides, and it generates study material, with a coin economy and a quiz-linked plant companion layered on top.
             </p>
-            <ul class="card__bullets">
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
               <li>AI research + content agents generate structured notes, flashcards, and quiz questions at multiple difficulty levels</li>
               <li>Personalized study plan with priority tagging, extra time auto-allocated to weak areas from quiz results</li>
               <li>Supports uploaded PDF, PPTX, TXT, and MD files alongside live web research</li>
               <li>Coin economy, growable plant pet with unlockable tier skins, and Spotify Connect integration</li>
               <li>JWT auth, rate limiting, Fernet-encrypted tokens, full pytest async coverage</li>
             </ul>
-            <p class="card__arch"><strong>Team:</strong> George Vogas + 3 collaborators</p>
+            <p class="card__arch"><strong>Team:</strong> George Vogas + 3 collaborators</p></details>
           </article>
 
           <!-- Point-of-Sales -->
           <article class="card" style="--card-tint:#5d7189">
+            <div class="project__identity"><span>Desktop software</span></div>
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -363,16 +368,17 @@
             <p class="card__desc">
               Final project for my programming patterns course. A JavaFX register system, built as an excuse to actually use the patterns we spent the term reading about.
             </p>
-            <ul class="card__bullets">
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
               <li>Multi-screen JavaFX GUI: main menu, order flow, inventory management, sales analytics, and payment</li>
               <li>Factory Method pattern for payment processing: Cash, Debit, and Credit as concrete factories</li>
               <li>Multithreaded profit calculator with semaphore synchronization for safe aggregation</li>
               <li>MySQL-backed inventory and sales with full SQL schema and seed data included</li>
-            </ul>
+            </ul></details>
           </article>
 
           <!-- The Rogue Market -->
           <article class="card" style="--card-tint:#5d7189">
+            <div class="project__identity"><span>Web experiment</span></div>
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -394,17 +400,18 @@
             <p class="card__desc">
               Star Wars themed store for my internet programming final. Twelve pages, vanilla JS, no backend, no framework.
             </p>
-            <ul class="card__bullets">
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
               <li>Live product search with suggestion dropdown and highlighted infinite-scroll results</li>
               <li>Shopping cart with per-item quantity control, subtotal, and localStorage persistence</li>
               <li>Full checkout flow: tax calculation, payment method validation, order confirmation</li>
               <li>Cookie-based user profile system with editable avatar</li>
               <li>Modular JS: AuthModel, CartManagement, ProductModel, SearchModel, FormValidation</li>
-            </ul>
+            </ul></details>
           </article>
 
           <!-- Last Signal -->
           <article class="card" style="--card-tint:#0b2a5b">
+            <div class="project__identity"><span>Game development</span></div>
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
@@ -643,7 +650,7 @@
         </ul>
         <div class="study__divider">
           <h3>What I explore on my own</h3>
-          <p>A couple of interests outside my coursework.</p>
+          <p>A few interests outside my coursework.</p>
         </div>
         <ul class="study__list study__list--personal">
           <li class="study__item study__item--self">
@@ -657,6 +664,12 @@
             <h3 class="study__title">Hockey analytics</h3>
             <p class="study__blurb">I use hockey stats to explore things like possession and shot quality after a game.</p>
             <div class="study__skills"><span class="pill">Scraping</span><span class="pill">Possession metrics</span><span class="pill">Shot quality</span></div>
+          </li>
+          <li class="study__item">
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:camera"></iconify-icon></span>
+            <h3 class="study__title">Photography</h3>
+            <p class="study__blurb">Outside of coding, I spend time behind the camera. I share my photography on Instagram.</p>
+            <div class="study__skills"><a class="pill" href="https://www.instagram.com/vogaslens/" target="_blank" rel="noopener noreferrer">@vogaslens &rarr;</a></div>
           </li>
         </ul>
       </div>
