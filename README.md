@@ -1,31 +1,31 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gvogas/gvogas/main/assets/readme-banner-dark.svg" />
-  <img alt="Hey, I'm George. CS student at Vanier College in Montréal." src="https://raw.githubusercontent.com/gvogas/gvogas/main/assets/readme-banner-light.svg" width="100%" />
+  <img alt="George Vogas. One project at a time. A custom circuit-board illustration." src="https://raw.githubusercontent.com/gvogas/gvogas/main/assets/readme-banner-light.svg" width="100%" />
 </picture>
 
-**Computer science student at Vanier College in Montréal.**
-I build mobile, web, and desktop software, including a commissioned scheduling app that a service company uses every day.
+<p align="center">
+  <a href="https://gvogas.github.io/gvogas/"><strong>Explore my portfolio</strong></a> &nbsp; / &nbsp;
+  <a href="https://www.linkedin.com/in/georgevogas/">LinkedIn</a> &nbsp; / &nbsp;
+  <a href="https://devpost.com/Terminator320">Devpost</a>
+</p>
 
-**[Portfolio](https://gvogas.github.io/gvogas/)** · **[LinkedIn](https://www.linkedin.com/in/georgevogas/)** · **[Devpost](https://devpost.com/Terminator320)**
+<p align="center">CS student at Vanier College · Building software people use · Open to internships</p>
 
-> **Currently building:** Wave invoicing for the scheduling app.<br>
-> **Open to:** Internships where I can keep learning by shipping.
+I learn by making things: a scheduling app a company uses every day, a ticketing platform built with classmates, and experiments in games and robotics.
 
-[Projects](#things-ive-built) · [Tools](#what-i-work-with) · [Activity](#a-year-of-building) · [Contact](#reaching-me)
+---
 
 ## Things I've built
 
 From a client commission to team projects and experiments.
 
-### Scheduling App
+### [Scheduling App](https://github.com/gvogas/Scheduling-App)
 
 <sub>Featured project · Mobile · Commissioned, in daily use</sub>
 
-**From paper schedules to everyday software.**
-
 A commissioned app that replaced a service company’s paper schedule with a shared calendar, client directory, and employee workflows. In daily use since handover.
 
-*Flutter · Firebase · Google Places API · Dart · Android · iOS* — [View repository](https://github.com/gvogas/Scheduling-App)
+<code>Flutter</code> <code>Firebase</code> <code>Google Places API</code> <code>Dart</code> <code>Android</code> <code>iOS</code>
 
 <details>
 <summary>Inside the build</summary>
@@ -46,13 +46,13 @@ sync client records, and surface payment status in the app.
 
 ---
 
-### TicketMaestrix
+### [TicketMaestrix](https://github.com/gvogas/Ticketmaestrix)
 
 <sub>Web platform · Team of three · Deployed</sub>
 
 An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Customers browse events and buy tickets; admins manage inventory and sales. Deployed to cPanel through GitHub Actions.
 
-*PHP · Twig · Slim MVC · MySQL · GitHub Actions · cPanel* — [View repository](https://github.com/gvogas/Ticketmaestrix)
+<code>PHP</code> <code>Twig</code> <code>Slim MVC</code> <code>MySQL</code> <code>GitHub Actions</code> <code>cPanel</code>
 
 <details>
 <summary>Inside the build</summary>
@@ -67,13 +67,13 @@ An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Custome
 
 ---
 
-### AI Study Assistant
+### [AI Study Assistant](https://github.com/gvogas/AI-Study-Assistant)
 
 <sub>Hackathon · MariHacks · Team of four</sub>
 
 Built at MariHacks with three collaborators. Turns topics, notes, and slides into study guides, flashcards, and quizzes, with a plant companion that grows as you learn.
 
-*Python · FastAPI · Groq (LLaMA 3.3) · Tavily · SQLite · Vanilla JS* — [View repository](https://github.com/gvogas/AI-Study-Assistant) · [Devpost](https://devpost.com/software/ai-study-assistant-giursf)
+<code>Python</code> <code>FastAPI</code> <code>Groq (LLaMA 3.3)</code> <code>Tavily</code> <code>SQLite</code> <code>Vanilla JS</code> · [Devpost](https://devpost.com/software/ai-study-assistant-giursf)
 
 <details>
 <summary>Inside the build</summary>
@@ -90,15 +90,15 @@ layer holding the business logic. No framework on the frontend and no build step
 
 </details>
 
----
+## More things I've made
 
-### Point-of-Sales Patterns
+### [Point-of-Sales Patterns](https://github.com/gvogas/Point-of-Sales_Patterns)
 
 <sub>Desktop software · Course final</sub>
 
 A JavaFX register system for my programming patterns course, covering orders, inventory, sales analytics, and payment.
 
-*Java · JavaFX · MySQL · Maven · JDK 24* — [View repository](https://github.com/gvogas/Point-of-Sales_Patterns)
+<code>Java</code> <code>JavaFX</code> <code>MySQL</code> <code>Maven</code> <code>JDK 24</code>
 
 <details>
 <summary>Inside the build</summary>
@@ -112,13 +112,13 @@ A JavaFX register system for my programming patterns course, covering orders, in
 
 ---
 
-### The Rogue Market
+### [The Rogue Market](https://github.com/gvogas/Star-wars-Interactive-Web-Application)
 
 <sub>Web experiment · Course final</sub>
 
 A twelve-page Star Wars storefront with live search, a persistent cart, and checkout. Built in vanilla JavaScript for my internet programming final.
 
-*JavaScript · HTML · CSS · JSON · XML* — [View repository](https://github.com/gvogas/Star-wars-Interactive-Web-Application)
+<code>JavaScript</code> <code>HTML</code> <code>CSS</code> <code>JSON</code> <code>XML</code>
 
 <details>
 <summary>Inside the build</summary>
@@ -134,14 +134,13 @@ A twelve-page Star Wars storefront with live search, a persistent cart, and chec
 
 ---
 
-### Last Signal
+### [Last Signal](https://github.com/alexder204/LastSignal)
 
 <sub>Game development · Contributor</sub>
 
 A Unity game I contribute to, focusing on gameplay code and custom shaders in ShaderLab and HLSL.
 
-*Unity · C# · ShaderLab · HLSL* — [View repository](https://github.com/alexder204/LastSignal)
-
+<code>Unity</code> <code>C#</code> <code>ShaderLab</code> <code>HLSL</code>
 
 ## What I work with
 
@@ -170,10 +169,15 @@ Public contributions, one commit at a time.
 
 [Explore my repository skyline](https://gvogas.github.io/gvogas/#city) — the interactive 3D view on my portfolio.
 
+<details>
+<summary>View the contribution animation</summary>
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake-dark.svg" />
   <img alt="A snake eating my GitHub contribution graph" src="https://raw.githubusercontent.com/gvogas/gvogas/output/github-snake.svg" />
 </picture>
+
+</details>
 
 ## Reaching me
 
