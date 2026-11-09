@@ -19,9 +19,9 @@ I learn by making things: a scheduling app a company uses every day, a student t
 
 From a client commission to team projects and experiments.
 
-### [Scheduling App](https://github.com/gvogas/Scheduling-App)
+### ES Pro
 
-<sub>Featured project · Mobile · Commissioned, in daily use</sub>
+<sub>Featured project · Mobile · Commissioned, in daily use · 🔒 Private repo (client code)</sub>
 
 A commissioned app that replaced a service company’s paper schedule with a shared calendar, client directory, and employee workflows. In daily use since handover.
 

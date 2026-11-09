@@ -849,6 +849,7 @@ h1, h2, h3, h4 {
 .tag--solo         { color: var(--tag-contributor);  background: var(--tag-contributor-bg); }
 .tag--deployed     { color: var(--tag-deployed);     background: var(--tag-deployed-bg); }
 
+.card__link--private { cursor: default; display: inline-flex; align-items: center; gap: 4px; }
 .card__link {
   font-family: var(--mono);
   font-size: 0.74rem;
@@ -2042,3 +2043,9 @@ h1, h2, h3, h4 {
   .nav__links li { opacity: 1 !important; transform: none !important; }
   .stack__pills .pill { opacity: 1 !important; transform: none !important; transition-delay: 0ms !important; }
 }
+
+/* Non-link "Private repo" label on client projects */
+#projects .card__link--private,
+#projects .card__link--private:hover,
+[data-theme="dark"] #projects .card__link--private,
+[data-theme="dark"] #projects .card__link--private:hover { color: var(--muted); text-decoration: none; }
