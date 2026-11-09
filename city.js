@@ -699,204 +699,439 @@ export async function initCity() {
     scene.add(crossLight);
   }
 
-  // ── Bell Centre arena (south of the tower cluster) ────────────
+  // ── Bell Centre district ──────────────────────────────────────
+  // The arena fills a whole block just south of the repo grid, three blocks
+  // wide and two deep, lined up with the street grid. Around it: Place du
+  // Centenaire and its statues, Windsor Station and Tour Deloitte to the east,
+  // and Tour des Canadiens across Rue de la Montagne to the west.
+  const ROAD_HALF = CONFIG.ROAD_W / 2;
+  const roadX = j => j * SPACING - gridW / 2;
+  const roadZ = i => i * SPACING - gridD / 2;
+  const siteJ = Math.round((gridW / 2 - SPACING * 1.5) / SPACING);
+  const block = (j0, j1, i0, i1) => ({
+    x0: roadX(j0) + ROAD_HALF, x1: roadX(j1) - ROAD_HALF,
+    z0: roadZ(i0) + ROAD_HALF, z1: roadZ(i1) - ROAD_HALF,
+  });
+  const arenaSite   = block(siteJ, siteJ + 3, ROWS, ROWS + 2);
+  const windsorSite = block(siteJ + 3, siteJ + 5, ROWS, ROWS + 1);
+  const towerSite   = block(siteJ - 1, siteJ, ROWS + 1, ROWS + 2);
+  const districtSites = [arenaSite, windsorSite, towerSite];
+  const inSite = (r, x, z, pad = 0) => x > r.x0 - pad && x < r.x1 + pad && z > r.z0 - pad && z < r.z1 + pad;
+  const inDistrict = (x, z, pad = 0) => districtSites.some(r => inSite(r, x, z, pad));
   {
-    const bell = new THREE.Group();
-    const brick = new THREE.MeshStandardMaterial({ color: 0x925747, roughness: .92 });
-    const stone = new THREE.MeshStandardMaterial({ color: 0xb8b2a3, roughness: .85 });
-    const metal = new THREE.MeshStandardMaterial({ color: 0x79828a, metalness: .45, roughness: .6 });
-    const glass = new THREE.MeshStandardMaterial({ color: 0x426c83, metalness: .55, roughness: .25,
-      emissive: 0x6ca5bd, emissiveIntensity: .22 });
-    const red = new THREE.MeshStandardMaterial({ color: 0xb32436, roughness: .75 });
-    function arenaBox(w,h,d,x,y,z,material) {
-      const part = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
-      part.position.set(x,y,z); bell.add(part); return part;
+    const district = new THREE.Group();
+    scene.add(district);
+    const std = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: .85, ...extra });
+    const concrete = std(0xa7a49b, { roughness: .95 });
+    const granite  = std(0x9d9a94, { roughness: .8 });
+    const stone    = std(0xb8b2a3);
+    const metal    = std(0x6f7880, { metalness: .45, roughness: .55 });
+    const darkMetal = std(0x2f363c, { metalness: .4, roughness: .5 });
+    const red      = std(0xaf1e2d, { roughness: .7 });
+    const blue     = std(0x1d3b78, { roughness: .7 });
+    const bronze   = std(0x5d4c3f, { metalness: .55, roughness: .6 });
+    const leaves   = std(0x45633f, { roughness: 1 });
+    const timber   = std(0x6f5a45, { roughness: .9 });
+    const box = (w, h, d, x, y, z, material, parent = district) => {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), material);
+      mesh.position.set(x, y, z); parent.add(mesh); return mesh;
+    };
+    const canvasTexture = (w, h, draw, repeat) => {
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      draw(c.getContext('2d'), w, h);
+      const tex = new THREE.CanvasTexture(c);
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      if (repeat) { tex.wrapS = tex.wrapT = THREE.RepeatWrapping; }
+      return tex;
+    };
+    // A texture tiled so one tile covers (tileW × tileH) world units on a face.
+    const tiled = (tex, length, height, tileW, tileH) => {
+      const t = tex.clone(); t.repeat.set(length / tileW, height / tileH); t.needsUpdate = true; return t;
+    };
+    // Rounded-rectangle prism (footprint w × d, corner radius r) extruded up by h.
+    const roundedPrism = (w, d, r, h) => {
+      const s = new THREE.Shape();
+      s.moveTo(-w / 2 + r, -d / 2);
+      s.lineTo(w / 2 - r, -d / 2); s.quadraticCurveTo(w / 2, -d / 2, w / 2, -d / 2 + r);
+      s.lineTo(w / 2, d / 2 - r);  s.quadraticCurveTo(w / 2, d / 2, w / 2 - r, d / 2);
+      s.lineTo(-w / 2 + r, d / 2); s.quadraticCurveTo(-w / 2, d / 2, -w / 2, d / 2 - r);
+      s.lineTo(-w / 2, -d / 2 + r); s.quadraticCurveTo(-w / 2, -d / 2, -w / 2 + r, -d / 2);
+      const g = new THREE.ExtrudeGeometry(s, { depth: h, bevelEnabled: false, curveSegments: 10 });
+      g.rotateX(-Math.PI / 2);
+      return g;
+    };
+    // Hipped roof: rectangle base, ridge along the longer side.
+    const hipRoof = (w, d, h) => {
+      const long = Math.max(w, d), short = Math.min(w, d), r = (long - short) / 2;
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute([
+        -long / 2, 0, -short / 2,  long / 2, 0, -short / 2,  long / 2, 0, short / 2,  -long / 2, 0, short / 2,
+        -r, h, 0,  r, h, 0,
+      ], 3));
+      g.setIndex([0, 4, 5, 0, 5, 1, 1, 5, 2, 2, 5, 4, 2, 4, 3, 3, 4, 0]);
+      const flat = g.toNonIndexed(); flat.computeVertexNormals();
+      if (d > w) flat.rotateY(Math.PI / 2);
+      return flat;
+    };
+    const roofCopper = std(0x4f7f6c, { roughness: .7, metalness: .25, side: THREE.DoubleSide });
+
+    // ── Ground: raised sidewalks and paving cover the generic street grid ──
+    for (const r of districtSites) {
+      box(r.x1 - r.x0, .15, r.z1 - r.z0, (r.x0 + r.x1) / 2, .075, (r.z0 + r.z1) / 2, concrete);
     }
-    // The real arena is a big flat-roofed block: a beige precast base, a
-    // blue-green glass curtain wall with rounded corners above it, a stepped
-    // roof, and a tall glass entrance hall facing the plaza.
-    const W = 9.4, D = 5.6, R = .9;            // footprint and corner radius
-    const CZ = 2.4 - D / 2;                    // front face sits at z = 2.4
-    const BASE_H = .95, WALL_H = 2.8, TOP = BASE_H + WALL_H;
-    const precast = new THREE.MeshStandardMaterial({ color: 0xcdc3ae, roughness: .9 });
-    const darkGlass = new THREE.MeshStandardMaterial({ color: 0x1f2b33, metalness: .4, roughness: .35,
-      emissive: 0xffd9a0, emissiveIntensity: .08 });
-    const roofMat = new THREE.MeshStandardMaterial({ color: 0x8d949a, roughness: .8, metalness: .2 });
-    // Curtain-wall texture: tinted panes, light mullions, a solid spandrel band per floor.
-    const wallCanvas = document.createElement('canvas');
-    wallCanvas.width = 128; wallCanvas.height = 128;
-    {
-      const g = wallCanvas.getContext('2d');
-      g.fillStyle = '#c9d0d0'; g.fillRect(0, 0, 128, 128);              // thin mullions
+    const pavingTex = canvasTexture(256, 256, (g, w, h) => {
+      g.fillStyle = '#8f8b84'; g.fillRect(0, 0, w, h);
+      for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
+        g.fillStyle = ['#a29e96', '#9a968e', '#aaa69e', '#96928a'][(x * 3 + y * 5) % 4];
+        g.fillRect(x * 32 + 1, y * 32 + 1, 30, 30);
+      }
+    }, true);
+    const paving = (x0, x1, z0, z1) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0, z1 - z0),
+        std(0xffffff, { map: tiled(pavingTex, x1 - x0, z1 - z0, 2.4, 2.4), roughness: 1 }));
+      m.rotation.x = -Math.PI / 2; m.position.set((x0 + x1) / 2, .152, (z0 + z1) / 2);
+      district.add(m); return m;
+    };
+
+    // ── Centre Bell ─────────────────────────────────────────────
+    // A big flat-roofed block: beige precast base, blue-green glass curtain
+    // wall with rounded corners, stepped roof, and a tall glass entrance hall
+    // on Avenue des Canadiens-de-Montréal.
+    const SW = arenaSite.x1 - arenaSite.x0, SD = arenaSite.z1 - arenaSite.z0;
+    const W = Math.min(10, SW - 2.5), D = Math.min(5.6, SD - 2.2), R = .9;
+    const bell = new THREE.Group();
+    bell.position.set(arenaSite.x0 + .3 + W / 2, 0, arenaSite.z0 + .35 + D / 2);
+    district.add(bell);
+    const FRONT = D / 2;
+    const BASE_H = .95, WALL_H = 2.8, TOP = BASE_H + WALL_H, FLOOR = .15;
+    const precast = std(0xcdc3ae, { roughness: .9 });
+    const darkGlass = std(0x1f2b33, { metalness: .4, roughness: .35, emissive: 0xffd9a0, emissiveIntensity: .08 });
+    const roofMat = std(0x8d949a, { roughness: .8, metalness: .2 });
+    const wallTex = canvasTexture(128, 128, g => {
+      g.fillStyle = '#c9d0d0'; g.fillRect(0, 0, 128, 128);                   // thin mullions
       for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
         const grad = g.createLinearGradient(0, r * 64, 0, r * 64 + 56);
         grad.addColorStop(0, ['#6f98a6', '#7aa2ae', '#668f9d', '#759eab'][(r * 3 + c) % 4]);
         grad.addColorStop(1, ['#2f5462', '#355b69', '#2b4f5d', '#33596a'][(r * 3 + c) % 4]);
-        g.fillStyle = grad;
-        g.fillRect(c * 32 + 1, r * 64 + 1, 30, 56);
+        g.fillStyle = grad; g.fillRect(c * 32 + 1, r * 64 + 1, 30, 56);
       }
-      g.fillStyle = '#3d5560';                                           // glass spandrels
+      g.fillStyle = '#3d5560';                                                 // glass spandrels
       for (let r = 0; r < 2; r++) g.fillRect(0, r * 64 + 57, 128, 6);
-    }
-    const lit = document.createElement('canvas');
-    lit.width = lit.height = 128;
-    {
-      const g = lit.getContext('2d');
+    }, true);
+    const litTex = canvasTexture(128, 128, g => {
       g.fillStyle = '#000'; g.fillRect(0, 0, 128, 128);
       for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
-        if ((r * 5 + c * 3) % 3 === 0) continue;                         // some panes stay dark
-        // Concourse lights: a bright band low in the pane fading upward.
-        const grad = g.createLinearGradient(0, r * 64 + 56, 0, r * 64);
+        if ((r * 5 + c * 3) % 3 === 0) continue;                               // some panes stay dark
+        const grad = g.createLinearGradient(0, r * 64 + 56, 0, r * 64);        // concourse lights
         grad.addColorStop(0, '#d9c7a4'); grad.addColorStop(.45, '#6e6352'); grad.addColorStop(1, '#141210');
-        g.fillStyle = grad;
-        g.fillRect(c * 32 + 1, r * 64 + 1, 30, 56);
+        g.fillStyle = grad; g.fillRect(c * 32 + 1, r * 64 + 1, 30, 56);
       }
-    }
-    const wallTex = new THREE.CanvasTexture(wallCanvas);
-    wallTex.colorSpace = THREE.SRGBColorSpace;
-    wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
-    wallTex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    const litTex = new THREE.CanvasTexture(lit);
-    litTex.colorSpace = THREE.SRGBColorSpace;
-    litTex.wrapS = litTex.wrapT = THREE.RepeatWrapping;
-    const PANE_W = .62, FLOOR_H = .93;         // world size of one texture tile
-    function curtain(length, height) {
-      const map = wallTex.clone(), em = litTex.clone();
-      for (const t of [map, em]) { t.repeat.set(length / (PANE_W * 4), height / (FLOOR_H * 2)); t.needsUpdate = true; }
-      return new THREE.MeshStandardMaterial({ map, emissiveMap: em, emissive: 0xffe2b8, emissiveIntensity: .22,
-        metalness: .35, roughness: .3 });
-    }
-    // A rounded-rectangle "slab" built from two boxes and four corner cylinders,
-    // so the curtain-wall texture can be scaled per face.
+    }, true);
+    const PANE_W = .62, FLOOR_H = .93;
+    const curtain = (length, height) => std(0xffffff, {
+      map: tiled(wallTex, length, height, PANE_W * 4, FLOOR_H * 2),
+      emissiveMap: tiled(litTex, length, height, PANE_W * 4, FLOOR_H * 2),
+      emissive: 0xffe2b8, emissiveIntensity: .22, metalness: .35, roughness: .3,
+    });
+    const solid = m => () => m;
+    // Rounded slab from two boxes and four corner cylinders, so a facade
+    // texture can be scaled per face.
     function roundedSlab(w, d, r, h, y, sideMat, capMat) {
       const g = new THREE.Group();
-      const longX = new THREE.Mesh(new THREE.BoxGeometry(w - 2 * r, h, d),
-        [sideMat(d, h), sideMat(d, h), capMat, capMat, sideMat(w - 2 * r, h), sideMat(w - 2 * r, h)]);
-      const longZ = new THREE.Mesh(new THREE.BoxGeometry(w, h, d - 2 * r),
-        [sideMat(d - 2 * r, h), sideMat(d - 2 * r, h), capMat, capMat, sideMat(w, h), sideMat(w, h)]);
-      g.add(longX, longZ);
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w - 2 * r, h, d),
+        [sideMat(d, h), sideMat(d, h), capMat, capMat, sideMat(w - 2 * r, h), sideMat(w - 2 * r, h)]));
+      g.add(new THREE.Mesh(new THREE.BoxGeometry(w, h, d - 2 * r),
+        [sideMat(d - 2 * r, h), sideMat(d - 2 * r, h), capMat, capMat, sideMat(w, h), sideMat(w, h)]));
       const cornerSide = sideMat(Math.PI * r / 2, h);
       for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-        const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 20, 1, false), [cornerSide, capMat, capMat]);
-        c.position.set(sx * (w / 2 - r), 0, sz * (d / 2 - r));
-        g.add(c);
+        const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 20), [cornerSide, capMat, capMat]);
+        c.position.set(sx * (w / 2 - r), 0, sz * (d / 2 - r)); g.add(c);
       }
-      g.position.set(0, y + h / 2, CZ);
-      bell.add(g);
-      return g;
+      g.position.y = y + h / 2; bell.add(g); return g;
     }
-    const solid = m => () => m;
-    // Plinth and precast base with a dark storefront band.
-    arenaBox(W + .5, .12, D + .5, 0, .07, CZ, stone);
-    roundedSlab(W, D, R, BASE_H, .12, solid(precast), precast);
-    roundedSlab(W + .04, D + .04, R + .02, .42, .3, solid(darkGlass), darkGlass);
-    // Glass curtain wall, a precast cornice, then two stepped roof tiers.
-    roundedSlab(W - .1, D - .1, R - .05, WALL_H, BASE_H + .12, curtain, roofMat);
-    roundedSlab(W + .08, D + .08, R + .04, .16, TOP + .1, solid(precast), roofMat);
-    roundedSlab(W - 1.3, D - 1.3, R * .6, .38, TOP + .26, solid(roofMat), roofMat);
-    roundedSlab(W - 3.4, D - 2.6, R * .4, .22, TOP + .64, solid(roofMat), roofMat);
-    // Precast piers break up the long sides, as on the real building.
-    for (const x of [-3.1, -1.55, 1.55, 3.1]) {
-      arenaBox(.22, WALL_H + .1, .14, x, BASE_H + .12 + WALL_H / 2, CZ - D / 2 + .02, precast);
+    roundedSlab(W, D, R, BASE_H, FLOOR, solid(precast), precast);
+    roundedSlab(W + .04, D + .04, R + .02, .42, FLOOR + .18, solid(darkGlass), darkGlass);
+    roundedSlab(W - .1, D - .1, R - .05, WALL_H, BASE_H + FLOOR, curtain, roofMat);
+    roundedSlab(W + .08, D + .08, R + .04, .16, TOP + .12, solid(precast), roofMat);
+    roundedSlab(W - 1.3, D - 1.3, R * .6, .38, TOP + .28, solid(roofMat), roofMat);
+    roundedSlab(W - 3.4, D - 2.6, R * .4, .22, TOP + .66, solid(roofMat), roofMat);
+    for (const x of [-.31, -.155, .155, .31]) {
+      box(.22, WALL_H + .1, .14, x * W, BASE_H + FLOOR + WALL_H / 2, -D / 2 + .02, precast, bell);
     }
-    for (const z of [-1.2, 0, 1.2]) for (const sx of [-1, 1]) {
-      arenaBox(.14, WALL_H + .1, .22, sx * (W / 2 - .03), BASE_H + .12 + WALL_H / 2, CZ + z, precast);
+    for (const z of [-.22, 0, .22]) for (const sx of [-1, 1]) {
+      box(.14, WALL_H + .1, .22, sx * (W / 2 - .03), BASE_H + FLOOR + WALL_H / 2, z * D, precast, bell);
     }
-    // Tall glazed entrance hall projecting onto the plaza.
+    // Glazed entrance hall with steel fins, canopy and doors.
     const HALL_W = 4.2, HALL_D = .9, HALL_H = TOP + .35;
     const hall = new THREE.Mesh(new THREE.BoxGeometry(HALL_W, HALL_H, HALL_D),
       [curtain(HALL_D, HALL_H), curtain(HALL_D, HALL_H), roofMat, roofMat, curtain(HALL_W, HALL_H), curtain(HALL_W, HALL_H)]);
-    hall.position.set(0, .12 + HALL_H / 2, 2.4 + HALL_D / 2 - .1);
-    bell.add(hall);
+    hall.position.set(0, FLOOR + HALL_H / 2, FRONT + HALL_D / 2 - .1); bell.add(hall);
     for (let x = -HALL_W / 2; x <= HALL_W / 2 + .01; x += HALL_W / 6) {
-      arenaBox(.07, HALL_H, .08, x, .12 + HALL_H / 2, 2.4 + HALL_D - .08, metal);   // steel fins
+      box(.07, HALL_H, .08, x, FLOOR + HALL_H / 2, FRONT + HALL_D - .08, metal, bell);
     }
-    arenaBox(HALL_W + .6, .1, 1.2, 0, 1.05, 2.4 + HALL_D + .35, metal);             // entrance canopy
-    for (const x of [-1.4, -.45, .45, 1.4]) arenaBox(.5, .62, .04, x, .43, 2.4 + HALL_D - .02, darkGlass);
-    // Red banners on the base, either side of the entrance.
-    for (const x of [-3.6, -2.75, 2.75, 3.6]) {
-      arenaBox(.46, 1.05, .04, x, BASE_H + .78, 2.42, red);
-      arenaBox(.46, .1, .045, x, BASE_H + .32, 2.425, new THREE.MeshStandardMaterial({ color: 0x1d3b78, roughness: .8 }));
-    }
-    // "Centre Bell" lettering on the cornice above the entrance hall.
-    const signCanvas = document.createElement('canvas'); signCanvas.width = 512; signCanvas.height = 96;
-    const signContext = signCanvas.getContext('2d');
-    signContext.fillStyle = '#f2f1ec'; signContext.fillRect(0, 0, 512, 96);
-    signContext.fillStyle = '#0b5ea8'; signContext.font = '600 58px Arial'; signContext.textAlign = 'center';
-    signContext.fillText('Centre Bell', 256, 68);
-    const signTexture = new THREE.CanvasTexture(signCanvas); signTexture.colorSpace = THREE.SRGBColorSpace;
+    box(HALL_W + .6, .1, 1.1, 0, 1.08, FRONT + HALL_D + .3, metal, bell);
+    for (const x of [-1.4, -.45, .45, 1.4]) box(.5, .62, .04, x, FLOOR + .31, FRONT + HALL_D - .02, darkGlass, bell);
+    // "Centre Bell" lettering on the cornice above the entrance.
+    const signTex = canvasTexture(512, 96, g => {
+      g.fillStyle = '#f2f1ec'; g.fillRect(0, 0, 512, 96);
+      g.fillStyle = '#0b5ea8'; g.font = '600 58px Arial'; g.textAlign = 'center';
+      g.fillText('Centre Bell', 256, 68);
+    });
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.4, .64),
-      new THREE.MeshStandardMaterial({ map: signTexture, roughness: .7, emissive: 0xffffff, emissiveMap: signTexture, emissiveIntensity: .25 }));
-    sign.position.set(0, HALL_H - .32, 2.4 + HALL_D - .03); bell.add(sign);
-    // Rooftop mechanical units.
-    for (const [x, z] of [[-2.6, -1.4], [-1.6, -1.4], [2.2, -1.1], [3, .2], [-3, .4]]) {
-      arenaBox(.5, .22, .42, x, TOP + .75, CZ + z, metal);
+      std(0xffffff, { map: signTex, roughness: .7, emissive: 0xffffff, emissiveMap: signTex, emissiveIntensity: .25 }));
+    sign.position.set(0, HALL_H - .17, FRONT + HALL_D - .03); bell.add(sign);
+    // Canadiens jersey banners on the base, either side of the entrance.
+    const jerseyTex = canvasTexture(64, 160, (g, w, h) => {
+      g.fillStyle = '#af1e2d'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#1d3b78'; g.fillRect(0, h * .46, w, h * .16);
+      g.fillStyle = '#f4f4f0'; g.fillRect(0, h * .43, w, h * .03); g.fillRect(0, h * .62, w, h * .03);
+      g.fillStyle = '#f4f4f0'; g.font = 'bold 30px Arial'; g.textAlign = 'center'; g.fillText('CH', w / 2, h * .32);
+    });
+    const jersey = std(0xffffff, { map: jerseyTex, roughness: .8 });
+    for (const x of [-.4, -.31, .31, .4]) {
+      box(.5, 1.2, .03, x * W, BASE_H + FLOOR + .75, FRONT + .03, jersey, bell);
     }
-    // A continuous pedestrian forecourt, inspired by the reference photo.
-    // Its raised base covers the generic street grid underneath the arena site.
-    arenaBox(12.2,.14,11.7,0,.075,2.95,stone);
-    const plazaCanvas = document.createElement('canvas');
-    plazaCanvas.width = 1024; plazaCanvas.height = 512;
-    const paving = plazaCanvas.getContext('2d');
-    paving.fillStyle = '#bbb2a0'; paving.fillRect(0,0,1024,512);
-    for (let row=0;row<16;row++) for(let col=0;col<32;col++) {
-      paving.fillStyle = ['#aa9c8a','#b8ac9a','#c8bcaa','#afa28e'][(row*7+col*3)%4];
-      paving.fillRect(col*32+1,row*32+1,30,30);
+    for (const [x, z] of [[-.27, -.25], [-.17, -.25], [.22, -.2], [.3, .04], [-.3, .07]]) {
+      box(.5, .22, .42, x * W, TOP + .77, z * D, metal, bell);
     }
-    paving.strokeStyle='#ded3bf'; paving.lineWidth=5;
-    for(let x=64;x<1024;x+=128) {paving.beginPath();paving.moveTo(x,0);paving.lineTo(x,512);paving.stroke();}
-    for(let y=64;y<512;y+=128) {paving.beginPath();paving.moveTo(0,y);paving.lineTo(1024,y);paving.stroke();}
-    paving.fillStyle='#95554e'; paving.beginPath();paving.ellipse(512,260,108,108,0,0,Math.PI*2);paving.fill();
-    paving.strokeStyle='#d7c7ab';paving.lineWidth=7;paving.beginPath();paving.ellipse(512,260,95,95,0,0,Math.PI*2);paving.stroke();
-    paving.fillStyle='#e0d0b5';paving.font='bold 105px Georgia';paving.textAlign='center';paving.textBaseline='middle';paving.fillText('CH',512,267);
-    const plazaTexture=new THREE.CanvasTexture(plazaCanvas);plazaTexture.colorSpace=THREE.SRGBColorSpace;
-    plazaTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
-    const plaza=new THREE.Mesh(new THREE.PlaneGeometry(11.7,5.7),
-      new THREE.MeshStandardMaterial({map:plazaTexture,roughness:1}));
-    plaza.rotation.x=-Math.PI/2;plaza.position.set(0,.151,5.55);bell.add(plaza);
-    const leaves=new THREE.MeshStandardMaterial({color:0x466344,roughness:1});
-    const soil=new THREE.MeshStandardMaterial({color:0x484739,roughness:1});
-    const bronze=new THREE.MeshStandardMaterial({color:0x635448,metalness:.55,roughness:.65});
-    const timber=new THREE.MeshStandardMaterial({color:0x79624b,roughness:.9});
-    const canopyGeo=new THREE.IcosahedronGeometry(.4,1);
-    // Tree islands, seating and small monument plinths leave a clear entrance route.
-    for(const x of [-4.7,4.7]) for(const z of [3.7,5.7,7.7]) {
-      const planter=new THREE.Mesh(new THREE.CylinderGeometry(.52,.52,.19,24),stone);
-      planter.position.set(x,.24,z);bell.add(planter);
-      const bed=new THREE.Mesh(new THREE.CylinderGeometry(.44,.44,.02,24),soil);
-      bed.position.set(x,.345,z);bell.add(bed);
-      arenaBox(.07,.65,.07,x,.64,z,timber);
-      const tree=new THREE.Mesh(canopyGeo,leaves);tree.position.set(x,1.05,z);tree.scale.y=1.35;bell.add(tree);
-      arenaBox(.8,.08,.23,x+(x<0?.8:-.8),.4,z,timber);
-      for(const dx of [-.28,.28]) arenaBox(.05,.22,.19,x+(x<0?.8:-.8)+dx,.27,z,metal);
+    // Forecourt along the avenue: paving, bollards, a crowd at the doors.
+    const fz0 = bell.position.z + FRONT, fx1 = bell.position.x + W / 2;
+    paving(arenaSite.x0 + .15, fx1 + .2, fz0, arenaSite.z1 - .12);
+    for (let x = arenaSite.x0 + .5; x < fx1; x += .62) {
+      if (Math.abs(x - bell.position.x) < 1.6) continue;
+      box(.06, .28, .06, x, .29, arenaSite.z1 - .25, darkMetal);
     }
-    for(const x of [-2.9,2.9]) {
-      arenaBox(.48,.26,.48,x,.28,6.8,stone);
-      const statue=new THREE.Mesh(new THREE.CapsuleGeometry(.09,.4,3,6),bronze);
-      statue.position.set(x,.72,6.8);bell.add(statue);
-      const stick=arenaBox(.035,.7,.035,x+.18,.64,6.8,bronze);stick.rotation.z=-.35;
+
+    // ── Place du Centenaire: four bronze statues and retired numbers ──
+    const px0 = fx1 + .35, px1 = arenaSite.x1 - .12;
+    const pcx = (px0 + px1) / 2;
+    paving(px0, px1, arenaSite.z0 + .12, arenaSite.z1 - .12);
+    const statueZ = [.22, .4, .58, .76].map(t => arenaSite.z0 + t * SD);
+    statueZ.forEach((z, i) => {
+      box(.5, .3, .5, pcx, .3, z, granite);
+      const figure = new THREE.Mesh(new THREE.CapsuleGeometry(.09, .38, 3, 8), bronze);
+      figure.position.set(pcx, .74, z); figure.rotation.z = (i % 2 ? -.18 : .18); district.add(figure);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(.075, 10, 8), bronze);
+      head.position.set(pcx + (i % 2 ? .05 : -.05), 1.04, z); district.add(head);
+      const stick = box(.03, .6, .03, pcx + (i % 2 ? -.14 : .14), .62, z + .05, bronze);
+      stick.rotation.z = i % 2 ? .5 : -.5;
+    });
+    // Granite plaques for the retired numbers line the plaza's east edge.
+    for (let i = 0; i < 15; i++) {
+      box(.16, .26, .05, px1 - .2, .28, arenaSite.z0 + .5 + i * (SD - 1) / 14, granite);
     }
-    for(let x=-5.5;x<=5.5;x+=.65) {
-      if(Math.abs(x)<1.1) continue;
-      arenaBox(.055,.3,.055,x,.3,8.55,metal);
+    for (const z of [arenaSite.z0 + .45, arenaSite.z1 - .5]) {
+      const trunk = box(.06, .5, .06, pcx, .4, z, timber);
+      const crown = new THREE.Mesh(new THREE.IcosahedronGeometry(.36, 1), leaves);
+      crown.position.set(pcx, .85, z); crown.scale.y = 1.3; district.add(crown);
+      void trunk;
     }
-    for(const x of [-5.7,5.7]) {
-      arenaBox(.045,2.6,.045,x,1.45,3,metal);
-      arenaBox(.55,.34,.025,x+.28,2.45,3,red);
+    // A crowd before the game: on the forecourt and drifting through the plaza.
+    const crowd = new THREE.InstancedMesh(new THREE.CapsuleGeometry(.045, .12, 2, 4),
+      std(0xffffff, { roughness: 1 }), 90);
+    const t = new THREE.Object3D();
+    for (let i = 0; i < 90; i++) {
+      const onPlaza = i % 3 === 0;
+      const x = onPlaza ? px0 + .2 + rand(i, 201) * (px1 - px0 - .6) : arenaSite.x0 + .4 + rand(i, 202) * (fx1 - arenaSite.x0 - .6);
+      const z = onPlaza ? arenaSite.z0 + .3 + rand(i, 203) * (SD - .6) : fz0 + HALL_D + .25 + rand(i, 204) * (arenaSite.z1 - fz0 - HALL_D - .5);
+      t.position.set(x, .26, z); t.updateMatrix(); crowd.setMatrixAt(i, t.matrix);
+      crowd.setColorAt(i, new THREE.Color([0xaf1e2d, 0x1d3b78, 0xf1efe8, 0xaf1e2d, 0x3e494a][i % 5]));
     }
-    // Visitors gather near the doors and along the plaza perimeter.
-    const visitors=new THREE.InstancedMesh(new THREE.CapsuleGeometry(.045,.12,2,4),
-      new THREE.MeshStandardMaterial({color:0xffffff,roughness:1}),72);
-    const visitorTransform=new THREE.Object3D();
-    for(let i=0;i<72;i++) {
-      const x=(rand(i,101)-.5)*10.5, z=3+rand(i,102)*5;
-      visitorTransform.position.set(x,.28,z);visitorTransform.updateMatrix();
-      visitors.setMatrixAt(i,visitorTransform.matrix);
-      visitors.setColorAt(i,new THREE.Color([0xa32639,0x243e61,0xd4c5a3,0x3e494a][i%4]));
+    district.add(crowd);
+
+    // ── Windsor Station (1889): grey stone, arched windows, copper roofs ──
+    const ws = windsorSite, wsW = ws.x1 - ws.x0, wsD = ws.z1 - ws.z0;
+    const limestoneTex = canvasTexture(128, 128, (g, w, h) => {
+      g.fillStyle = '#8c877e'; g.fillRect(0, 0, w, h);
+      for (let y = 0; y < 16; y++) for (let x = 0; x < 8; x++) {               // rough-cut blocks
+        g.fillStyle = ['#938e85', '#878278', '#9a958b', '#8e897f'][(x + y * 3) % 4];
+        g.fillRect(x * 16 + (y % 2) * 8 + 1, y * 8 + 1, 14, 6);
+      }
+      g.fillStyle = '#2a2d31';                                                 // round-arched windows
+      for (const [x, y] of [[20, 26], [76, 26], [20, 84], [76, 84]]) {
+        g.fillRect(x, y + 8, 32, 26);
+        g.beginPath(); g.arc(x + 16, y + 8, 16, Math.PI, 0); g.fill();
+      }
+      g.fillStyle = '#6f6a62';
+      for (const y of [62, 124]) g.fillRect(0, y, w, 4);                       // string courses
+    }, true);
+    const limestoneLit = canvasTexture(128, 128, (g, w, h) => {
+      g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#e8c48c';
+      for (const [x, y] of [[20, 26], [76, 84]]) {
+        g.fillRect(x, y + 8, 32, 26); g.beginPath(); g.arc(x + 16, y + 8, 16, Math.PI, 0); g.fill();
+      }
+    }, true);
+    const limestone = (length, height) => std(0xffffff, {
+      map: tiled(limestoneTex, length, height, 1.1, 1.1),
+      emissiveMap: tiled(limestoneLit, length, height, 1.1, 1.1), emissive: 0xffffff, emissiveIntensity: .25, roughness: .95,
+    });
+    const stoneBlock = (w, h, d, x, z) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d),
+        [limestone(d, h), limestone(d, h), std(0x6d6961), std(0x6d6961), limestone(w, h), limestone(w, h)]);
+      m.position.set(x, .15 + h / 2, z); district.add(m); return m;
+    };
+    const WING = 1.5, WING_H = 1.75, DL = 2.2;
+    // An L of stone wings: along the avenue, then up Rue Peel. Tour Deloitte
+    // takes the west end of the block.
+    const southX0 = ws.x0 + DL + .55, southLen = ws.x1 - .25 - southX0;
+    stoneBlock(southLen, WING_H, WING, southX0 + southLen / 2, ws.z1 - .2 - WING / 2);
+    stoneBlock(WING, WING_H, wsD - .4, ws.x1 - .25 - WING / 2, ws.z0 + .2 + (wsD - .4) / 2);
+    const southRoof = new THREE.Mesh(hipRoof(southLen + .1, WING + .12, .7), roofCopper);
+    southRoof.position.set(southX0 + southLen / 2, .15 + WING_H, ws.z1 - .2 - WING / 2); district.add(southRoof);
+    const eastRoof = new THREE.Mesh(hipRoof(WING + .12, wsD - .3, .7), roofCopper);
+    eastRoof.position.set(ws.x1 - .25 - WING / 2, .15 + WING_H, ws.z0 + .2 + (wsD - .4) / 2); district.add(eastRoof);
+    // The corner tower at Peel, with a steep pyramid roof and a clock.
+    const towerX = ws.x1 - .25 - .65, towerZ = ws.z1 - .2 - .65;
+    stoneBlock(1.3, 3.2, 1.3, towerX, towerZ);
+    const spire = new THREE.Mesh(new THREE.ConeGeometry(1.0, 1.5, 4), roofCopper);
+    spire.rotation.y = Math.PI / 4; spire.position.set(towerX, .15 + 3.2 + .75, towerZ); district.add(spire);
+    const clockTex = canvasTexture(64, 64, g => {
+      g.fillStyle = '#efe8d6'; g.beginPath(); g.arc(32, 32, 30, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = '#2b2b2b'; g.lineWidth = 4;
+      g.beginPath(); g.moveTo(32, 32); g.lineTo(32, 12); g.moveTo(32, 32); g.lineTo(46, 38); g.stroke();
+    });
+    const clock = new THREE.Mesh(new THREE.CircleGeometry(.28, 20), std(0xffffff, { map: clockTex, emissive: 0xffffff, emissiveMap: clockTex, emissiveIntensity: .3 }));
+    clock.position.set(towerX, .15 + 2.7, towerZ + .66); district.add(clock);
+    // Small conical turrets at the wing ends.
+    for (const [x, z] of [[southX0 + .1, ws.z1 - .2 - WING / 2], [ws.x1 - .25 - WING / 2, ws.z0 + .35]]) {
+      const turret = new THREE.Mesh(new THREE.CylinderGeometry(.32, .32, WING_H + .5, 16), limestone(2, WING_H + .5));
+      turret.position.set(x, .15 + (WING_H + .5) / 2, z); district.add(turret);
+      const cap = new THREE.Mesh(new THREE.ConeGeometry(.38, .8, 16), roofCopper);
+      cap.position.set(x, .15 + WING_H + .5 + .4, z); district.add(cap);
     }
-    bell.add(visitors);
-    bell.position.set(0,0,gridD/2+TILE*1.6);
-    scene.add(bell);
+    // The concourse inside the L, under a long glass roof.
+    const glassRoof = std(0x9cc3cf, { metalness: .3, roughness: .2, transparent: true, opacity: .75, emissive: 0xffe6c0, emissiveIntensity: .25, side: THREE.DoubleSide });
+    const hallW = southLen - WING - .2, hallX = southX0 + hallW / 2, hallZ = ws.z0 + .2 + (wsD - WING - .6) / 2;
+    const hallDepth = wsD - WING - .6;
+    box(hallW, 1.1, hallDepth, hallX, .15 + .55, hallZ, limestone(hallW, 1.1));
+    const glassGable = new THREE.Mesh(hipRoof(hallW + .1, hallDepth + .1, .5), glassRoof);
+    glassGable.position.set(hallX, .15 + 1.1, hallZ); district.add(glassGable);
+
+    // ── Tour Deloitte: glass office tower beside the station ──
+    const deloitteTex = canvasTexture(64, 64, g => {
+      g.fillStyle = '#d8dde0'; g.fillRect(0, 0, 64, 64);
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
+        const grad = g.createLinearGradient(0, r * 32, 0, r * 32 + 28);
+        grad.addColorStop(0, '#9fb6c4'); grad.addColorStop(1, '#4d6878');
+        g.fillStyle = grad; g.fillRect(c * 16 + 1, r * 32 + 1, 14, 28);
+      }
+    }, true);
+    const deloitteLit = canvasTexture(64, 64, g => {
+      g.fillStyle = '#000'; g.fillRect(0, 0, 64, 64);
+      g.fillStyle = '#e9e4d6';
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) if ((r * 2 + c) % 3 === 1) g.fillRect(c * 16 + 1, r * 32 + 1, 14, 28);
+    }, true);
+    const officeGlass = (length, height) => std(0xffffff, {
+      map: tiled(deloitteTex, length, height, .9, .6), emissiveMap: tiled(deloitteLit, length, height, .9, .6),
+      emissive: 0xffe9c8, emissiveIntensity: .2, metalness: .45, roughness: .25,
+    });
+    const DL_H = 5.8, dlx = ws.x0 + .3 + DL / 2, dlz = (ws.z0 + ws.z1) / 2;
+    const deloitte = new THREE.Mesh(new THREE.BoxGeometry(DL, DL_H, DL),
+      [officeGlass(DL, DL_H), officeGlass(DL, DL_H), roofMat, roofMat, officeGlass(DL, DL_H), officeGlass(DL, DL_H)]);
+    deloitte.position.set(dlx, .15 + DL_H / 2, dlz); district.add(deloitte);
+    box(DL + .3, .7, DL + .3, dlx, .15 + .35, dlz, stone);
+    box(DL - .6, .4, DL - .6, dlx, .15 + DL_H + .2, dlz, roofMat);
+
+    // ── Tour des Canadiens: slim condo tower with white balcony bands ──
+    const ts = towerSite, tcx = (ts.x0 + ts.x1) / 2, tcz = (ts.z0 + ts.z1) / 2;
+    const TW = Math.min(2.4, ts.x1 - ts.x0 - .6), TD = 1.6, TH = 10.5;
+    box(ts.x1 - ts.x0 - .2, .6, ts.z1 - ts.z0 - .2, tcx, .15 + .3, tcz, darkGlass);
+    const condoGlass = std(0x223a4b, { metalness: .5, roughness: .22, emissive: 0xf5d7a8, emissiveIntensity: .12 });
+    const condo = new THREE.Mesh(roundedPrism(TW, TD, .7, TH), condoGlass);
+    condo.position.set(tcx, .75, tcz); district.add(condo);
+    const bandGeo = roundedPrism(TW + .1, TD + .1, .74, .035);
+    const bands = new THREE.InstancedMesh(bandGeo, std(0xb9bec2, { roughness: .6 }), Math.floor(TH / .3));
+    for (let i = 0; i < bands.count; i++) {
+      t.position.set(tcx, .75 + .3 + i * .3, tcz); t.updateMatrix(); bands.setMatrixAt(i, t.matrix);
+    }
+    district.add(bands);
+    const crownMesh = new THREE.Mesh(roundedPrism(TW - .3, TD - .3, .55, .5), roofMat);
+    crownMesh.position.set(tcx, .75 + TH, tcz); district.add(crownMesh);
+
+    // ── Street furniture that says Montréal ──
+    // Blue street-name plates at the corners, with real street names.
+    const plate = (text) => {
+      const tex = canvasTexture(512, 96, g => {
+        g.fillStyle = '#1c4f9c'; g.fillRect(0, 0, 512, 96);
+        g.strokeStyle = '#f4f4f0'; g.lineWidth = 6; g.strokeRect(8, 8, 496, 80);
+        g.fillStyle = '#f4f4f0'; g.font = '600 40px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.fillText(text, 256, 50, 470);
+      });
+      return new THREE.Mesh(new THREE.BoxGeometry(.8, .15, .02),
+        [blue, blue, blue, blue, std(0xffffff, { map: tex }), std(0xffffff, { map: tex })]);
+    };
+    const AVENUE = 'Av. des Canadiens-de-Montréal';
+    const streetSign = (x, z, ewName, nsName) => {
+      box(.04, 1.5, .04, x, .15 + .75, z, darkMetal);
+      const ew = plate(ewName); ew.position.set(x, 1.5, z); district.add(ew);              // faces the E–W street
+      const ns = plate(nsName); ns.position.set(x, 1.32, z); ns.rotation.y = Math.PI / 2; district.add(ns);
+    };
+    streetSign(arenaSite.x0 + .18, arenaSite.z1 - .18, AVENUE, 'Rue de la Montagne');
+    streetSign(arenaSite.x0 + .18, arenaSite.z0 + .18, 'Rue Saint-Antoine O.', 'Rue de la Montagne');
+    streetSign(windsorSite.x1 - .18, windsorSite.z1 - .18, AVENUE, 'Rue Peel');
+    // Québec stop signs read ARRÊT.
+    const stopTex = canvasTexture(128, 128, g => {
+      g.fillStyle = '#c81e2a'; g.fillRect(0, 0, 128, 128);
+      g.fillStyle = '#fff'; g.font = 'bold 34px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText('ARRÊT', 64, 66);
+    });
+    const stopFace = std(0xffffff, { map: stopTex });
+    const stopSign = (x, z, rotY) => {
+      box(.035, 1.05, .035, x, .15 + .52, z, darkMetal);
+      const s = new THREE.Mesh(new THREE.CylinderGeometry(.16, .16, .02, 8), [red, stopFace, red]);
+      s.rotation.set(Math.PI / 2, 0, Math.PI / 8); s.rotateOnWorldAxis(new THREE.Vector3(0, 1, 0), rotY);
+      s.position.set(x, 1.22, z); district.add(s);
+    };
+    stopSign(arenaSite.x0 + .18, arenaSite.z1 - .55, 0);
+    stopSign(towerSite.x1 - .18, towerSite.z0 + .18, -Math.PI / 2);
+    // The orange cones Montrealers know too well, closing a lane of de la Montagne.
+    const coneMat = std(0xf26a1b, { roughness: .6 });
+    const stripeMat = std(0xf2f2ee, { roughness: .5 });
+    const coneX = roadX(siteJ) + .3;
+    for (let z = arenaSite.z0 + .4; z < arenaSite.z1 - .3; z += .55) {
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(.07, .24, 10), coneMat);
+      cone.position.set(coneX, .14, z); district.add(cone);
+      const ring = new THREE.Mesh(new THREE.CylinderGeometry(.045, .052, .04, 10), stripeMat);
+      ring.position.set(coneX, .17, z); district.add(ring);
+    }
+    const detourTex = canvasTexture(256, 64, g => {
+      g.fillStyle = '#f26a1b'; g.fillRect(0, 0, 256, 64);
+      g.fillStyle = '#111'; g.font = 'bold 40px Arial'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText('DÉTOUR →', 128, 34);
+    });
+    const detour = new THREE.Mesh(new THREE.BoxGeometry(.03, .16, .62),
+      [std(0xffffff, { map: detourTex }), std(0xffffff, { map: detourTex }), coneMat, coneMat, coneMat, coneMat]);
+    detour.position.set(coneX, .42, arenaSite.z1 - .1); district.add(detour);
+    for (const dz of [-.26, .26]) box(.03, .4, .03, coneX, .22, arenaSite.z1 - .1 + dz, coneMat);
+    // A BIXI dock on the forecourt.
+    const bixiX0 = arenaSite.x0 + .55, bixiZ = arenaSite.z1 - .55;
+    box(1.5, .05, .08, bixiX0 + .75, .2, bixiZ, darkMetal);
+    const wheelGeo = new THREE.TorusGeometry(.055, .012, 6, 14);
+    const frameMat = std(0x2c2f33, { metalness: .5, roughness: .45 });
+    const bixiRed = std(0xd2232a, { roughness: .6 });
+    for (let i = 0; i < 6; i++) {
+      const bx = bixiX0 + .12 + i * .25;
+      for (const dz of [-.09, .09]) {
+        const wheel = new THREE.Mesh(wheelGeo, frameMat);
+        wheel.rotation.y = Math.PI / 2; wheel.position.set(bx, .21, bixiZ - .15 + dz); district.add(wheel);
+      }
+      box(.02, .05, .2, bx, .27, bixiZ - .15, i % 2 ? bixiRed : frameMat);
+    }
+    // Metro entrance (Lucien-L'Allier) at the corner of de la Montagne.
+    const metroTex = canvasTexture(64, 64, g => {
+      g.fillStyle = '#0a5aa8'; g.fillRect(0, 0, 64, 64);
+      g.fillStyle = '#fff'; g.beginPath(); g.moveTo(32, 50); g.lineTo(14, 26); g.lineTo(26, 26); g.lineTo(26, 12);
+      g.lineTo(38, 12); g.lineTo(38, 26); g.lineTo(50, 26); g.closePath(); g.fill();
+    });
+    const mx = towerSite.x1 - .55, mz = towerSite.z1 - .5;
+    box(.7, .5, .45, mx, .15 + .25, mz, std(0x2b3640, { metalness: .4, roughness: .3, emissive: 0xffe2b8, emissiveIntensity: .15 }));
+    box(.82, .05, .55, mx, .15 + .53, mz, darkMetal);
+    box(.04, .9, .04, mx + .45, .15 + .45, mz + .3, darkMetal);
+    const metroSign = new THREE.Mesh(new THREE.BoxGeometry(.2, .2, .03),
+      [blue, blue, blue, blue, std(0xffffff, { map: metroTex, emissive: 0xffffff, emissiveMap: metroTex, emissiveIntensity: .4 }), std(0xffffff, { map: metroTex })]);
+    metroSign.position.set(mx + .45, 1.15, mz + .3); district.add(metroSign);
   }
 
   // ── Lamp posts at sidewalk corners of each intersection ──────
@@ -905,15 +1140,13 @@ export async function initCity() {
     const HEAD_H = CONFIG.LAMP_HEAD_H;
     const ROAD_HALF = CONFIG.ROAD_W / 2;
     const CORNER_OFFSET = ROAD_HALF + 0.18;    // sit just off the asphalt
-    const bellX = 0, bellZ = gridD / 2 + TILE * 1.6;
-    const bellExclusion = TILE * 1.6 * 1.7;    // skip lamps inside Bell Centre footprint
 
     const lampXZ = [];
     for (let gx = 0; gx <= COLS; gx++) {
       for (let gz = 0; gz <= ROWS; gz++) {
         const lx = gx * SPACING - gridW / 2 + CORNER_OFFSET;
         const lz = gz * SPACING - gridD / 2 + CORNER_OFFSET;
-        if (Math.hypot(lx - bellX, lz - bellZ) < bellExclusion) continue;
+        if (inDistrict(lx, lz, -.6)) continue;   // corners of the district keep their lamps
         lampXZ.push(lx, lz);
       }
     }
@@ -1224,8 +1457,7 @@ export async function initCity() {
   for (let row = -outerBlocks; row < ROWS + outerBlocks; row++) {
     for (let col = -outerBlocks; col < COLS + outerBlocks; col++) {
       if (row >= 0 && row < ROWS && col >= 0 && col < COLS) continue;
-      const arenaZ = gridD / 2 + TILE * 1.6;
-      if (Math.abs(cellX(col)) < 7 && cellZ(row) > arenaZ - 4 && cellZ(row) < arenaZ + 10) continue;
+      if (inDistrict(cellX(col), cellZ(row), .5)) continue;
       if (terrainHeight(cellX(col), cellZ(row)) > .08) continue;
       const seed = hash32((row + outerBlocks) * 73856093 ^ (col + outerBlocks) * 19349663);
       for (let part = 0; part < 2; part++) {
@@ -1305,7 +1537,7 @@ export async function initCity() {
     new THREE.MeshStandardMaterial({color:0xffffff,roughness:1}),crowdCount);
   for(let i=0;i<crowdCount;i++) {
     const row=i%(ROWS+1);
-    const x=(rand(i,81)-.5)*gridW, z=row*SPACING-gridD/2+(i%2 ? .99 : -.99);
+    const x=(rand(i,81)-.5)*gridW, z=row*SPACING-gridD/2+(i%2 && row<ROWS ? .99 : -.99);
     walkers.push({x,z,direction:i%2 ? 1 : -1,speed:.12+rand(i,82)*.13});
     streetTransform.position.set(x,.2,z); streetTransform.scale.set(1,1,1); streetTransform.updateMatrix();
     crowd.setMatrixAt(i,streetTransform.matrix);
