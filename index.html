@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>George Vogas | CS Student · Montréal</title>
-  <meta name="description" content="Portfolio of George Vogas, a CS student at Vanier College in Montréal: mobile apps, web platforms, desktop software, and games." />
+  <meta name="description" content="Portfolio of George Vogas, a CS student at Vanier College in Montréal: mobile apps, web apps, IoT, and team projects." />
   <link rel="canonical" href="https://gvogas.github.io/gvogas/" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -16,7 +16,7 @@
   <meta property="og:url" content="https://gvogas.github.io/gvogas/" />
   <meta property="og:site_name" content="George Vogas" />
   <meta property="og:title" content="George Vogas | CS Student · Montréal" />
-  <meta property="og:description" content="Portfolio of George Vogas, a CS student at Vanier College in Montréal: mobile apps, web platforms, desktop software, and games." />
+  <meta property="og:description" content="Portfolio of George Vogas, a CS student at Vanier College in Montréal: mobile apps, web apps, IoT, and team projects." />
   <meta property="og:image" content="https://gvogas.github.io/gvogas/assets/og-card.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -43,7 +43,7 @@
       "addressRegion": "QC",
       "addressCountry": "CA"
     },
-    "knowsAbout": ["Software Development", "Mobile Development", "Web Development", "Robotics", "Game Development"],
+    "knowsAbout": ["Software Development", "Mobile Development", "Web Development", "Robotics", "IoT", "Cloud Development"],
     "sameAs": [
       "https://github.com/gvogas",
       "https://www.linkedin.com/in/georgevogas/",
@@ -136,8 +136,8 @@
         <div class="hero__copy">
         <p class="hero__eyebrow">CS student at Vanier College · Building software people use · Open to internships</p>
         <p class="hero__tagline">
-          I build mobile, web, and desktop software. One of them is a scheduling app I was
-          commissioned to write, and the company that asked for it uses it every day.
+          I build mobile apps, web apps, and the occasional bit of hardware. One of them is a
+          scheduling app I was commissioned to write, and the company that asked for it uses it every day.
         </p>
         <div class="hero__stats" id="github-stats-grid" aria-label="Live GitHub stats">
           <span data-stat="commits"><strong class="github-stats__value"><span class="github-stats__shimmer" aria-hidden="true">000</span></strong> Commits</span>
@@ -179,12 +179,12 @@
           <div class="about__text">
             <p>
               I'm a CS student at Vanier College in Montréal. I've learned primarily by building:
-              a scheduling app a client uses every day, a ticketing site my team deployed,
-              a desktop POS system, and a Unity game I contribute to.
+              a scheduling app a client uses every day, a student tracker my classmates use,
+              a ticketing site my team deployed, and an iPhone budgeting app on its way to the App Store.
             </p>
             <p>
-              Outside of coursework I work on <strong>robotics</strong>: microcontrollers,
-              PID control loops, and sensor integration. I'm also extending the scheduling app
+              Outside of coursework I work on <strong>robotics</strong> and hardware: microcontrollers,
+              PID control loops, and sensors, like the ESP32 fridge monitors in our self-checkout store. I'm also extending the scheduling app
               with Wave invoicing.
             </p>
             <p>
@@ -213,9 +213,9 @@
         </div>
         <div class="projects__grid">
 
-          <!-- Scheduling App (featured) -->
+          <!-- ES Pro (featured) -->
           <article class="card card--featured" style="--card-tint:#1a56db">
-            <div class="project__identity"><span>Featured project / Mobile</span></div>
+            <div class="project__identity"><span>Featured project / Mobile scheduling app</span></div>
             <div class="card__aside">
               <div class="card__header">
                 <div class="card__meta">
@@ -223,12 +223,12 @@
                     <span class="tag tag--production">Production</span>
                     <span class="tag tag--commissioned">Commissioned</span>
                   </div>
-                  <a href="https://github.com/gvogas/Scheduling-App" target="_blank" rel="noopener noreferrer" class="card__link">
-                    View Repo <span aria-hidden="true">→</span>
-                  </a>
+                  <span class="card__link card__link--private" title="Client project, so the code stays private">
+                    <iconify-icon icon="lucide:lock" aria-hidden="true"></iconify-icon> Private repo
+                  </span>
                 </div>
               </div>
-              <h3 class="card__title">Scheduling App</h3>
+              <h3 class="card__title">ES Pro</h3>
               <div class="card__stack">
                 <span class="pill">Flutter</span>
                 <span class="pill">Firebase</span>
@@ -254,6 +254,45 @@
             </div>
           </article>
 
+          <!-- Term -->
+          <article class="card" style="--card-tint:#2563eb">
+            <div class="project__identity"><span>Web app</span></div>
+            <div class="card__header">
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--solo">Solo</span>
+                  <span class="tag tag--deployed">Live</span>
+                </div>
+                <div class="card__links-multi">
+                  <a href="https://github.com/gvogas/medDashboard" target="_blank" rel="noopener noreferrer" class="card__link">Repo <span aria-hidden="true">→</span></a>
+                  <a href="https://rounds.termanitor07.workers.dev" target="_blank" rel="noopener noreferrer" class="card__link">Live <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </div>
+            <h3 class="card__title">Term</h3>
+            <div class="card__stack">
+              <span class="pill">TypeScript</span>
+              <span class="pill">React</span>
+              <span class="pill">Tailwind</span>
+              <span class="pill">Cloudflare Workers</span>
+              <span class="pill">D1 (SQLite)</span>
+              <span class="pill">IndexedDB</span>
+              <span class="pill">Workers AI</span>
+              <span class="pill">Vitest</span>
+            </div>
+            <p class="card__desc">
+              A student tracker for courses, timetables, deadlines, grades, and study time, used by a small group of classmates. It works offline and syncs when you're back online. 700+ commits so far.
+            </p>
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+              <li>An "Up next" list ranks what to work on now and says why ("Exam in 4 days · worth 30%")</li>
+              <li>Grade math: weighted categories, drop-lowest rules, "what if" scores, and GPA by semester</li>
+              <li>Shared classes and team projects with roles, invites, an inbox, and an activity feed</li>
+              <li>AI import reads course outlines and timetable screenshots, then shows a preview before anything is saved</li>
+              <li>Private calendar feed for Google or Apple Calendar, push digests, undo, and JSON/CSV export</li>
+            </ul>
+            <p class="card__arch"><strong>Architecture:</strong> Local-first. The UI reads from IndexedDB and syncs to a Worker API on D1. Pushing to main runs checks, applies migrations, and deploys through GitHub Actions.</p></details>
+          </article>
+
           <!-- TicketMaestrix -->
           <article class="card" style="--card-tint:#0284c7">
             <div class="project__identity"><span>Web platform</span></div>
@@ -263,9 +302,10 @@
                   <span class="tag tag--team">Team</span>
                   <span class="tag tag--deployed">Deployed</span>
                 </div>
-                <a href="https://github.com/gvogas/Ticketmaestrix" target="_blank" rel="noopener noreferrer" class="card__link">
-                  View Repo <span aria-hidden="true">→</span>
-                </a>
+                <div class="card__links-multi">
+                  <a href="https://github.com/gvogas/Ticketmaestrix" target="_blank" rel="noopener noreferrer" class="card__link">Repo <span aria-hidden="true">→</span></a>
+                  <a href="https://ticketmaestrix.shop/" target="_blank" rel="noopener noreferrer" class="card__link">Live <span aria-hidden="true">→</span></a>
+                </div>
               </div>
             </div>
             <h3 class="card__title">TicketMaestrix</h3>
@@ -291,6 +331,40 @@
               <li>Internationalization support and CI/CD pipeline via GitHub Actions deploying to cPanel</li>
             </ul>
             <p class="card__arch"><strong>Team:</strong> George Vogas · Fadwa Shalby · Lucas Coveyduck</p></details>
+          </article>
+
+          <!-- Headroom -->
+          <article class="card" style="--card-tint:#0e7490">
+            <div class="project__identity"><span>iPhone app</span></div>
+            <div class="card__header">
+              <div class="card__meta">
+                <div class="card__tags">
+                  <span class="tag tag--solo">Solo</span>
+                  <span class="tag tag--deployed">Coming soon</span>
+                </div>
+                <a href="https://gvogas.github.io/Spending-Tracker-pages/" target="_blank" rel="noopener noreferrer" class="card__link">
+                  Site <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+            <h3 class="card__title">Headroom</h3>
+            <div class="card__stack">
+              <span class="pill">iOS</span>
+              <span class="pill">watchOS</span>
+              <span class="pill">Widgets</span>
+              <span class="pill">Siri &amp; Shortcuts</span>
+              <span class="pill">Face ID</span>
+            </div>
+            <p class="card__desc">
+              An iPhone app that answers one question: how much can I safely spend before payday? You enter your balance, payday, and bills, and it gives you a number per day. No account, no bank login, and nothing leaves the phone.
+            </p>
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+              <li>Safe to spend = balance − bills due before payday − set-asides, divided by the days left, in exact cents</li>
+              <li>"Can I spend this?" check that recalculates with bills and savings protected</li>
+              <li>Home-screen widget, Apple Watch complications, and Siri logging with no setup</li>
+              <li>Face ID lock, hide-amounts mode, and passphrase-encrypted backups</li>
+              <li>English and French (Canada), with a one-time Pro upgrade and no tracking code</li>
+            </ul></details>
           </article>
 
           <!-- AI Study Assistant -->
@@ -332,95 +406,37 @@
             <p class="card__arch"><strong>Team:</strong> George Vogas + 3 collaborators</p></details>
           </article>
 
-          <!-- Point-of-Sales -->
-          <article class="card" style="--card-tint:#5d7189">
-            <div class="project__identity"><span>Desktop software</span></div>
-            <div class="card__header">
-              <div class="card__meta">
-                <div class="card__tags">
-                  <span class="tag tag--academic">Academic</span>
-                </div>
-                <a href="https://github.com/gvogas/Point-of-Sales_Patterns" target="_blank" rel="noopener noreferrer" class="card__link">
-                  View Repo <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            </div>
-            <h3 class="card__title">Point-of-Sales Patterns</h3>
-            <div class="card__stack">
-              <span class="pill">Java</span>
-              <span class="pill">JavaFX</span>
-              <span class="pill">MySQL</span>
-              <span class="pill">Maven</span>
-              <span class="pill">JDK 24</span>
-            </div>
-            <p class="card__desc">
-              Final project for my programming patterns course. A JavaFX register system, built as an excuse to actually use the patterns we spent the term reading about.
-            </p>
-            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
-              <li>Multi-screen JavaFX GUI: main menu, order flow, inventory management, sales analytics, and payment</li>
-              <li>Factory Method pattern for payment processing: Cash, Debit, and Credit as concrete factories</li>
-              <li>Multithreaded profit calculator with semaphore synchronization for safe aggregation</li>
-              <li>MySQL-backed inventory and sales with full SQL schema and seed data included</li>
-            </ul></details>
-          </article>
-
-          <!-- The Rogue Market -->
-          <article class="card" style="--card-tint:#5d7189">
-            <div class="project__identity"><span>Web experiment</span></div>
-            <div class="card__header">
-              <div class="card__meta">
-                <div class="card__tags">
-                  <span class="tag tag--academic">Academic</span>
-                </div>
-                <a href="https://github.com/gvogas/Star-wars-Interactive-Web-Application" target="_blank" rel="noopener noreferrer" class="card__link">
-                  View Repo <span aria-hidden="true">→</span>
-                </a>
-              </div>
-            </div>
-            <h3 class="card__title">The Rogue Market</h3>
-            <div class="card__stack">
-              <span class="pill">JavaScript</span>
-              <span class="pill">HTML</span>
-              <span class="pill">CSS</span>
-              <span class="pill">JSON</span>
-              <span class="pill">XML</span>
-            </div>
-            <p class="card__desc">
-              Star Wars themed store for my internet programming final. Twelve pages, vanilla JS, no backend, no framework.
-            </p>
-            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
-              <li>Live product search with suggestion dropdown and highlighted infinite-scroll results</li>
-              <li>Shopping cart with per-item quantity control, subtotal, and localStorage persistence</li>
-              <li>Full checkout flow: tax calculation, payment method validation, order confirmation</li>
-              <li>Cookie-based user profile system with editable avatar</li>
-              <li>Modular JS: AuthModel, CartManagement, ProductModel, SearchModel, FormValidation</li>
-            </ul></details>
-          </article>
-
-          <!-- Last Signal -->
+          <!-- Smart Self-Checkout -->
           <article class="card" style="--card-tint:#0b2a5b">
-            <div class="project__identity"><span>Game development</span></div>
+            <div class="project__identity"><span>IoT / Hardware</span></div>
             <div class="card__header">
               <div class="card__meta">
                 <div class="card__tags">
-                  <span class="tag tag--contributor">Contributor</span>
+                  <span class="tag tag--team">Team</span>
+                  <span class="tag tag--academic">Academic</span>
                 </div>
-                <a href="https://github.com/alexder204/LastSignal" target="_blank" rel="noopener noreferrer" class="card__link">
-                  View Repo <span aria-hidden="true">→</span>
-                </a>
               </div>
             </div>
-            <h3 class="card__title">Last Signal</h3>
+            <h3 class="card__title">Smart Self-Checkout</h3>
             <div class="card__stack">
-              <span class="pill">Unity</span>
-              <span class="pill">C#</span>
-              <span class="pill">ShaderLab</span>
-              <span class="pill">HLSL</span>
-              <span class="pill">Wolfram Language</span>
+              <span class="pill">Python</span>
+              <span class="pill">Flask</span>
+              <span class="pill">Raspberry Pi</span>
+              <span class="pill">ESP32</span>
+              <span class="pill">MQTT</span>
+              <span class="pill">RFID</span>
+              <span class="pill">SQLite</span>
             </div>
             <p class="card__desc">
-              A Unity game I help out on. I write gameplay code and custom shaders, which is most of why the repo is half ShaderLab and HLSL.
+              A small self-checkout store on a Raspberry Pi. Customers scan items with RFID and pay with a membership card, and two fridges are monitored live by an ESP32. Built with Oliver D'Avino and Arend Markies.
             </p>
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+              <li>ESP32 firmware reads two DHT11 sensors and publishes temperature and humidity over MQTT</li>
+              <li>Live fridge dashboard; over-threshold readings send an email alert, and replying YES turns on the fan</li>
+              <li>RFID checkout, membership cards, receipts by email, and purchase history</li>
+              <li>Admin side for products, stock, and customers, with low-stock and restock emails</li>
+            </ul>
+            <p class="card__arch"><strong>My part:</strong> ESP32 and sensor code, the fan driver, the fridge dashboard, email alerts, and the product, inventory, and checkout flows.</p></details>
           </article>
 
         </div>
@@ -529,12 +545,14 @@
               <span class="pill pill--lang" style="--brand:#9B4F96; --i:2"><iconify-icon icon="simple-icons:csharp" aria-hidden="true"></iconify-icon>C#</span>
               <span class="pill pill--lang" style="--brand:#0175C2; --i:3"><iconify-icon icon="simple-icons:dart" aria-hidden="true"></iconify-icon>Dart</span>
               <span class="pill pill--lang" style="--brand:#B8860B; --i:4"><iconify-icon icon="simple-icons:javascript" aria-hidden="true"></iconify-icon>JavaScript</span>
-              <span class="pill pill--lang" style="--brand:#777BB4; --i:5"><iconify-icon icon="simple-icons:php" aria-hidden="true"></iconify-icon>PHP</span>
-              <span class="pill pill--lang" style="--brand:#E34F26; --i:6"><iconify-icon icon="simple-icons:html5" aria-hidden="true"></iconify-icon>HTML5</span>
-              <span class="pill pill--lang" style="--brand:#1572B6; --i:7"><iconify-icon icon="simple-icons:css3" aria-hidden="true"></iconify-icon>CSS3</span>
-              <span class="pill pill--lang" style="--brand:#4EAA25; --i:8"><iconify-icon icon="simple-icons:gnubash" aria-hidden="true"></iconify-icon>Shell</span>
-              <span class="pill pill--lang" style="--brand:#00599C; --i:9"><iconify-icon icon="simple-icons:cplusplus" aria-hidden="true"></iconify-icon>C++</span>
-              <span class="pill pill--lang" style="--brand:#DD1100; --i:10"><iconify-icon icon="simple-icons:wolfram" aria-hidden="true"></iconify-icon>Wolfram</span>
+              <span class="pill pill--lang" style="--brand:#3178C6; --i:5"><iconify-icon icon="simple-icons:typescript" aria-hidden="true"></iconify-icon>TypeScript</span>
+              <span class="pill pill--lang" style="--brand:#F05138; --i:6"><iconify-icon icon="simple-icons:swift" aria-hidden="true"></iconify-icon>Swift</span>
+              <span class="pill pill--lang" style="--brand:#777BB4; --i:7"><iconify-icon icon="simple-icons:php" aria-hidden="true"></iconify-icon>PHP</span>
+              <span class="pill pill--lang" style="--brand:#E34F26; --i:8"><iconify-icon icon="simple-icons:html5" aria-hidden="true"></iconify-icon>HTML5</span>
+              <span class="pill pill--lang" style="--brand:#1572B6; --i:9"><iconify-icon icon="simple-icons:css3" aria-hidden="true"></iconify-icon>CSS3</span>
+              <span class="pill pill--lang" style="--brand:#4EAA25; --i:10"><iconify-icon icon="simple-icons:gnubash" aria-hidden="true"></iconify-icon>Shell</span>
+              <span class="pill pill--lang" style="--brand:#00599C; --i:11"><iconify-icon icon="simple-icons:cplusplus" aria-hidden="true"></iconify-icon>C++</span>
+              <span class="pill pill--lang" style="--brand:#DD1100; --i:12"><iconify-icon icon="simple-icons:wolfram" aria-hidden="true"></iconify-icon>Wolfram</span>
             </div>
           </article>
 
@@ -545,24 +563,27 @@
             </header>
             <div class="stack__pills">
               <span class="pill pill--framework" style="--brand:#009688; --i:0"><iconify-icon icon="simple-icons:fastapi" aria-hidden="true"></iconify-icon>FastAPI</span>
-              <span class="pill pill--framework" style="--brand:#02569B; --i:1"><iconify-icon icon="simple-icons:flutter" aria-hidden="true"></iconify-icon>Flutter</span>
-              <span class="pill pill--framework" style="--brand:#512BD4; --i:2"><iconify-icon icon="simple-icons:dotnet" aria-hidden="true"></iconify-icon>.NET</span>
-              <span class="pill pill--framework" style="--brand:#5382A1; --i:3"><iconify-icon icon="simple-icons:openjdk" aria-hidden="true"></iconify-icon>JavaFX</span>
-              <span class="pill pill--framework" style="--brand:#1F2933; --i:4"><iconify-icon icon="simple-icons:unity" aria-hidden="true"></iconify-icon>Unity</span>
-              <span class="pill pill--framework" style="--brand:#6E9A1E; --i:5"><iconify-icon icon="lucide:feather" aria-hidden="true"></iconify-icon>Slim</span>
-              <span class="pill pill--framework" style="--brand:#5E9A38; --i:6"><iconify-icon icon="lucide:leaf" aria-hidden="true"></iconify-icon>Twig</span>
-              <span class="pill pill--framework" style="--brand:#635BFF; --i:7"><iconify-icon icon="simple-icons:stripe" aria-hidden="true"></iconify-icon>Stripe</span>
-              <span class="pill pill--framework" style="--brand:#4285F4; --i:8"><iconify-icon icon="simple-icons:googlemaps" aria-hidden="true"></iconify-icon>Google Maps</span>
-              <span class="pill pill--framework" style="--brand:#5A6166; --i:9"><iconify-icon icon="simple-icons:ios" aria-hidden="true"></iconify-icon>iOS</span>
-              <span class="pill pill--framework" style="--brand:#258A52; --i:10"><iconify-icon icon="simple-icons:android" aria-hidden="true"></iconify-icon>Android</span>
-              <span class="pill pill--framework" style="--brand:#0769AD; --i:11"><iconify-icon icon="simple-icons:jquery" aria-hidden="true"></iconify-icon>jQuery</span>
-              <span class="pill pill--framework" style="--brand:#D22128; --i:12"><iconify-icon icon="simple-icons:apache" aria-hidden="true"></iconify-icon>Apache</span>
-              <span class="pill pill--framework" style="--brand:#43853D; --i:13"><iconify-icon icon="simple-icons:nodedotjs" aria-hidden="true"></iconify-icon>Node.js</span>
-              <span class="pill pill--framework" style="--brand:#0175C2; --i:14"><iconify-icon icon="lucide:waves" aria-hidden="true"></iconify-icon>Riverpod</span>
-              <span class="pill pill--framework" style="--brand:#512BD4; --i:15"><iconify-icon icon="lucide:panels-top-left" aria-hidden="true"></iconify-icon>WinForms</span>
-              <span class="pill pill--framework" style="--brand:#E92063; --i:16"><iconify-icon icon="simple-icons:pydantic" aria-hidden="true"></iconify-icon>Pydantic</span>
-              <span class="pill pill--framework" style="--brand:#F55036; --i:17"><iconify-icon icon="lucide:brain" aria-hidden="true"></iconify-icon>Groq</span>
-              <span class="pill pill--framework" style="--brand:#635BFF; --i:18"><iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>Tavily</span>
+              <span class="pill pill--framework" style="--brand:#087EA4; --i:1"><iconify-icon icon="simple-icons:react" aria-hidden="true"></iconify-icon>React</span>
+              <span class="pill pill--framework" style="--brand:#06B6D4; --i:2"><iconify-icon icon="simple-icons:tailwindcss" aria-hidden="true"></iconify-icon>Tailwind</span>
+              <span class="pill pill--framework" style="--brand:#1F2933; --i:3"><iconify-icon icon="simple-icons:flask" aria-hidden="true"></iconify-icon>Flask</span>
+              <span class="pill pill--framework" style="--brand:#02569B; --i:4"><iconify-icon icon="simple-icons:flutter" aria-hidden="true"></iconify-icon>Flutter</span>
+              <span class="pill pill--framework" style="--brand:#512BD4; --i:5"><iconify-icon icon="simple-icons:dotnet" aria-hidden="true"></iconify-icon>.NET</span>
+              <span class="pill pill--framework" style="--brand:#5382A1; --i:6"><iconify-icon icon="simple-icons:openjdk" aria-hidden="true"></iconify-icon>JavaFX</span>
+              <span class="pill pill--framework" style="--brand:#1F2933; --i:7"><iconify-icon icon="simple-icons:unity" aria-hidden="true"></iconify-icon>Unity</span>
+              <span class="pill pill--framework" style="--brand:#6E9A1E; --i:8"><iconify-icon icon="lucide:feather" aria-hidden="true"></iconify-icon>Slim</span>
+              <span class="pill pill--framework" style="--brand:#5E9A38; --i:9"><iconify-icon icon="lucide:leaf" aria-hidden="true"></iconify-icon>Twig</span>
+              <span class="pill pill--framework" style="--brand:#635BFF; --i:10"><iconify-icon icon="simple-icons:stripe" aria-hidden="true"></iconify-icon>Stripe</span>
+              <span class="pill pill--framework" style="--brand:#4285F4; --i:11"><iconify-icon icon="simple-icons:googlemaps" aria-hidden="true"></iconify-icon>Google Maps</span>
+              <span class="pill pill--framework" style="--brand:#5A6166; --i:12"><iconify-icon icon="simple-icons:ios" aria-hidden="true"></iconify-icon>iOS</span>
+              <span class="pill pill--framework" style="--brand:#258A52; --i:13"><iconify-icon icon="simple-icons:android" aria-hidden="true"></iconify-icon>Android</span>
+              <span class="pill pill--framework" style="--brand:#0769AD; --i:14"><iconify-icon icon="simple-icons:jquery" aria-hidden="true"></iconify-icon>jQuery</span>
+              <span class="pill pill--framework" style="--brand:#D22128; --i:15"><iconify-icon icon="simple-icons:apache" aria-hidden="true"></iconify-icon>Apache</span>
+              <span class="pill pill--framework" style="--brand:#43853D; --i:16"><iconify-icon icon="simple-icons:nodedotjs" aria-hidden="true"></iconify-icon>Node.js</span>
+              <span class="pill pill--framework" style="--brand:#0175C2; --i:17"><iconify-icon icon="lucide:waves" aria-hidden="true"></iconify-icon>Riverpod</span>
+              <span class="pill pill--framework" style="--brand:#512BD4; --i:18"><iconify-icon icon="lucide:panels-top-left" aria-hidden="true"></iconify-icon>WinForms</span>
+              <span class="pill pill--framework" style="--brand:#E92063; --i:19"><iconify-icon icon="simple-icons:pydantic" aria-hidden="true"></iconify-icon>Pydantic</span>
+              <span class="pill pill--framework" style="--brand:#F55036; --i:20"><iconify-icon icon="lucide:brain" aria-hidden="true"></iconify-icon>Groq</span>
+              <span class="pill pill--framework" style="--brand:#635BFF; --i:21"><iconify-icon icon="lucide:search" aria-hidden="true"></iconify-icon>Tavily</span>
             </div>
           </article>
 
@@ -573,16 +594,20 @@
             </header>
             <div class="stack__pills">
               <span class="pill pill--infra" style="--brand:#E08A00; --i:0"><iconify-icon icon="simple-icons:firebase" aria-hidden="true"></iconify-icon>Firebase</span>
-              <span class="pill pill--infra" style="--brand:#4479A1; --i:1"><iconify-icon icon="simple-icons:mysql" aria-hidden="true"></iconify-icon>MySQL</span>
-              <span class="pill pill--infra" style="--brand:#0F80CC; --i:2"><iconify-icon icon="simple-icons:sqlite" aria-hidden="true"></iconify-icon>SQLite</span>
-              <span class="pill pill--infra" style="--brand:#C71A36; --i:3"><iconify-icon icon="simple-icons:apachemaven" aria-hidden="true"></iconify-icon>Maven</span>
-              <span class="pill pill--infra" style="--brand:#B8860B; --i:4"><iconify-icon icon="simple-icons:linux" aria-hidden="true"></iconify-icon>Linux</span>
-              <span class="pill pill--infra" style="--brand:#2088FF; --i:5"><iconify-icon icon="simple-icons:githubactions" aria-hidden="true"></iconify-icon>GitHub Actions</span>
-              <span class="pill pill--infra" style="--brand:#FF6C2C; --i:6"><iconify-icon icon="simple-icons:cpanel" aria-hidden="true"></iconify-icon>cPanel</span>
-              <span class="pill pill--infra" style="--brand:#E08A00; --i:7"><iconify-icon icon="lucide:database" aria-hidden="true"></iconify-icon>Firestore</span>
-              <span class="pill pill--infra" style="--brand:#4285F4; --i:8"><iconify-icon icon="simple-icons:googlecloud" aria-hidden="true"></iconify-icon>Cloud Functions</span>
-              <span class="pill pill--infra" style="--brand:#C21325; --i:9"><iconify-icon icon="simple-icons:jest" aria-hidden="true"></iconify-icon>Jest</span>
-              <span class="pill pill--infra" style="--brand:#885630; --i:10"><iconify-icon icon="simple-icons:composer" aria-hidden="true"></iconify-icon>Composer</span>
+              <span class="pill pill--infra" style="--brand:#F38020; --i:1"><iconify-icon icon="simple-icons:cloudflare" aria-hidden="true"></iconify-icon>Cloudflare Workers</span>
+              <span class="pill pill--infra" style="--brand:#C51A4A; --i:2"><iconify-icon icon="simple-icons:raspberrypi" aria-hidden="true"></iconify-icon>Raspberry Pi</span>
+              <span class="pill pill--infra" style="--brand:#E7352C; --i:3"><iconify-icon icon="simple-icons:espressif" aria-hidden="true"></iconify-icon>ESP32</span>
+              <span class="pill pill--infra" style="--brand:#660066; --i:4"><iconify-icon icon="simple-icons:mqtt" aria-hidden="true"></iconify-icon>MQTT</span>
+              <span class="pill pill--infra" style="--brand:#4479A1; --i:5"><iconify-icon icon="simple-icons:mysql" aria-hidden="true"></iconify-icon>MySQL</span>
+              <span class="pill pill--infra" style="--brand:#0F80CC; --i:6"><iconify-icon icon="simple-icons:sqlite" aria-hidden="true"></iconify-icon>SQLite</span>
+              <span class="pill pill--infra" style="--brand:#C71A36; --i:7"><iconify-icon icon="simple-icons:apachemaven" aria-hidden="true"></iconify-icon>Maven</span>
+              <span class="pill pill--infra" style="--brand:#B8860B; --i:8"><iconify-icon icon="simple-icons:linux" aria-hidden="true"></iconify-icon>Linux</span>
+              <span class="pill pill--infra" style="--brand:#2088FF; --i:9"><iconify-icon icon="simple-icons:githubactions" aria-hidden="true"></iconify-icon>GitHub Actions</span>
+              <span class="pill pill--infra" style="--brand:#FF6C2C; --i:10"><iconify-icon icon="simple-icons:cpanel" aria-hidden="true"></iconify-icon>cPanel</span>
+              <span class="pill pill--infra" style="--brand:#E08A00; --i:11"><iconify-icon icon="lucide:database" aria-hidden="true"></iconify-icon>Firestore</span>
+              <span class="pill pill--infra" style="--brand:#4285F4; --i:12"><iconify-icon icon="simple-icons:googlecloud" aria-hidden="true"></iconify-icon>Cloud Functions</span>
+              <span class="pill pill--infra" style="--brand:#C21325; --i:13"><iconify-icon icon="simple-icons:jest" aria-hidden="true"></iconify-icon>Jest</span>
+              <span class="pill pill--infra" style="--brand:#885630; --i:14"><iconify-icon icon="simple-icons:composer" aria-hidden="true"></iconify-icon>Composer</span>
             </div>
           </article>
 
@@ -609,14 +634,14 @@
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:smartphone"></iconify-icon></span>
             <h3 class="study__title">Mobile development</h3>
-            <p class="study__blurb">My scheduling app gives me plenty to work through, from building screens to keeping data available offline.</p>
-            <div class="study__skills"><span class="pill">Flutter</span><span class="pill">Dart</span><span class="pill">Firebase</span><span class="pill">Offline-first</span></div>
+            <p class="study__blurb">My scheduling app and Headroom give me plenty to work through, from building screens to keeping data available offline.</p>
+            <div class="study__skills"><span class="pill">Flutter</span><span class="pill">Dart</span><span class="pill">Firebase</span><span class="pill">Swift</span><span class="pill">Offline-first</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:globe"></iconify-icon></span>
             <h3 class="study__title">Web development</h3>
-            <p class="study__blurb">I've been putting this into practice with Ticketmaestrix, working on both the pages and what happens behind them.</p>
-            <div class="study__skills"><span class="pill">PHP</span><span class="pill">MySQL</span><span class="pill">REST APIs</span><span class="pill">JavaScript</span><span class="pill">Twig</span></div>
+            <p class="study__blurb">I've been putting this into practice with Term and Ticketmaestrix, working on both the pages and what happens behind them.</p>
+            <div class="study__skills"><span class="pill">TypeScript</span><span class="pill">React</span><span class="pill">PHP</span><span class="pill">REST APIs</span><span class="pill">Twig</span></div>
           </li>
           <li class="study__item">
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:database"></iconify-icon></span>
@@ -628,13 +653,13 @@
             <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:server"></iconify-icon></span>
             <h3 class="study__title">Systems</h3>
             <p class="study__blurb">Getting my projects running on a server, then figuring out how to keep them running and make updates easier.</p>
-            <div class="study__skills"><span class="pill">Linux</span><span class="pill">Apache</span><span class="pill">cPanel</span><span class="pill">GitHub Actions</span></div>
+            <div class="study__skills"><span class="pill">Linux</span><span class="pill">Cloudflare</span><span class="pill">cPanel</span><span class="pill">GitHub Actions</span></div>
           </li>
           <li class="study__item">
-            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:gamepad-2"></iconify-icon></span>
-            <h3 class="study__title">Game development</h3>
-            <p class="study__blurb">I've been working with Unity on Last Signal, learning about gameplay code and shaders along the way.</p>
-            <div class="study__skills"><span class="pill">Unity</span><span class="pill">C#</span><span class="pill">ShaderLab</span><span class="pill">HLSL</span></div>
+            <span class="study__icon" aria-hidden="true"><iconify-icon icon="lucide:radio"></iconify-icon></span>
+            <h3 class="study__title">IoT</h3>
+            <p class="study__blurb">Our self-checkout store taught me how a microcontroller, a Raspberry Pi, and a web app talk to each other.</p>
+            <div class="study__skills"><span class="pill">ESP32</span><span class="pill">Raspberry Pi</span><span class="pill">MQTT</span><span class="pill">GPIO</span><span class="pill">Flask</span></div>
           </li>
         </ul>
         <div class="study__divider">

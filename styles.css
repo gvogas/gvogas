@@ -845,9 +845,11 @@ h1, h2, h3, h4 {
 .tag--hackathon    { color: var(--tag-hackathon);    background: var(--tag-hackathon-bg); }
 .tag--team         { color: var(--tag-team);         background: var(--tag-team-bg); }
 .tag--academic     { color: var(--tag-academic);     background: var(--tag-academic-bg); }
-.tag--contributor  { color: var(--tag-contributor);  background: var(--tag-contributor-bg); }
+.tag--contributor,
+.tag--solo         { color: var(--tag-contributor);  background: var(--tag-contributor-bg); }
 .tag--deployed     { color: var(--tag-deployed);     background: var(--tag-deployed-bg); }
 
+.card__link--private { cursor: default; display: inline-flex; align-items: center; gap: 4px; }
 .card__link {
   font-family: var(--mono);
   font-size: 0.74rem;
@@ -1001,6 +1003,7 @@ h1, h2, h3, h4 {
 }
 [data-theme="dark"] #projects .tag--commissioned,
 [data-theme="dark"] #projects .tag--contributor,
+[data-theme="dark"] #projects .tag--solo,
 [data-theme="dark"] #projects .tag--team {
   color: #b1c9e9;
   background: #b1c9e90c;
@@ -2040,3 +2043,9 @@ h1, h2, h3, h4 {
   .nav__links li { opacity: 1 !important; transform: none !important; }
   .stack__pills .pill { opacity: 1 !important; transform: none !important; transition-delay: 0ms !important; }
 }
+
+/* Non-link "Private repo" label on client projects */
+#projects .card__link--private,
+#projects .card__link--private:hover,
+[data-theme="dark"] #projects .card__link--private,
+[data-theme="dark"] #projects .card__link--private:hover { color: var(--muted); text-decoration: none; }
