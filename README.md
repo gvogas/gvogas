@@ -74,9 +74,9 @@ through GitHub Actions, with a separate staging site for trying a branch first.
 
 ### [TicketMaestrix](https://github.com/gvogas/Ticketmaestrix)
 
-<sub>Web platform · Team of three · Deployed</sub>
+<sub>Web platform · Team of three</sub>
 
-An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Customers browse events and buy tickets; admins manage inventory and sales. Deployed to cPanel through GitHub Actions. [Live site](https://ticketmaestrix.shop/)
+An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Customers browse events and buy tickets; admins manage inventory and sales. It was deployed to cPanel through GitHub Actions.
 
 <code>PHP</code> <code>Twig</code> <code>Slim MVC</code> <code>MySQL</code> <code>GitHub Actions</code> <code>cPanel</code>
 
