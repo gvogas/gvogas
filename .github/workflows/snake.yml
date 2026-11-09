@@ -1,4 +1,4 @@
-name: Generate contribution snake
+name: Generate contribution snake and repo snapshot
 
 on:
   schedule:
@@ -23,6 +23,17 @@ jobs:
           outputs: |
             dist/github-snake.svg?color_snake=#1e40af&color_dots=#e1ecf7,#bfdcf5,#7fbcf0,#3b82f6,#1e40af
             dist/github-snake-dark.svg?color_snake=#b6dbff&color_dots=#172238,#1f3a6b,#2f66c4,#5aa9ff,#b6dbff
+
+      - name: Snapshot public repos for the portfolio skyline
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p dist
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/users/gvogas/repos?per_page=100&sort=pushed" \
+            | jq '[.[] | {name, html_url, language, size, pushed_at, stargazers_count, fork, description}]' \
+            > dist/repos.json
+          test "$(jq length dist/repos.json)" -gt 0
 
       - name: Push to output branch
         uses: crazy-max/ghaction-github-pages@v4
