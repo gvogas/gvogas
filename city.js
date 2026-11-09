@@ -91,12 +91,21 @@ export async function initCity() {
   }
 
   // ── Fetch repos (single request — no per-repo fan-out) ─────────
-  let repos = [];
-  try {
-    const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=pushed`);
-    repos = await res.json();
-    if (!Array.isArray(repos)) repos = [];
-  } catch { repos = []; }
+  // GitHub allows 60 unauthenticated API calls an hour per visitor, and the
+  // stats and commit counters share that budget. So read the daily snapshot
+  // the workflow publishes to the `output` branch first, then the live API,
+  // then the copy committed with the site.
+  async function loadRepos(url) {
+    try {
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data.filter(r => r && r.name) : [];
+    } catch { return []; }
+  }
+  let repos = await loadRepos(`https://raw.githubusercontent.com/${GH_USER}/${GH_USER}/output/repos.json`);
+  if (!repos.length) repos = await loadRepos(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=pushed`);
+  if (!repos.length) repos = await loadRepos('assets/repos.json');
 
   if (repos.length === 0) {
     loading.innerHTML = '<span style="color:var(--text-dim);font-size:.85rem">Could not load repositories.</span>';
@@ -703,36 +712,126 @@ export async function initCity() {
       const part = new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
       part.position.set(x,y,z); bell.add(part); return part;
     }
-    arenaBox(9.5,.12,5.5,0,.07,0,stone);
-    arenaBox(8.8,2.25,4.5,0,1.2,0,brick);
-    arenaBox(9, .22,4.7,0,2.35,0,stone);
-    // Broad, shallow barrel roof with visible metal seams.
-    const roofGeo = new THREE.CylinderGeometry(4.4,4.4,4.5,40,1,true,-Math.PI/2,Math.PI);
-    roofGeo.rotateX(-Math.PI / 2);
-    roofGeo.scale(1,.17,1);
-    const roof = new THREE.Mesh(roofGeo,metal);
-    roof.position.y=2.4; bell.add(roof);
-    for(let x=-4.2;x<=4.2;x+=.6) {
-      arenaBox(.035,.04,4.5,x,2.4+Math.sqrt(Math.max(0,4.4**2-x*x))*.17,0,stone);
+    // The real arena is a big flat-roofed block: a beige precast base, a
+    // blue-green glass curtain wall with rounded corners above it, a stepped
+    // roof, and a tall glass entrance hall facing the plaza.
+    const W = 9.4, D = 5.6, R = .9;            // footprint and corner radius
+    const CZ = 2.4 - D / 2;                    // front face sits at z = 2.4
+    const BASE_H = .95, WALL_H = 2.8, TOP = BASE_H + WALL_H;
+    const precast = new THREE.MeshStandardMaterial({ color: 0xcdc3ae, roughness: .9 });
+    const darkGlass = new THREE.MeshStandardMaterial({ color: 0x1f2b33, metalness: .4, roughness: .35,
+      emissive: 0xffd9a0, emissiveIntensity: .08 });
+    const roofMat = new THREE.MeshStandardMaterial({ color: 0x8d949a, roughness: .8, metalness: .2 });
+    // Curtain-wall texture: tinted panes, light mullions, a solid spandrel band per floor.
+    const wallCanvas = document.createElement('canvas');
+    wallCanvas.width = 128; wallCanvas.height = 128;
+    {
+      const g = wallCanvas.getContext('2d');
+      g.fillStyle = '#c9d0d0'; g.fillRect(0, 0, 128, 128);              // thin mullions
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
+        const grad = g.createLinearGradient(0, r * 64, 0, r * 64 + 56);
+        grad.addColorStop(0, ['#6f98a6', '#7aa2ae', '#668f9d', '#759eab'][(r * 3 + c) % 4]);
+        grad.addColorStop(1, ['#2f5462', '#355b69', '#2b4f5d', '#33596a'][(r * 3 + c) % 4]);
+        g.fillStyle = grad;
+        g.fillRect(c * 32 + 1, r * 64 + 1, 30, 56);
+      }
+      g.fillStyle = '#3d5560';                                           // glass spandrels
+      for (let r = 0; r < 2; r++) g.fillRect(0, r * 64 + 57, 128, 6);
     }
-    // Tall glazed entrance, limestone piers and red team banners.
-    arenaBox(3.8,2.45,.3,0,1.3,2.38,glass);
-    for(let x=-1.8;x<=1.8;x+=.45) arenaBox(.045,2.45,.36,x,1.3,2.4,metal);
-    for(let y=.6;y<2.5;y+=.55) arenaBox(3.8,.04,.36,0,y,2.4,metal);
-    for(const x of [-4,-2.25,2.25,4]) arenaBox(.3,2.5,.38,x,1.32,2.4,stone);
-    for(const x of [-3.2,3.2]) {
-      arenaBox(.7,1.45,.06,x,1.35,2.29,red);
-      arenaBox(.5,.07,.07,x,1.35,2.33,stone);
+    const lit = document.createElement('canvas');
+    lit.width = lit.height = 128;
+    {
+      const g = lit.getContext('2d');
+      g.fillStyle = '#000'; g.fillRect(0, 0, 128, 128);
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 4; c++) {
+        if ((r * 5 + c * 3) % 3 === 0) continue;                         // some panes stay dark
+        // Concourse lights: a bright band low in the pane fading upward.
+        const grad = g.createLinearGradient(0, r * 64 + 56, 0, r * 64);
+        grad.addColorStop(0, '#d9c7a4'); grad.addColorStop(.45, '#6e6352'); grad.addColorStop(1, '#141210');
+        g.fillStyle = grad;
+        g.fillRect(c * 32 + 1, r * 64 + 1, 30, 56);
+      }
     }
-    arenaBox(4.3,.12,.95,0,.9,2.65,metal);
-    const signCanvas=document.createElement('canvas'); signCanvas.width=512; signCanvas.height=96;
-    const signContext=signCanvas.getContext('2d'); signContext.fillStyle='#d4d0c4'; signContext.fillRect(0,0,512,96);
-    signContext.fillStyle='#075598'; signContext.font='600 57px Arial'; signContext.textAlign='center';
-    signContext.fillText('Centre Bell',256,68);
-    const signTexture=new THREE.CanvasTexture(signCanvas); signTexture.colorSpace=THREE.SRGBColorSpace;
-    const sign=new THREE.Mesh(new THREE.PlaneGeometry(3.8,.71),new THREE.MeshStandardMaterial({map:signTexture,roughness:.7}));
-    sign.position.set(0,2.75,2.59); bell.add(sign);
-    for(const x of [-3.4,3.4]) for(let z=-1.5;z<1.6;z+=1.2) arenaBox(.6,.16,.6,x,2.8,z,metal);
+    const wallTex = new THREE.CanvasTexture(wallCanvas);
+    wallTex.colorSpace = THREE.SRGBColorSpace;
+    wallTex.wrapS = wallTex.wrapT = THREE.RepeatWrapping;
+    wallTex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+    const litTex = new THREE.CanvasTexture(lit);
+    litTex.colorSpace = THREE.SRGBColorSpace;
+    litTex.wrapS = litTex.wrapT = THREE.RepeatWrapping;
+    const PANE_W = .62, FLOOR_H = .93;         // world size of one texture tile
+    function curtain(length, height) {
+      const map = wallTex.clone(), em = litTex.clone();
+      for (const t of [map, em]) { t.repeat.set(length / (PANE_W * 4), height / (FLOOR_H * 2)); t.needsUpdate = true; }
+      return new THREE.MeshStandardMaterial({ map, emissiveMap: em, emissive: 0xffe2b8, emissiveIntensity: .22,
+        metalness: .35, roughness: .3 });
+    }
+    // A rounded-rectangle "slab" built from two boxes and four corner cylinders,
+    // so the curtain-wall texture can be scaled per face.
+    function roundedSlab(w, d, r, h, y, sideMat, capMat) {
+      const g = new THREE.Group();
+      const longX = new THREE.Mesh(new THREE.BoxGeometry(w - 2 * r, h, d),
+        [sideMat(d, h), sideMat(d, h), capMat, capMat, sideMat(w - 2 * r, h), sideMat(w - 2 * r, h)]);
+      const longZ = new THREE.Mesh(new THREE.BoxGeometry(w, h, d - 2 * r),
+        [sideMat(d - 2 * r, h), sideMat(d - 2 * r, h), capMat, capMat, sideMat(w, h), sideMat(w, h)]);
+      g.add(longX, longZ);
+      const cornerSide = sideMat(Math.PI * r / 2, h);
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+        const c = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 20, 1, false), [cornerSide, capMat, capMat]);
+        c.position.set(sx * (w / 2 - r), 0, sz * (d / 2 - r));
+        g.add(c);
+      }
+      g.position.set(0, y + h / 2, CZ);
+      bell.add(g);
+      return g;
+    }
+    const solid = m => () => m;
+    // Plinth and precast base with a dark storefront band.
+    arenaBox(W + .5, .12, D + .5, 0, .07, CZ, stone);
+    roundedSlab(W, D, R, BASE_H, .12, solid(precast), precast);
+    roundedSlab(W + .04, D + .04, R + .02, .42, .3, solid(darkGlass), darkGlass);
+    // Glass curtain wall, a precast cornice, then two stepped roof tiers.
+    roundedSlab(W - .1, D - .1, R - .05, WALL_H, BASE_H + .12, curtain, roofMat);
+    roundedSlab(W + .08, D + .08, R + .04, .16, TOP + .1, solid(precast), roofMat);
+    roundedSlab(W - 1.3, D - 1.3, R * .6, .38, TOP + .26, solid(roofMat), roofMat);
+    roundedSlab(W - 3.4, D - 2.6, R * .4, .22, TOP + .64, solid(roofMat), roofMat);
+    // Precast piers break up the long sides, as on the real building.
+    for (const x of [-3.1, -1.55, 1.55, 3.1]) {
+      arenaBox(.22, WALL_H + .1, .14, x, BASE_H + .12 + WALL_H / 2, CZ - D / 2 + .02, precast);
+    }
+    for (const z of [-1.2, 0, 1.2]) for (const sx of [-1, 1]) {
+      arenaBox(.14, WALL_H + .1, .22, sx * (W / 2 - .03), BASE_H + .12 + WALL_H / 2, CZ + z, precast);
+    }
+    // Tall glazed entrance hall projecting onto the plaza.
+    const HALL_W = 4.2, HALL_D = .9, HALL_H = TOP + .35;
+    const hall = new THREE.Mesh(new THREE.BoxGeometry(HALL_W, HALL_H, HALL_D),
+      [curtain(HALL_D, HALL_H), curtain(HALL_D, HALL_H), roofMat, roofMat, curtain(HALL_W, HALL_H), curtain(HALL_W, HALL_H)]);
+    hall.position.set(0, .12 + HALL_H / 2, 2.4 + HALL_D / 2 - .1);
+    bell.add(hall);
+    for (let x = -HALL_W / 2; x <= HALL_W / 2 + .01; x += HALL_W / 6) {
+      arenaBox(.07, HALL_H, .08, x, .12 + HALL_H / 2, 2.4 + HALL_D - .08, metal);   // steel fins
+    }
+    arenaBox(HALL_W + .6, .1, 1.2, 0, 1.05, 2.4 + HALL_D + .35, metal);             // entrance canopy
+    for (const x of [-1.4, -.45, .45, 1.4]) arenaBox(.5, .62, .04, x, .43, 2.4 + HALL_D - .02, darkGlass);
+    // Red banners on the base, either side of the entrance.
+    for (const x of [-3.6, -2.75, 2.75, 3.6]) {
+      arenaBox(.46, 1.05, .04, x, BASE_H + .78, 2.42, red);
+      arenaBox(.46, .1, .045, x, BASE_H + .32, 2.425, new THREE.MeshStandardMaterial({ color: 0x1d3b78, roughness: .8 }));
+    }
+    // "Centre Bell" lettering on the cornice above the entrance hall.
+    const signCanvas = document.createElement('canvas'); signCanvas.width = 512; signCanvas.height = 96;
+    const signContext = signCanvas.getContext('2d');
+    signContext.fillStyle = '#f2f1ec'; signContext.fillRect(0, 0, 512, 96);
+    signContext.fillStyle = '#0b5ea8'; signContext.font = '600 58px Arial'; signContext.textAlign = 'center';
+    signContext.fillText('Centre Bell', 256, 68);
+    const signTexture = new THREE.CanvasTexture(signCanvas); signTexture.colorSpace = THREE.SRGBColorSpace;
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(3.4, .64),
+      new THREE.MeshStandardMaterial({ map: signTexture, roughness: .7, emissive: 0xffffff, emissiveMap: signTexture, emissiveIntensity: .25 }));
+    sign.position.set(0, HALL_H - .32, 2.4 + HALL_D - .03); bell.add(sign);
+    // Rooftop mechanical units.
+    for (const [x, z] of [[-2.6, -1.4], [-1.6, -1.4], [2.2, -1.1], [3, .2], [-3, .4]]) {
+      arenaBox(.5, .22, .42, x, TOP + .75, CZ + z, metal);
+    }
     // A continuous pedestrian forecourt, inspired by the reference photo.
     // Its raised base covers the generic street grid underneath the arena site.
     arenaBox(12.2,.14,11.7,0,.075,2.95,stone);
