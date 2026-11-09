@@ -28,7 +28,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mkdir -p dist
+          # The snake action runs in Docker as root, so dist/ is root-owned.
+          sudo mkdir -p dist
+          sudo chown -R "$(id -u):$(id -g)" dist
           curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/users/gvogas/repos?per_page=100&sort=pushed" \
             | jq '[.[] | {name, html_url, language, size, pushed_at, stargazers_count, fork, description}]' \
