@@ -11,7 +11,7 @@
 
 <p align="center">CS student at Vanier College · Building software people use · Open to internships</p>
 
-I learn by making things: a scheduling app a company uses every day, a ticketing platform built with classmates, and experiments in games and robotics.
+I learn by making things: a scheduling app a company uses every day, a student tracker my classmates use, a ticketing platform built with my team, and an iPhone budgeting app on its way to the App Store.
 
 ---
 
@@ -46,11 +46,37 @@ sync client records, and surface payment status in the app.
 
 ---
 
+### [Term](https://github.com/gvogas/medDashboard)
+
+<sub>Web app · Solo · Live, 700+ commits</sub>
+
+A student tracker for courses, timetables, deadlines, grades, and study time, used by a small group of classmates. It works offline and syncs when you're back online. [Live site](https://rounds.termanitor07.workers.dev)
+
+<code>TypeScript</code> <code>React</code> <code>Tailwind</code> <code>Cloudflare Workers</code> <code>D1 (SQLite)</code> <code>IndexedDB</code> <code>Workers AI</code> <code>Vitest</code>
+
+<details>
+<summary>Inside the build</summary>
+
+- An "Up next" list ranks what to work on now and says why ("Exam in 4 days · worth 30% · 8 topics left")
+- Grade math: weighted categories, drop-lowest rules, "what if" scores, and GPA by semester on an editable scale
+- Shared classes and team projects with owner/editor/member roles, invites, an inbox, and an activity feed
+- AI import reads course outlines, school calendars, and timetable screenshots, then shows a preview before anything is saved
+- Private calendar feed for Google or Apple Calendar, morning push digests, undo, and JSON/CSV export
+- Admin page with accounts, error and audit logs, and per-feature maintenance switches
+
+Local-first: the UI reads from IndexedDB and syncs to a Worker API on D1. Pushing to `main`
+runs typecheck, tests, and build, applies new migrations to the live database, and deploys
+through GitHub Actions, with a separate staging site for trying a branch first.
+
+</details>
+
+---
+
 ### [TicketMaestrix](https://github.com/gvogas/Ticketmaestrix)
 
 <sub>Web platform · Team of three · Deployed</sub>
 
-An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Customers browse events and buy tickets; admins manage inventory and sales. Deployed to cPanel through GitHub Actions.
+An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Customers browse events and buy tickets; admins manage inventory and sales. Deployed to cPanel through GitHub Actions. [Live site](https://ticketmaestrix.shop/)
 
 <code>PHP</code> <code>Twig</code> <code>Slim MVC</code> <code>MySQL</code> <code>GitHub Actions</code> <code>cPanel</code>
 
@@ -62,6 +88,27 @@ An event ticketing platform built with Fadwa Shalby and Lucas Coveyduck. Custome
 - Built on a custom Slim MVC framework with Twig templating, no off-the-shelf CMS
 - Internationalization support via a `/translations` directory
 - CI/CD pipeline via GitHub Actions, deploying to cPanel on push
+
+</details>
+
+## More things I've made
+
+### [Headroom](https://gvogas.github.io/Spending-Tracker-pages/)
+
+<sub>iPhone app · Solo · Coming soon to the App Store</sub>
+
+An iPhone app that answers one question: how much can I safely spend before payday? Enter your balance, payday, and bills, and it gives you a number per day. No account, no bank login, and nothing leaves the phone.
+
+<code>iOS</code> <code>watchOS</code> <code>Widgets</code> <code>Siri &amp; Shortcuts</code> <code>Face ID</code>
+
+<details>
+<summary>Inside the build</summary>
+
+- Safe to spend = balance − bills due before payday − set-asides, divided by the days left, kept in exact cents
+- "Can I spend this?" check that recalculates with bills and savings protected and answers in a sentence
+- Home-screen widget, Apple Watch complications, and Siri logging with no setup
+- Face ID lock, a hide-amounts mode, and passphrase-encrypted backups
+- English and French (Canada), a one-time Pro upgrade, and no analytics or tracking code
 
 </details>
 
@@ -90,71 +137,42 @@ layer holding the business logic. No framework on the frontend and no build step
 
 </details>
 
-## More things I've made
+---
 
-### [Point-of-Sales Patterns](https://github.com/gvogas/Point-of-Sales_Patterns)
+### Smart Self-Checkout
 
-<sub>Desktop software · Course final</sub>
+<sub>IoT / hardware · Team of three · Course project</sub>
 
-A JavaFX register system for my programming patterns course, covering orders, inventory, sales analytics, and payment.
+A small self-checkout store on a Raspberry Pi, built with Oliver D'Avino and Arend Markies. Customers scan items with RFID and pay with a membership card, and two fridges are monitored live by an ESP32.
 
-<code>Java</code> <code>JavaFX</code> <code>MySQL</code> <code>Maven</code> <code>JDK 24</code>
+<code>Python</code> <code>Flask</code> <code>Raspberry Pi</code> <code>ESP32</code> <code>MQTT</code> <code>RFID</code> <code>SQLite</code>
 
 <details>
 <summary>Inside the build</summary>
 
-- **Payments:** Factory Method implementations for cash, debit, and credit.
-- **Concurrency:** A profit calculator splits sales across two threads, with semaphore synchronization.
-- **Interface:** Separate screens for orders, inventory, sales analytics, and payment.
-- **Data:** MySQL persistence with a schema and seed data in `pos.sql`.
+- ESP32 firmware reads two DHT11 sensors and publishes temperature and humidity over MQTT
+- Live fridge dashboard; over-threshold readings send an email alert, and replying YES turns on the fan
+- RFID checkout, membership cards, emailed receipts, and purchase history
+- Admin side for products, stock, and customers, with low-stock and restock emails
+
+My part: the ESP32 and sensor code, the fan driver, the fridge dashboard, email alerts, and
+the product, inventory, and checkout flows.
 
 </details>
-
----
-
-### [The Rogue Market](https://github.com/gvogas/Star-wars-Interactive-Web-Application)
-
-<sub>Web experiment · Course final</sub>
-
-A twelve-page Star Wars storefront with live search, a persistent cart, and checkout. Built in vanilla JavaScript for my internet programming final.
-
-<code>JavaScript</code> <code>HTML</code> <code>CSS</code> <code>JSON</code> <code>XML</code>
-
-<details>
-<summary>Inside the build</summary>
-
-- Live product search with a suggestion dropdown and highlighted infinite-scroll results
-- Cart with per-item quantity control, subtotal, and localStorage persistence
-- Checkout flow with tax calculation, payment method validation, and order confirmation
-- Cookie-based user profiles with an editable avatar
-- Products rendered from category JSONs, navigation driven by XML over AJAX
-- Modular JS: `AuthModel`, `CartManagement`, `ProductModel`, `SearchModel`, `FormValidation`
-
-</details>
-
----
-
-### [Last Signal](https://github.com/alexder204/LastSignal)
-
-<sub>Game development · Contributor</sub>
-
-A Unity game I contribute to, focusing on gameplay code and custom shaders in ShaderLab and HLSL.
-
-<code>Unity</code> <code>C#</code> <code>ShaderLab</code> <code>HLSL</code>
 
 ## What I work with
 
 | Focus | Tools I use |
 | --- | --- |
-| **Mobile** | Flutter · Dart · Firebase · Android · iOS |
-| **Web & APIs** | Python · FastAPI · PHP · Slim · Twig · JavaScript |
-| **Desktop & games** | Java · JavaFX · C# · .NET · Unity |
-| **Data & deployment** | MySQL · SQLite · Linux · Apache · GitHub Actions · cPanel |
+| **Mobile** | Flutter · Dart · Swift · Firebase · Android · iOS |
+| **Web & APIs** | TypeScript · React · Tailwind · Python · FastAPI · Flask · PHP · Slim · Twig |
+| **Hardware & IoT** | ESP32 · Raspberry Pi · MQTT · RFID · Embedded C/C++ |
+| **Data & deployment** | Cloudflare Workers · D1 · MySQL · SQLite · Linux · GitHub Actions · cPanel |
 
 <details>
 <summary>More tools and foundations</summary>
 
-HTML, CSS, C++, shell, a little Wolfram, Maven, Stripe, and Google Maps.
+Java, JavaFX, C#, .NET, Unity, HTML, CSS, shell, a little Wolfram, Maven, Stripe, and Google Maps.
 
 Coursework has covered OOP and design patterns, multithreading and synchronization,
 schema design and normalization, REST APIs, and Linux and CI/CD deployment.

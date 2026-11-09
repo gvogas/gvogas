@@ -845,7 +845,8 @@ h1, h2, h3, h4 {
 .tag--hackathon    { color: var(--tag-hackathon);    background: var(--tag-hackathon-bg); }
 .tag--team         { color: var(--tag-team);         background: var(--tag-team-bg); }
 .tag--academic     { color: var(--tag-academic);     background: var(--tag-academic-bg); }
-.tag--contributor  { color: var(--tag-contributor);  background: var(--tag-contributor-bg); }
+.tag--contributor,
+.tag--solo         { color: var(--tag-contributor);  background: var(--tag-contributor-bg); }
 .tag--deployed     { color: var(--tag-deployed);     background: var(--tag-deployed-bg); }
 
 .card__link {
@@ -1001,6 +1002,7 @@ h1, h2, h3, h4 {
 }
 [data-theme="dark"] #projects .tag--commissioned,
 [data-theme="dark"] #projects .tag--contributor,
+[data-theme="dark"] #projects .tag--solo,
 [data-theme="dark"] #projects .tag--team {
   color: #b1c9e9;
   background: #b1c9e90c;
