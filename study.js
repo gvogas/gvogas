@@ -53,10 +53,7 @@
     panel.setAttribute('role', 'tabpanel');
     panel.setAttribute('aria-labelledby', button.id);
     panel.tabIndex = 0;
-    const eyebrow = document.createElement('p');
-    eyebrow.className = 'study-explorer__label';
-    eyebrow.textContent = 'IN CLASS / IN PRACTICE';
-    panel.append(eyebrow, subject.querySelector('.study__icon').cloneNode(true));
+    panel.append(subject.querySelector('.study__icon').cloneNode(true));
     for (const selector of ['.study__title', '.study__blurb', '.study__skills']) {
       panel.append(subject.querySelector(selector).cloneNode(true));
     }

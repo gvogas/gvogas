@@ -2049,3 +2049,19 @@ h1, h2, h3, h4 {
 #projects .card__link--private:hover,
 [data-theme="dark"] #projects .card__link--private,
 [data-theme="dark"] #projects .card__link--private:hover { color: var(--muted); text-decoration: none; }
+
+/* ===== Plainer look =====
+   Drops the decorative gradient glows, dot field, and italic accent words. */
+.hero__bg, .hero__bg::before, .contact::before { display: none; }
+.study-explorer__stage { background: none; }
+#projects .card--featured { background: var(--surface); }
+[data-theme="dark"] #projects .card--featured { background: #182332; }
+.section__title em, .hero__intro-title em { font-style: normal; color: inherit; }
+.hero__intro-main { grid-template-columns: minmax(0, 1fr); }
+.hero__intro-title { margin-top: 0; }
+.hero__intro-description { font-size: 1.15rem; color: var(--text); max-width: 34em; }
+.hero__intro-card { border: 0; background: none; border-radius: 0; overflow: visible; }
+.hero__intro-main { padding: 0; }
+#projects .card--featured .card__link--private,
+[data-theme="dark"] #projects .card--featured .card__link--private { color: var(--muted); }
+.hero { min-height: 0; padding-bottom: 48px; }
