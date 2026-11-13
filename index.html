@@ -57,6 +57,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet" />
   <script>
     // Resolve the theme before styles apply to avoid a flash of the wrong scheme.
+    document.documentElement.classList.add('js');
     (function () {
       try {
         var t = localStorage.getItem('theme');
@@ -67,7 +68,7 @@
       } catch (e) {}
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
   <script type="importmap">
   {
     "imports": {
@@ -89,13 +90,13 @@
       <a href="#hero" class="nav__logo" aria-label="George Vogas, back to top">GV</a>
       <div class="nav__right">
         <ul class="nav__links" id="nav-links" role="list">
-          <li><a href="#about">About</a></li>
           <li><a href="#projects">Projects</a></li>
+          <li><a href="#about">About</a></li>
           <li><a href="#github">GitHub</a></li>
-          <li><a href="#city">Skyline</a></li>
           <li><a href="#stack">Stack</a></li>
           <li><a href="#study">Study</a></li>
           <li><a href="#contact" class="nav__cta">Contact</a></li>
+          <li class="nav__pill" aria-hidden="true"></li>
         </ul>
         <button class="nav__theme" id="theme-toggle" aria-label="Switch to dark theme" aria-pressed="false">
           <svg class="nav__theme-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -112,28 +113,18 @@
 
     <!-- Hero -->
     <section class="hero" id="hero">
-      <div class="hero__bg" aria-hidden="true"></div>
-      <div class="container hero__content hero__content--banner">
-        <div class="hero__intro-card">
-          <div class="hero__intro-main">
-            <div class="hero__intro-text">
-                            <h1 class="hero__intro-title">George Vogas</h1>
-                            <p class="hero__intro-description">I'm a computer science student at Vanier College in Montréal, and I'm looking for an internship.</p>
-            </div>
-          </div>
-        </div>
+      <div class="container hero__content hero__content--split">
         <div class="hero__copy">
+          <h1 class="hero__intro-title" aria-label="George Vogas"><span class="hero__word" aria-hidden="true"><span>George</span></span> <span class="hero__word" aria-hidden="true"><span>Vogas</span></span></h1>
+          <p class="hero__intro-description">I'm a computer science student at Vanier College in Montréal, and I'm looking for an internship.</p>
         <p class="hero__tagline">
           I build mobile apps, web apps, and the occasional bit of hardware. One of them is a
           scheduling app I was commissioned to write, and the company that asked for it uses it every day.
         </p>
         <div class="hero__stats" id="github-stats-grid" aria-label="Live GitHub stats">
           <span data-stat="commits"><strong class="github-stats__value"><span class="github-stats__shimmer" aria-hidden="true">000</span></strong> Commits</span>
-          <span class="hero__stats-sep" aria-hidden="true">·</span>
           <span data-stat="repos"><strong class="github-stats__value"><span class="github-stats__shimmer" aria-hidden="true">00</span></strong> Repos</span>
-          <span class="hero__stats-sep" aria-hidden="true">·</span>
           <span data-stat="stars"><strong class="github-stats__value"><span class="github-stats__shimmer" aria-hidden="true">00</span></strong> Stars</span>
-          <span class="hero__stats-sep" aria-hidden="true">·</span>
           <span data-stat="followers"><strong class="github-stats__value"><span class="github-stats__shimmer" aria-hidden="true">00</span></strong> Followers</span>
         </div>
         <div class="hero__links">
@@ -151,42 +142,79 @@
           </a>
         </div>
         </div>
-
-
-      </div>
-    </section>
-
-    <!-- About -->
-    <section class="section" id="about">
-      <div class="container">
-        <div class="section__head reveal">
-          <h2 class="section__title">About me</h2>
-        </div>
-        <div class="about__grid">
-          <div class="about__text">
-            <p>
-              I'm a CS student at Vanier College in Montréal. I've learned primarily by building:
-              a scheduling app a client uses every day, a student tracker my classmates use,
-              a ticketing site my team deployed, and an iPhone budgeting app on its way to the App Store.
-            </p>
-            <p>
-              Outside of coursework I work on <strong>robotics</strong> and hardware: microcontrollers,
-              PID control loops, and sensors, like the ESP32 fridge monitors in our self-checkout store. I'm also extending the scheduling app
-              with Wave invoicing.
-            </p>
-            <p>
-              Outside of school, I play <strong>hockey</strong> on weekends and follow the Habs.
-              I'm interested in hockey analytics: box scores, possession metrics, shot quality.
-            </p>
-          </div>
-          <div class="about__callout">
-            <p class="about__callout-label">Elsewhere</p>
-            <ul class="about__callout-list about__callout-list--links">
-              <li><a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">GitHub<span class="about__callout-note">all of the code</span></a></li>
-              <li><a href="https://www.linkedin.com/in/georgevogas/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="about__callout-note">fastest way to reach me</span></a></li>
-              <li><a href="https://devpost.com/Terminator320" target="_blank" rel="noopener noreferrer">Devpost<span class="about__callout-note">hackathon write-ups</span></a></li>
-            </ul>
-          </div>
+        <div class="hero__visual">
+            <svg class="circuit" id="hero-circuit" viewBox="-14 60 508 350" aria-hidden="true" focusable="false">
+              <defs>
+                <pattern id="circuit-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" /></pattern>
+                <radialGradient id="circuit-fade"><stop offset="0.35" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+                <mask id="circuit-mask"><ellipse cx="240" cy="235" rx="250" ry="185" fill="url(#circuit-fade)"/></mask>
+              </defs>
+              <rect class="circuit__grid" x="0" y="60" width="480" height="350" fill="url(#circuit-grid)" mask="url(#circuit-mask)"/>
+              <g class="circuit__layer circuit__layer--back">
+                <g class="circuit__traces">
+                  <path class="circuit__trace" style="--i:0" pathLength="1" d="M180 194 L137 194 L96 152 L28 152"/>
+                  <path class="circuit__trace" style="--i:1" pathLength="1" d="M180 217 L114 217 L77 180 L9 180"/>
+                  <path class="circuit__trace" style="--i:2" pathLength="1" d="M180 240 L70 240"/>
+                  <path class="circuit__trace" style="--i:3" pathLength="1" d="M180 263 L133 263 L85 310 L18 310"/>
+                  <path class="circuit__trace" style="--i:4" pathLength="1" d="M180 286 L157 286 L95 348 L46 348"/>
+                  <path class="circuit__trace" style="--i:5" pathLength="1" d="M300 194 L345 194 L388 151 L452 151"/>
+                  <path class="circuit__trace" style="--i:6" pathLength="1" d="M300 217 L373 217 L411 179 L473 179"/>
+                  <path class="circuit__trace" style="--i:7" pathLength="1" d="M300 240 L435 240"/>
+                  <path class="circuit__trace" style="--i:8" pathLength="1" d="M300 263 L351 263 L399 312 L468 312"/>
+                  <path class="circuit__trace" style="--i:9" pathLength="1" d="M300 286 L328 286 L388 346 L436 346"/>
+                  <path class="circuit__trace" style="--i:10" pathLength="1" d="M205 180 L205 136 L168 99 L104 99"/>
+                  <path class="circuit__trace" style="--i:11" pathLength="1" d="M228 180 L228 108"/>
+                  <path class="circuit__trace" style="--i:12" pathLength="1" d="M252 180 L252 127 L284 95 L358 95"/>
+                  <path class="circuit__trace" style="--i:13" pathLength="1" d="M275 180 L275 155 L333 96"/>
+                  <path class="circuit__trace" style="--i:14" pathLength="1" d="M205 300 L205 328 L175 358 L138 358"/>
+                  <path class="circuit__trace" style="--i:15" pathLength="1" d="M231 300 L231 362"/>
+                  <path class="circuit__trace" style="--i:16" pathLength="1" d="M256 300 L256 342 L284 369 L330 369"/>
+                  <path class="circuit__trace" style="--i:17" pathLength="1" d="M282 300 L282 318 L315 352"/>
+                </g>
+                <g class="circuit__pulses">
+                  <path class="circuit__pulse" style="--d:0s" pathLength="1" d="M180 194 L137 194 L96 152 L28 152"/>
+                  <path class="circuit__pulse" style="--d:1.4s" pathLength="1" d="M180 240 L70 240"/>
+                  <path class="circuit__pulse" style="--d:4.8s" pathLength="1" d="M180 263 L133 263 L85 310 L18 310"/>
+                  <path class="circuit__pulse" style="--d:2.6s" pathLength="1" d="M300 194 L345 194 L388 151 L452 151"/>
+                  <path class="circuit__pulse" style="--d:0.6s" pathLength="1" d="M300 240 L435 240"/>
+                  <path class="circuit__pulse" style="--d:3.4s" pathLength="1" d="M300 286 L328 286 L388 346 L436 346"/>
+                  <path class="circuit__pulse" style="--d:2.0s" pathLength="1" d="M205 180 L205 136 L168 99 L104 99"/>
+                  <path class="circuit__pulse" style="--d:4.2s" pathLength="1" d="M252 180 L252 127 L284 95 L358 95"/>
+                  <path class="circuit__pulse" style="--d:1.0s" pathLength="1" d="M231 300 L231 362"/>
+                  <path class="circuit__pulse" style="--d:3.0s" pathLength="1" d="M256 300 L256 342 L284 369 L330 369"/>
+                </g>
+                <g class="circuit__nodes">
+                  <circle class="circuit__node" style="--i:0" cx="28" cy="152" r="4.5"/>
+                  <circle class="circuit__node" style="--i:1" cx="9" cy="180" r="4.5"/>
+                  <circle class="circuit__node" style="--i:3" cx="18" cy="310" r="4.5"/>
+                  <circle class="circuit__node" style="--i:4" cx="46" cy="348" r="4.5"/>
+                  <circle class="circuit__node" style="--i:5" cx="452" cy="151" r="4.5"/>
+                  <circle class="circuit__node" style="--i:6" cx="473" cy="179" r="4.5"/>
+                  <circle class="circuit__node" style="--i:8" cx="468" cy="312" r="4.5"/>
+                  <circle class="circuit__node" style="--i:9" cx="436" cy="346" r="4.5"/>
+                  <circle class="circuit__node" style="--i:10" cx="104" cy="99" r="4.5"/>
+                  <circle class="circuit__node" style="--i:11" cx="228" cy="108" r="4.5"/>
+                  <circle class="circuit__node" style="--i:12" cx="358" cy="95" r="4.5"/>
+                  <circle class="circuit__node" style="--i:13" cx="333" cy="96" r="4.5"/>
+                  <circle class="circuit__node" style="--i:14" cx="138" cy="358" r="4.5"/>
+                  <circle class="circuit__node" style="--i:16" cx="330" cy="369" r="4.5"/>
+                  <circle class="circuit__node" style="--i:17" cx="315" cy="352" r="4.5"/>
+                </g>
+              </g>
+              <g class="circuit__layer circuit__layer--front">
+                <g class="circuit__chip">
+                  <rect class="circuit__chip-glow" x="172" y="172" width="136" height="136" rx="20"/>
+                  <rect class="circuit__chip-body" x="180" y="180" width="120" height="120" rx="14"/>
+                  <rect class="circuit__chip-inner" x="196" y="196" width="88" height="88" rx="7"/>
+                  <path class="circuit__chip-glyph" d="M224 227L210 240L224 253M256 227L270 240L256 253M246 224L234 256"/>
+                </g>
+                <g class="circuit__pills">
+                  <g class="circuit__pill" style="--i:2"><rect x="-8" y="225" width="78" height="30" rx="15"/><text x="31" y="244" text-anchor="middle">Mobile</text></g>
+                  <g class="circuit__pill" style="--i:7"><rect x="435" y="225" width="58" height="30" rx="15"/><text x="464" y="244" text-anchor="middle">Web</text></g>
+                  <g class="circuit__pill" style="--i:15"><rect x="183" y="362" width="96" height="30" rx="15"/><text x="231" y="381" text-anchor="middle">Hardware</text></g>
+                </g>
+              </g>
+            </svg>
         </div>
       </div>
     </section>
@@ -421,8 +449,43 @@
       </div>
     </section>
 
+    <!-- About -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section__head reveal">
+          <h2 class="section__title">About me</h2>
+        </div>
+        <div class="about__grid">
+          <div class="about__text">
+            <p>
+              I'm a CS student at Vanier College in Montréal. I've learned primarily by building:
+              a scheduling app a client uses every day, a student tracker my classmates use,
+              a ticketing site my team deployed, and an iPhone budgeting app on its way to the App Store.
+            </p>
+            <p>
+              Outside of coursework I work on <strong>robotics</strong> and hardware: microcontrollers,
+              PID control loops, and sensors, like the ESP32 fridge monitors in our self-checkout store. I'm also extending the scheduling app
+              with Wave invoicing.
+            </p>
+            <p>
+              Outside of school, I play <strong>hockey</strong> on weekends and follow the Habs.
+              I'm interested in hockey analytics: box scores, possession metrics, shot quality.
+            </p>
+          </div>
+          <div class="about__callout">
+            <p class="about__callout-label">Elsewhere</p>
+            <ul class="about__callout-list about__callout-list--links">
+              <li><a href="https://github.com/gvogas" target="_blank" rel="noopener noreferrer">GitHub<span class="about__callout-note">all of the code</span></a></li>
+              <li><a href="https://www.linkedin.com/in/georgevogas/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="about__callout-note">fastest way to reach me</span></a></li>
+              <li><a href="https://devpost.com/Terminator320" target="_blank" rel="noopener noreferrer">Devpost<span class="about__callout-note">hackathon write-ups</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- GitHub Status -->
-    <section class="section" id="github">
+    <section class="section section--alt activity" id="github">
       <div class="container">
         <div class="section__head reveal">
           <h2 class="section__title">What the past year looked like</h2>
@@ -463,15 +526,12 @@
           </div>
           <div class="github-graph__tooltip" role="tooltip" aria-hidden="true"></div>
         </div>
-      </div>
-    </section>
 
-    <!-- Commit Skyline -->
-    <section class="section city-section" id="city">
-      <div class="container">
+        <!-- Commit Skyline -->
+        <div class="activity__city" id="city">
         <div class="city__heading reveal">
           <div>
-            <h2 class="section__title">My repos as a city</h2>
+            <h3 class="section__title city__title">My repos as a city</h3>
           </div>
           <p class="city__subtitle">Each building is one of my public repos. Taller ones have more code or recent commits. Drag to look around.</p>
         </div>
@@ -495,6 +555,7 @@
         </div>
         <div class="city__legend"><p><span class="city__legend-bars" aria-hidden="true">▂▅█</span> Height reflects code size &amp; recent activity</p><p id="city-summary" aria-live="polite">Discover the repositories below</p></div>
         <details class="city__directory"><summary>Explore repositories <span aria-hidden="true">↗</span></summary><div id="city-repos" class="city__repos"><a href="https://github.com/gvogas?tab=repositories" target="_blank" rel="noopener noreferrer">Browse all repositories on GitHub ↗</a></div></details>
+        </div>
         </div>
       </div>
     </section>
@@ -771,7 +832,7 @@
     </div>
   </footer>
 
-  <script type="module" src="script.js?v=5"></script>
+  <script type="module" src="script.js?v=6"></script>
   <script src="photography.js?v=2" defer></script>
   <script src="study.js?v=1" defer></script>
 </body>

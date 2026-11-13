@@ -254,13 +254,19 @@ h1, h2, h3, h4 {
 }
 
 /* ===== Scroll reveal ===== */
-.reveal {
+/* Uses the independent `translate` property so an element's own
+   transform (hover lift, the callout's tilt) is left alone. Only applied
+   once the boot script has confirmed JS is running. */
+.js .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  translate: 0 26px;
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              translate 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform var(--transition-slow),
+              border-color var(--transition-slow),
+              box-shadow var(--transition-slow);
 }
-.reveal.visible { opacity: 1; transform: none; }
+.js .reveal.visible { opacity: 1; translate: none; }
 
 /* ===== Navigation ===== */
 .nav {
@@ -2039,7 +2045,7 @@ h1, h2, h3, h4 {
     transition-duration: 0.01ms !important;
   }
   html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; }
+  .js .reveal { opacity: 1; translate: none; }
   .nav__links li { opacity: 1 !important; transform: none !important; }
   .stack__pills .pill { opacity: 1 !important; transform: none !important; transition-delay: 0ms !important; }
 }
@@ -2065,3 +2071,325 @@ h1, h2, h3, h4 {
 #projects .card--featured .card__link--private,
 [data-theme="dark"] #projects .card--featured .card__link--private { color: var(--muted); }
 .hero { min-height: 0; padding-bottom: 48px; }
+
+/* ============================================================
+   Motion and polish layer
+   Sharper type, the hero circuit board, the sliding nav pill, card
+   spotlights. Everything here is an enhancement: the page reads the
+   same with animation switched off (see the reduced-motion block at
+   the end).
+   ============================================================ */
+:root { --ease-out: cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ----- Type ----- */
+.section__title {
+  font-size: clamp(2.2rem, 4.8vw, 3.3rem);
+  letter-spacing: -0.03em;
+}
+/* The same short rule that sits above the name in the README banner. */
+.section__head .section__title::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 3px;
+  margin-bottom: 22px;
+  background: var(--accent);
+  transform-origin: left center;
+  transition: transform 0.9s var(--ease-out) 0.2s;
+}
+.js .section__head.reveal:not(.visible) .section__title::before { transform: scaleX(0); }
+.contact__heading { font-size: clamp(2.4rem, 5.4vw, 3.8rem); letter-spacing: -0.03em; }
+
+/* ----- Progress bar ----- */
+#progress-bar { height: 3px; }
+
+/* ----- Nav: sliding pill ----- */
+@media (min-width: 769px) { .nav__links { position: relative; } }
+.nav__links a::after { display: none; }
+.nav__links a { z-index: 1; }
+.nav__pill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 32px;
+  margin-top: -16px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.5s var(--ease-out), width 0.5s var(--ease-out), opacity 0.25s ease;
+}
+.nav__pill.is-on { opacity: 1; }
+.nav__links a.active { color: var(--accent-strong); }
+.nav__links a.nav__cta.active {
+  background: var(--accent-btn);
+  color: #fff;
+  border-color: var(--accent-btn);
+}
+.nav__logo { transition: opacity var(--transition), transform 0.4s var(--ease-out); }
+.nav__logo:hover { transform: rotate(-6deg) scale(1.08); }
+.nav__theme svg { transition: transform 0.5s var(--ease-out); }
+.nav__theme:hover svg { transform: rotate(35deg); }
+
+/* Theme switch: the new theme opens out from the toggle. */
+html.theme-transition::view-transition-old(root),
+html.theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html.theme-transition::view-transition-new(root) {
+  animation: themeReveal 0.65s cubic-bezier(0.65, 0, 0.35, 1);
+}
+@keyframes themeReveal {
+  from { clip-path: circle(0 at var(--vt-x) var(--vt-y)); }
+  to { clip-path: circle(var(--vt-r) at var(--vt-x) var(--vt-y)); }
+}
+
+/* ----- Hero ----- */
+.hero {
+  min-height: min(88vh, 840px);
+  padding: calc(var(--nav-h) + 56px + env(safe-area-inset-top, 0px)) 0 72px;
+}
+.hero__content.hero__content--split {
+  grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+  gap: 40px 56px;
+  align-items: center;
+}
+.hero__intro-title {
+  margin: 0 0 22px;
+  font-size: clamp(3.2rem, 7.4vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+/* Each word rises out of its own clipped line. */
+.hero__word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0.06em 0.05em 0.14em;
+  margin: -0.06em -0.05em -0.14em;
+}
+.hero__word > span {
+  display: inline-block;
+  animation: heroWord 1s var(--ease-out) 0.05s both;
+}
+.hero__word + .hero__word > span { animation-delay: 0.16s; }
+@keyframes heroWord { from { transform: translateY(112%) rotate(4deg); } to { transform: none; } }
+
+.hero__intro-description {
+  margin-bottom: 18px;
+  font-size: clamp(1.1rem, 1.9vw, 1.3rem);
+  line-height: 1.55;
+  color: var(--ink);
+  animation: heroUp 0.8s var(--ease-out) 0.32s both;
+}
+.hero__content--split .hero__tagline {
+  max-width: 34em;
+  font-size: 1.04rem;
+  color: var(--muted);
+  animation-delay: 0.44s;
+}
+.hero__content--split .hero__stats { gap: 8px 0; animation-delay: 0.56s; }
+.hero__content--split .hero__links { animation-delay: 0.68s; }
+.hero__stats [data-stat]:not([hidden]) ~ [data-stat]:not([hidden])::before {
+  content: '·';
+  padding: 0 12px;
+  color: var(--line-strong);
+}
+
+/* ----- Hero circuit board ----- */
+.hero__visual { min-width: 0; perspective: 900px; }
+.circuit {
+  --px: 0;
+  --py: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  transform: rotateY(calc(var(--px) * 5deg)) rotateX(calc(var(--py) * -5deg));
+}
+.circuit__layer--back { transform: translate(calc(var(--px) * -5px), calc(var(--py) * -5px)); }
+.circuit__layer--front { transform: translate(calc(var(--px) * 7px), calc(var(--py) * 7px)); }
+
+#circuit-grid path { fill: none; stroke: var(--line-strong); stroke-width: 0.6; }
+.circuit__grid { animation: circuitFade 1.6s ease 0.3s both; }
+
+.circuit__trace,
+.circuit__pulse {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* pathLength="1" on every path, so one dash is the whole trace. */
+.circuit__trace {
+  stroke: color-mix(in srgb, var(--accent) 42%, var(--line-strong));
+  stroke-width: 2;
+  stroke-dasharray: 1 1.5;
+  stroke-dashoffset: 1.01;
+  animation: circuitDraw 1s cubic-bezier(0.65, 0, 0.35, 1) calc(0.6s + var(--i) * 45ms) forwards;
+}
+@keyframes circuitDraw { to { stroke-dashoffset: 0; } }
+
+/* A short dash that runs from the chip out to the end of the trace,
+   then waits for the rest of the cycle. */
+.circuit__pulse {
+  stroke: var(--accent);
+  stroke-width: 2.6;
+  stroke-dasharray: 0.12 1.4;
+  stroke-dashoffset: 0.12;
+  animation: circuitPulse 6s linear calc(2.4s + var(--d)) infinite;
+}
+@keyframes circuitPulse {
+  0% { stroke-dashoffset: 0.12; }
+  26%, 100% { stroke-dashoffset: -1; }
+}
+[data-theme="dark"] .circuit__pulses { filter: drop-shadow(0 0 4px var(--accent)); }
+
+.circuit__node,
+.circuit__pill,
+.circuit__chip {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.circuit__node {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  animation: circuitPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) calc(1.45s + var(--i) * 45ms) both;
+}
+.circuit__pill { animation: circuitPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) calc(1.45s + var(--i) * 45ms) both; }
+.circuit__pill rect {
+  fill: var(--surface);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  transition: fill var(--transition);
+}
+.circuit__pill text {
+  font: 500 12.5px var(--mono);
+  letter-spacing: 0.02em;
+  fill: var(--ink);
+}
+.circuit__pill:hover rect { fill: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+@keyframes circuitPop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+@keyframes circuitFade { from { opacity: 0; } to { opacity: 1; } }
+
+.circuit__chip { animation: circuitChip 0.9s var(--ease-out) 0.3s both; }
+@keyframes circuitChip { from { opacity: 0; transform: scale(0.82); } to { opacity: 1; transform: none; } }
+.circuit__chip-glow {
+  fill: var(--accent);
+  opacity: 0.1;
+  filter: blur(14px);
+  animation: circuitGlow 4.5s ease-in-out 1.6s infinite alternate;
+}
+@keyframes circuitGlow { to { opacity: 0.3; } }
+.circuit__chip-body {
+  fill: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.circuit__chip-inner { fill: none; stroke: var(--accent-line); }
+.circuit__chip-glyph {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.circuit.is-paused .circuit__pulse,
+.circuit.is-paused .circuit__chip-glow { animation-play-state: paused; }
+
+/* ----- Buttons ----- */
+.btn { transition-duration: 0.25s; transition-timing-function: var(--ease-out); }
+.btn svg { transition: transform 0.35s var(--ease-out); }
+.btn:hover svg { transform: scale(1.14) rotate(-6deg); }
+.btn:active { transform: translateY(0) scale(0.97); }
+.btn--primary { position: relative; overflow: hidden; isolation: isolate; }
+.btn--primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.28) 50%, transparent 70%);
+  transform: translateX(-120%);
+}
+.btn--primary:hover::after { transform: translateX(120%); transition: transform 0.75s var(--ease-out); }
+
+/* ----- Project cards ----- */
+#projects .card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--tint);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.6s var(--ease-out);
+}
+#projects .card:hover::before,
+#projects .card:focus-within::before,
+#projects .card--featured::before { transform: none; }
+/* Soft light that follows the pointer (script.js sets --mx / --my). */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(440px circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--tint) 13%, transparent), transparent 68%);
+  transition: opacity 0.4s ease;
+}
+.card:hover::after { opacity: 1; }
+#projects .card:hover {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--tint) 50%, var(--line-strong));
+  box-shadow: 0 28px 50px -30px color-mix(in srgb, var(--tint) 55%, transparent);
+}
+.card__link span { display: inline-block; transition: transform 0.3s var(--ease-out); }
+.card__link:hover span { transform: translateX(4px); }
+.project__details summary span { transition: transform 0.4s var(--ease-out); }
+.project__details.is-closing summary span { transform: none; }
+.project__details[open]:not(.is-closing) > :not(summary) { animation: detailsIn 0.5s var(--ease-out) both; }
+@keyframes detailsIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+
+/* ----- Activity: contribution graph and skyline in one section ----- */
+.activity__city {
+  margin-top: 76px;
+  padding-top: 60px;
+  border-top: 1px solid var(--line-strong);
+  scroll-margin-top: calc(var(--nav-h) + 8px);
+}
+.city__heading .city__title { font-size: clamp(1.7rem, 3.2vw, 2.3rem); letter-spacing: -0.025em; }
+
+/* ----- About links ----- */
+.about__callout { transition: opacity 0.75s var(--ease-out), translate 0.75s var(--ease-out), transform 0.5s var(--ease-out), box-shadow 0.5s ease; }
+.about__callout:hover { transform: rotate(0deg) translateY(-3px); box-shadow: var(--shadow-lift); }
+
+@media (max-width: 900px) {
+  .hero { min-height: 0; }
+  .hero__content.hero__content--split { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .hero__visual { width: 100%; max-width: 440px; margin: 0 auto; }
+}
+@media (max-width: 768px) {
+  .hero { padding: calc(var(--nav-h) + 32px + env(safe-area-inset-top, 0px)) 0 52px; }
+  .nav__pill { display: none; }
+  .nav__links a.active:not(.nav__cta) { background: var(--accent-soft); }
+  .nav__links.open li:nth-child(6) { transition-delay: 0.24s; }
+  .activity__city { margin-top: 52px; padding-top: 44px; }
+  .about__callout:hover { transform: none; }
+}
+@media (max-width: 540px) {
+  .hero__stats [data-stat]:not([hidden]) ~ [data-stat]:not([hidden])::before { content: none; }
+  .hero__content--split .hero__stats { gap: 4px 14px; }
+  .circuit__pill text { font-size: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__word > span, .hero__intro-description, .hero__tagline, .hero__stats, .hero__links,
+  .circuit * { animation-delay: 0s !important; }
+  .circuit__pulses { display: none; }
+  .circuit, .circuit__layer--back, .circuit__layer--front { transform: none; }
+  .js .section__head.reveal .section__title::before { transform: none; }
+}

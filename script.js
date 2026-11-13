@@ -16,10 +16,16 @@
     nav.classList.toggle('scrolled', window.scrollY > 20);
   }
 
+  let scrollQueued = false;
   window.addEventListener('scroll', () => {
-    updateProgress();
-    updateNav();
-    updateActiveLink();
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(() => {
+      scrollQueued = false;
+      updateProgress();
+      updateNav();
+      updateActiveLink();
+    });
   }, { passive: true });
 
   updateNav();
@@ -83,7 +89,21 @@
           localStorage.setItem('theme', next);
         }
       } catch (e) {}
-      applyTheme(next);
+      if (prefersReducedMotion || !document.startViewTransition) {
+        applyTheme(next);
+        return;
+      }
+      const r = themeToggle.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      const root = document.documentElement;
+      root.style.setProperty('--vt-x', `${x}px`);
+      root.style.setProperty('--vt-y', `${y}px`);
+      root.style.setProperty('--vt-r', `${radius}px`);
+      root.classList.add('theme-transition');
+      const vt = document.startViewTransition(() => applyTheme(next));
+      vt.finished.finally(() => root.classList.remove('theme-transition'));
     });
 
     darkQuery.addEventListener('change', (e) => {
@@ -98,16 +118,46 @@
   const navAnchors = document.querySelectorAll('.nav__links a[href^="#"]');
   const NAV_OFFSET = 80;
 
+  const navPill = document.querySelector('.nav__pill');
+  let activeId = null;
+
+  // The pill slides under whichever plain link is current. The Contact
+  // button and sections without a nav entry have no pill.
+  function movePill() {
+    if (!navPill) return;
+    const active = navLinks.querySelector('a.active:not(.nav__cta)');
+    if (!active || getComputedStyle(navPill).display === 'none') {
+      navPill.classList.remove('is-on');
+      return;
+    }
+    navPill.style.width = `${active.offsetWidth}px`;
+    navPill.style.transform = `translateX(${active.offsetLeft}px)`;
+    navPill.classList.add('is-on');
+  }
+
   function updateActiveLink() {
     let current = '';
     sections.forEach(section => {
       if (window.scrollY >= section.offsetTop - NAV_OFFSET) current = section.id;
     });
+    // A short last section never reaches the top of the viewport.
+    const doc = document.documentElement;
+    if (window.scrollY > 0 && window.innerHeight + window.scrollY >= doc.scrollHeight - 2) {
+      current = sections[sections.length - 1].id;
+    }
+    if (current === activeId) return;
+    activeId = current;
     navAnchors.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === `#${current}`);
+      const on = a.getAttribute('href') === `#${current}`;
+      a.classList.toggle('active', on);
+      if (on) a.setAttribute('aria-current', 'location');
+      else a.removeAttribute('aria-current');
     });
+    movePill();
   }
   updateActiveLink();
+  window.addEventListener('resize', movePill, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(movePill);
 
   // ── Card radial glow on mouse move ────────────────────────────
   if (!prefersReducedMotion) {
@@ -121,6 +171,24 @@
   }
 
   // ── Scroll reveal ─────────────────────────────────────────────
+  document.querySelectorAll([
+    '.projects__grid > .card',
+    '.about__text > p',
+    '.about__callout',
+    '.github-stats__subtitle',
+    '.github-graph',
+    '.city__dashboard',
+    '.sphere__subtitle',
+    '.sphere',
+    '.study-explorer',
+    '.study__divider',
+    '.study__list--personal > .study__item',
+    '.photography__heading',
+    '.photography__featured > .photography__photo',
+    '.photography__more',
+    '.contact__inner > *',
+  ].join(',')).forEach(el => el.classList.add('reveal'));
+
   const reveals = document.querySelectorAll('.reveal');
   if (prefersReducedMotion) {
     reveals.forEach(el => el.classList.add('visible'));
@@ -130,7 +198,7 @@
         if (!entry.isIntersecting) return;
         const el = entry.target;
         const siblings = Array.from(el.parentElement.querySelectorAll('.reveal:not(.visible)'));
-        const delay = Math.min(siblings.indexOf(el) * 70, 280);
+        const delay = Math.min(Math.max(siblings.indexOf(el), 0) * 80, 320);
         setTimeout(() => el.classList.add('visible'), delay);
         observer.unobserve(el);
       });
@@ -185,9 +253,7 @@
         .then(({ initGithubStats }) => initGithubStats())
         .catch(err => {
           console.error('initGithubStats failed:', err);
-          heroStatsGrid.querySelectorAll('.github-stats__value').forEach(el => {
-            el.innerHTML = '<span class="github-stats__error">—</span>';
-          });
+          heroStatsGrid.hidden = true;
         });
     };
     if ('requestIdleCallback' in window) {
@@ -230,5 +296,73 @@
         .catch(err => console.error('initSkillSphere failed:', err));
     }, { rootMargin: '400px 0px' });
     stackLoader.observe(stackSection);
+  }
+
+  // ── "Inside the build": animated open and close ───────────────
+  // <details> snaps by default. Animate the element's height between
+  // its closed (summary only) and open sizes instead.
+  if (!prefersReducedMotion && 'animate' in Element.prototype) {
+    document.querySelectorAll('.project__details').forEach(details => {
+      const summary = details.querySelector('summary');
+      if (!summary) return;
+      let anim = null;
+      const ease = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+      function run(from, to, done) {
+        if (anim) anim.cancel();
+        details.style.overflow = 'hidden';
+        anim = details.animate({ height: [`${from}px`, `${to}px`] }, { duration: 380, easing: ease });
+        anim.onfinish = () => {
+          anim = null;
+          details.style.overflow = '';
+          details.classList.remove('is-closing');
+          done();
+        };
+        anim.oncancel = () => { anim = null; };
+      }
+
+      summary.addEventListener('click', (e) => {
+        e.preventDefault();
+        const from = details.offsetHeight;
+        if (details.open && !details.classList.contains('is-closing')) {
+          details.classList.add('is-closing');
+          const cs = getComputedStyle(details);
+          const closed = summary.offsetHeight + parseFloat(cs.paddingTop) + parseFloat(cs.borderTopWidth);
+          run(from, closed, () => { details.open = false; });
+        } else {
+          details.classList.remove('is-closing');
+          details.open = true;
+          run(from, details.scrollHeight + parseFloat(getComputedStyle(details).borderTopWidth), () => {});
+        }
+      });
+    });
+  }
+
+  // ── Hero circuit board ────────────────────────────────────────
+  // The drawing-in is CSS. Here: lean the board toward the pointer, and
+  // stop the travelling pulses while the hero is off screen.
+  const circuit = document.getElementById('hero-circuit');
+  const hero = document.getElementById('hero');
+  if (circuit && hero) {
+    new IntersectionObserver((entries) => {
+      circuit.classList.toggle('is-paused', !entries[0].isIntersecting);
+    }).observe(circuit);
+
+    if (!prefersReducedMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+      const step = () => {
+        cx += (tx - cx) * 0.08;
+        cy += (ty - cy) * 0.08;
+        circuit.style.setProperty('--px', cx.toFixed(3));
+        circuit.style.setProperty('--py', cy.toFixed(3));
+        raf = (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002) ? requestAnimationFrame(step) : 0;
+      };
+      const aim = (x, y) => { tx = x; ty = y; if (!raf) raf = requestAnimationFrame(step); };
+      hero.addEventListener('pointermove', (e) => {
+        const r = hero.getBoundingClientRect();
+        aim(((e.clientX - r.left) / r.width - 0.5) * 2, ((e.clientY - r.top) / r.height - 0.5) * 2);
+      });
+      hero.addEventListener('pointerleave', () => aim(0, 0));
+    }
   }
 })();
