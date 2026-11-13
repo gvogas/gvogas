@@ -38,6 +38,7 @@ export async function initGithubStats() {
   function setStat(name, value, sub) {
     const card = cards[name];
     if (!card) return;
+    card.hidden = false;
     const valueEl = card.querySelector('.github-stats__value');
     if (valueEl) {
       if (typeof value === 'number') {
@@ -58,10 +59,8 @@ export async function initGithubStats() {
   function setError(name) {
     const card = cards[name];
     if (!card) return;
-    const valueEl = card.querySelector('.github-stats__value');
-    if (valueEl) {
-      valueEl.innerHTML = '<span class="github-stats__error">unavailable</span>';
-    }
+    // A number GitHub would not give us is left out rather than labelled.
+    card.hidden = true;
     delete currentValues[name];
   }
 
@@ -167,7 +166,8 @@ export async function initGithubStats() {
   }
 
   if (rateLimited) {
-    setStat('commits', total, `partial total — rate-limited after ${resolved} of ${repos.length} repositories`);
+    // A partial total would understate the real number, so show none.
+    setError('commits');
     return;
   }
 
