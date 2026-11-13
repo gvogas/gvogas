@@ -256,11 +256,13 @@
               <p class="card__desc">
                 A service company was running its whole schedule on paper, so they hired me to replace it. It has been in daily use since I handed it over.
               </p>
-              <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+              <ul class="card__bullets">
                 <li>Real-time appointment calendar with per-employee color coding and admin/employee role separation</li>
                 <li>Full client directory with accent-insensitive search across large record sets</li>
-                <li>In-app photo capture, auto-compression, and background upload to Firebase Storage</li>
                 <li>Invite-only employee onboarding with pre-whitelisted email registration</li>
+              </ul>
+              <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+                <li>In-app photo capture, auto-compression, and background upload to Firebase Storage</li>
                 <li>Light/dark mode, text scaling, and multi-language support, all persisted across sessions</li>
               </ul>
               <p class="card__arch"><strong>Architecture:</strong> Feature-first folder structure; all DB access mediated through per-feature service classes, so screens never query Firestore directly.</p></details>
@@ -282,26 +284,26 @@
               </div>
             </div>
             <h3 class="card__title">Term</h3>
+            <p class="card__desc">
+              A student tracker for courses, timetables, deadlines, grades, and study time, used by a small group of classmates. It works offline and syncs when you're back online. 700+ commits so far.
+            </p>
+            <ul class="card__bullets">
+              <li>An "Up next" list ranks what to work on now and says why ("Exam in 4 days · worth 30%")</li>
+              <li>AI import reads course outlines and timetable screenshots, then shows a preview before anything is saved</li>
+            </ul>
             <div class="card__stack">
               <span class="pill">TypeScript</span>
               <span class="pill">React</span>
               <span class="pill">Tailwind</span>
               <span class="pill">Cloudflare Workers</span>
               <span class="pill">D1 (SQLite)</span>
-              <span class="pill">IndexedDB</span>
-              <span class="pill">Workers AI</span>
-              <span class="pill">Vitest</span>
             </div>
-            <p class="card__desc">
-              A student tracker for courses, timetables, deadlines, grades, and study time, used by a small group of classmates. It works offline and syncs when you're back online. 700+ commits so far.
-            </p>
             <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
-              <li>An "Up next" list ranks what to work on now and says why ("Exam in 4 days · worth 30%")</li>
               <li>Grade math: weighted categories, drop-lowest rules, "what if" scores, and GPA by semester</li>
               <li>Shared classes and team projects with roles, invites, an inbox, and an activity feed</li>
-              <li>AI import reads course outlines and timetable screenshots, then shows a preview before anything is saved</li>
               <li>Private calendar feed for Google or Apple Calendar, push digests, undo, and JSON/CSV export</li>
             </ul>
+            <p class="card__arch"><strong>Also used:</strong> IndexedDB · Workers AI · Vitest</p>
             <p class="card__arch"><strong>Architecture:</strong> Local-first. The UI reads from IndexedDB and syncs to a Worker API on D1. Pushing to main runs checks, applies migrations, and deploys through GitHub Actions.</p></details>
           </article>
 
@@ -318,27 +320,26 @@
               </div>
             </div>
             <h3 class="card__title">TicketMaestrix</h3>
-            <div class="card__stack">
-              <span class="pill">PHP</span>
-              <span class="pill">Twig</span>
-              <span class="pill">Slim MVC</span>
-              <span class="pill">RedBeanPHP</span>
-              <span class="pill">PHP-DI</span>
-              <span class="pill">Stripe</span>
-              <span class="pill">Google Maps</span>
-              <span class="pill">MySQL</span>
-              <span class="pill">GitHub Actions</span>
-              <span class="pill">cPanel</span>
-            </div>
             <p class="card__desc">
               Event ticketing site built with two classmates and deployed to cPanel. Users bought tickets for concerts, raffles, and movies; admins managed events, inventory, and sales.
             </p>
+            <ul class="card__bullets">
+              <li>Custom Slim MVC framework with Twig templating, no off-the-shelf CMS</li>
+              <li>CI/CD pipeline via GitHub Actions deploying to cPanel</li>
+            </ul>
+            <div class="card__stack">
+              <span class="pill">PHP</span>
+              <span class="pill">Slim MVC</span>
+              <span class="pill">MySQL</span>
+              <span class="pill">Stripe</span>
+              <span class="pill">GitHub Actions</span>
+            </div>
             <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
               <li>User accounts with event browsing, ticket purchase, and order history</li>
               <li>Admin dashboard for event creation, ticket inventory control, and transaction monitoring</li>
-              <li>Custom Slim MVC framework with Twig templating, no off-the-shelf CMS</li>
-              <li>Internationalization support and CI/CD pipeline via GitHub Actions deploying to cPanel</li>
+              <li>Internationalization support</li>
             </ul>
+            <p class="card__arch"><strong>Also used:</strong> Twig · RedBeanPHP · PHP-DI · Google Maps · cPanel</p>
             <p class="card__arch"><strong>Team:</strong> George Vogas · Fadwa Shalby · Lucas Coveyduck</p></details>
           </article>
 
@@ -356,6 +357,13 @@
               </div>
             </div>
             <h3 class="card__title">Headroom</h3>
+            <p class="card__desc">
+              An iPhone app that answers one question: how much can I safely spend before payday? You enter your balance, payday, and bills, and it gives you a number per day. No account, no bank login, and nothing leaves the phone.
+            </p>
+            <ul class="card__bullets">
+              <li>Safe to spend = balance − bills due before payday − set-asides, divided by the days left, in exact cents</li>
+              <li>Home-screen widget, Apple Watch complications, and Siri logging with no setup</li>
+            </ul>
             <div class="card__stack">
               <span class="pill">iOS</span>
               <span class="pill">watchOS</span>
@@ -363,13 +371,8 @@
               <span class="pill">Siri &amp; Shortcuts</span>
               <span class="pill">Face ID</span>
             </div>
-            <p class="card__desc">
-              An iPhone app that answers one question: how much can I safely spend before payday? You enter your balance, payday, and bills, and it gives you a number per day. No account, no bank login, and nothing leaves the phone.
-            </p>
             <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
-              <li>Safe to spend = balance − bills due before payday − set-asides, divided by the days left, in exact cents</li>
               <li>"Can I spend this?" check that recalculates with bills and savings protected</li>
-              <li>Home-screen widget, Apple Watch complications, and Siri logging with no setup</li>
               <li>Face ID lock, hide-amounts mode, and passphrase-encrypted backups</li>
               <li>English and French (Canada), with a one-time Pro upgrade and no tracking code</li>
             </ul></details>
@@ -390,59 +393,65 @@
               </div>
             </div>
             <h3 class="card__title">AI Study Assistant</h3>
-            <div class="card__stack">
-              <span class="pill">Python</span>
-              <span class="pill">FastAPI</span>
-              <span class="pill">Groq / LLaMA 3.3</span>
-              <span class="pill">Tavily</span>
-              <span class="pill">SQLite</span>
-              <span class="pill">Vanilla JS</span>
-              <span class="pill">HTML</span>
-              <span class="pill">CSS</span>
-            </div>
             <p class="card__desc">
               Hackathon project from MariHacks. Give it a topic, plus optionally your notes or slides, and it generates study material, with a coin economy and a quiz-linked plant companion layered on top.
             </p>
-            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+            <ul class="card__bullets">
               <li>AI research + content agents generate structured notes, flashcards, and quiz questions at multiple difficulty levels</li>
               <li>Personalized study plan with priority tagging, extra time auto-allocated to weak areas from quiz results</li>
+            </ul>
+            <div class="card__stack">
+              <span class="pill">Python</span>
+              <span class="pill">FastAPI</span>
+              <span class="pill">Groq (LLaMA 3.3)</span>
+              <span class="pill">Tavily</span>
+              <span class="pill">Vanilla JS</span>
+            </div>
+            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
               <li>Supports uploaded PDF, PPTX, TXT, and MD files alongside live web research</li>
               <li>Coin economy, growable plant pet with unlockable tier skins, and Spotify Connect integration</li>
               <li>JWT auth, rate limiting, Fernet-encrypted tokens, full pytest async coverage</li>
             </ul>
+            <p class="card__arch"><strong>Also used:</strong> SQLite · HTML · CSS</p>
             <p class="card__arch"><strong>Team:</strong> George Vogas + 3 collaborators</p></details>
           </article>
 
-          <!-- Smart Self-Checkout -->
-          <article class="card" style="--card-tint:#0b2a5b">
-            <div class="card__header">
-              <div class="card__meta">
-                <div class="card__tags">
-                  <span class="tag tag--team">Team</span>
-                  <span class="tag tag--academic">Academic</span>
+          <!-- Smart Self-Checkout (wide) -->
+          <article class="card card--wide" style="--card-tint:#0b2a5b">
+            <div class="card__aside">
+              <div class="card__header">
+                <div class="card__meta">
+                  <div class="card__tags">
+                    <span class="tag tag--team">Team</span>
+                    <span class="tag tag--academic">Academic</span>
+                  </div>
                 </div>
               </div>
+              <h3 class="card__title">Smart Self-Checkout</h3>
+              <div class="card__stack">
+                <span class="pill">Python</span>
+                <span class="pill">Flask</span>
+                <span class="pill">Raspberry Pi</span>
+                <span class="pill">ESP32</span>
+                <span class="pill">MQTT</span>
+                <span class="pill">RFID</span>
+                <span class="pill">SQLite</span>
+              </div>
             </div>
-            <h3 class="card__title">Smart Self-Checkout</h3>
-            <div class="card__stack">
-              <span class="pill">Python</span>
-              <span class="pill">Flask</span>
-              <span class="pill">Raspberry Pi</span>
-              <span class="pill">ESP32</span>
-              <span class="pill">MQTT</span>
-              <span class="pill">RFID</span>
-              <span class="pill">SQLite</span>
+            <div class="card__body">
+              <p class="card__desc">
+                A small self-checkout store on a Raspberry Pi. Customers scan items with RFID and pay with a membership card, and two fridges are monitored live by an ESP32. Built with Oliver D'Avino and Arend Markies.
+              </p>
+              <ul class="card__bullets">
+                <li>ESP32 firmware reads two DHT11 sensors and publishes temperature and humidity over MQTT</li>
+                <li>Live fridge dashboard; over-threshold readings send an email alert, and replying YES turns on the fan</li>
+              </ul>
+              <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
+                <li>RFID checkout, membership cards, receipts by email, and purchase history</li>
+                <li>Admin side for products, stock, and customers, with low-stock and restock emails</li>
+              </ul>
+              <p class="card__arch"><strong>My part:</strong> ESP32 and sensor code, the fan driver, the fridge dashboard, email alerts, and the product, inventory, and checkout flows.</p></details>
             </div>
-            <p class="card__desc">
-              A small self-checkout store on a Raspberry Pi. Customers scan items with RFID and pay with a membership card, and two fridges are monitored live by an ESP32. Built with Oliver D'Avino and Arend Markies.
-            </p>
-            <details class="project__details"><summary>Inside the build <span aria-hidden="true">+</span></summary><ul class="card__bullets">
-              <li>ESP32 firmware reads two DHT11 sensors and publishes temperature and humidity over MQTT</li>
-              <li>Live fridge dashboard; over-threshold readings send an email alert, and replying YES turns on the fan</li>
-              <li>RFID checkout, membership cards, receipts by email, and purchase history</li>
-              <li>Admin side for products, stock, and customers, with low-stock and restock emails</li>
-            </ul>
-            <p class="card__arch"><strong>My part:</strong> ESP32 and sensor code, the fan driver, the fridge dashboard, email alerts, and the product, inventory, and checkout flows.</p></details>
           </article>
 
         </div>
